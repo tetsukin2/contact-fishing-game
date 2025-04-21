@@ -1,0 +1,144 @@
+// using System.IO.Ports;
+// using UnityEngine;
+
+// public class ArduinoFishingController : MonoBehaviour
+// {
+//     public Transform FishingRod;  // Assign this in Unity Inspector
+//     public string portName = "COM10";  // Update with your Arduino's correct COM port
+//     public int baudRate = 115200;
+    
+//     private SerialPort serialPort;
+//     private Vector3 rodRotation;
+//     public float sensitivity = 10f;
+
+//     void Start()
+//     {
+//         try
+//         {
+//             serialPort = new SerialPort(portName, baudRate);
+//             serialPort.Open();
+//             serialPort.ReadTimeout = 100;
+//             Debug.Log("Serial port opened successfully.");
+//         }
+//         catch (System.Exception e)
+//         {
+//             Debug.LogError("Failed to open serial port: " + e.Message);
+//         }
+//     }
+
+//     void Update()
+//     {
+//         ReadSerialData();
+//     }
+    
+//     void ReadSerialData()
+// {
+//     if (serialPort.IsOpen)
+//     {
+//         try
+//         {
+//             string data = serialPort.ReadLine();
+//             data = data.Replace("X:", "").Replace("Y:", "").Replace("Z:", "").Trim();
+            
+//             // Split the values and remove empty spaces
+//             string[] values = data.Split(new char[] { ' ', '\t' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+//             if (values.Length == 3)  // Ensure we have exactly 3 values
+//             {
+//                 float x, y, z;
+
+//                 if (float.TryParse(values[0], out x) &&
+//                     float.TryParse(values[1], out y) &&
+//                     float.TryParse(values[2], out z))
+//                 {
+//                     // Apply Dead Zone to ignore small fluctuations
+//                     float deadZone = 0.05f;
+//                     if (Mathf.Abs(x) < deadZone) x = 0;
+//                     if (Mathf.Abs(y) < deadZone) y = 0;
+//                     if (Mathf.Abs(z) < deadZone) z = 0;
+
+//                     float smoothFactor = 1.5f;  // Lower = more smoothing
+
+//                     rodRotation.x = Mathf.Lerp(rodRotation.x, x * sensitivity, Time.deltaTime * smoothFactor);
+//                     rodRotation.y = Mathf.Lerp(rodRotation.y, y * sensitivity, Time.deltaTime * smoothFactor);
+//                     rodRotation.z = Mathf.Lerp(rodRotation.z, z * sensitivity, Time.deltaTime * smoothFactor);
+
+
+//                     // Clamp values to prevent extreme rotation
+//                     rodRotation.x = Mathf.Clamp(rodRotation.x, -30f, 30f);
+//                     rodRotation.y = Mathf.Clamp(rodRotation.y, -30f, 30f);
+//                     rodRotation.z = Mathf.Clamp(rodRotation.z, -30f, 30f);
+
+//                     // Apply to fishing rod
+//                     FishingRod.localRotation = Quaternion.Euler(-rodRotation.y, 0, -rodRotation.x);
+//                 }
+//                 else
+//                 {
+//                     Debug.LogWarning("Failed to parse values: " + data);
+//                 }
+//             }
+//         }
+//         catch (System.Exception e)
+//         {
+//             Debug.LogWarning("Error reading serial data: " + e.Message);
+//         }
+//     }
+// }
+
+//     void OnApplicationQuit()
+//     {
+//         if (serialPort != null && serialPort.IsOpen)
+//         {
+//             serialPort.Close();
+//             Debug.Log("Serial port closed.");
+//         }
+//     }
+// }
+
+
+
+
+// using UnityEngine;
+
+// public class ArduinoFishingController : MonoBehaviour
+// {
+//     public Transform FishingRod;  
+//     public float sensitivity = 100f;
+//     public float smoothFactor = 0.2f;
+
+//     private Vector3 rodRotation = Vector3.zero;
+//     private Vector3 lastRotation = Vector3.zero;
+
+//     void Update()
+//     {
+//         if (!WindowsBLEScanner.IsConnected) return;
+
+//         ReadIMUData();
+//     }
+
+//     void ReadIMUData()
+//     {
+//         Vector3 imuData = WindowsBLEScanner.imuRotation;
+
+//         float deadZone = 0.005f;
+//         if (Mathf.Abs(imuData.x) < deadZone) imuData.x = 0;
+//         if (Mathf.Abs(imuData.y) < deadZone) imuData.y = 0;
+//         if (Mathf.Abs(imuData.z) < deadZone) imuData.z = 0;
+
+//         rodRotation.x = Mathf.Lerp(rodRotation.x, imuData.x * sensitivity, Time.deltaTime * smoothFactor);
+//         rodRotation.y = Mathf.Lerp(rodRotation.y, imuData.y * sensitivity, Time.deltaTime * smoothFactor);
+//         rodRotation.z = Mathf.Lerp(rodRotation.z, imuData.z * sensitivity, Time.deltaTime * smoothFactor);
+
+//         rodRotation.x = Mathf.Clamp(rodRotation.x, -30f, 30f);
+//         rodRotation.y = Mathf.Clamp(rodRotation.y, -30f, 30f);
+//         rodRotation.z = Mathf.Clamp(rodRotation.z, -30f, 30f);
+
+//         if (rodRotation != lastRotation)
+//         {
+//             FishingRod.localRotation = Quaternion.Euler(-rodRotation.y, 0, -rodRotation.x);
+//             Debug.Log($"🎮 Rod Moved: {FishingRod.localRotation.eulerAngles}");
+//             lastRotation = rodRotation;
+//         }
+//     }
+// }
+

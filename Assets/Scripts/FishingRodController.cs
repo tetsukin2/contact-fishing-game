@@ -4,7 +4,8 @@ using UnityEngine;
 public class FishingRodController : MonoBehaviour
 {
     [SerializeField] private Rigidbody hookRigidbody;  // Assign Hook Rigidbody in Inspector
-    [SerializeField] private Transform rodTip;  // Assign Rod Tip in Inspector
+    [SerializeField] private FishingLineController fishingLineController;  // Assign Fishing Line Controller in Inspector
+
     public float castForce = 10f;  // Adjust casting strength
     public float RotationTriggerThreshold = 15f;  // Rotation threshold in degrees
     public float TriggerTimeWindow = 0.5f;  // Time window to detect rotation (in seconds)
@@ -34,7 +35,7 @@ public class FishingRodController : MonoBehaviour
         }
 
         // Reel in when holding Left Click
-        if (Input.GetMouseButton(0))
+        if (InputDeviceManager.joystickPressed)
         {
             ReelIn();
         }
@@ -102,15 +103,17 @@ public class FishingRodController : MonoBehaviour
     void CastLine()
     {
         // Apply velocity to the hook based on the rod tip's forward direction
-        hookRigidbody.velocity = rodTip.forward * castForce;
-        hookRigidbody.drag = 0.5f;  // Lower drag to allow a longer cast
+        fishingLineController.SetLimitedLength(false);
+        hookRigidbody.velocity = transform.forward * castForce;
+        hookRigidbody.drag = 0.1f;  // Lower drag to allow a longer cast
         Debug.Log("Casting Fishing Line!");
     }
 
     void ReelIn()
     {
-        Vector3 pullDirection = (rodTip.position - hookRigidbody.position).normalized;
-        hookRigidbody.AddForce(0.5f * castForce * pullDirection, ForceMode.Acceleration);
+        //Vector3 pullDirection = (rodTip.position - hookRigidbody.position).normalized;
+        //hookRigidbody.AddForce(0.5f * castForce * pullDirection, ForceMode.Acceleration);
+        fishingLineController.SetLimitedLength(true);
         Debug.Log("Reeling In!");
     }
 

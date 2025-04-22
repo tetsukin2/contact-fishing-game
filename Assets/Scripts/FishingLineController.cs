@@ -2,11 +2,17 @@ using UnityEngine;
 
 public class FishingLineController : MonoBehaviour
 {
-    public Transform rodTip;  // Starting point
-    public Transform hook;  // End point
+    [SerializeField] private Transform rodTip;  // Starting point
+    [SerializeField] private Transform hook;  // End point
+
+    [SerializeField] private int segments = 20;  // More segments = smoother line
+    [SerializeField] private float slack = 0.3f;  // Controls how much the line hangs
+    [SerializeField] private float maxLineLength = 5f;  // Maximum allowed distance between rod tip and hook
+    [SerializeField] private float easingSpeed = 2f;  // Speed of easing when transitioning to limited mode
+
+    private bool isLineLimited = false;  // Whether the line length is limited
+    private bool isEasing = false;  // Whether the hook is currently easing toward the limit
     private LineRenderer lineRenderer;
-    public int segments = 20;  // More segments = smoother line
-    public float slack = 0.3f;  // Controls how much the line hangs
 
     void Start()
     {
@@ -20,7 +26,70 @@ public class FishingLineController : MonoBehaviour
     {
         if (rodTip != null && hook != null)
         {
+            if (isLineLimited)
+            {
+                if (isEasing)
+                {
+                    EaseHookToLimit();
+                }
+                else
+                {
+                    EnforceLineLength();
+                }
+            }
+
             UpdateFishingLine();
+        }
+    }
+
+    // Method to toggle the line length limitation
+    public void SetLimitedLength(bool limit)
+    {
+        if (limit && !isLineLimited)
+        {
+            // Start easing when switching to limited mode
+            isEasing = true;
+        }
+        isLineLimited = limit;
+    }
+
+    // Smoothly move the hook toward the maximum line length
+    void EaseHookToLimit()
+    {
+        Vector3 direction = hook.position - rodTip.position;
+        float distance = direction.magnitude;
+
+        if (distance > maxLineLength)
+        {
+            // Calculate the target position at the maximum line length
+            Vector3 targetPosition = rodTip.position + direction.normalized * maxLineLength;
+
+            // Move the hook toward the target position using Lerp for easing
+            hook.position = Vector3.Lerp(hook.position, targetPosition, Time.deltaTime * easingSpeed);
+
+            // Stop easing if the hook is close enough to the target position
+            if (Vector3.Distance(hook.position, targetPosition) < 0.01f)
+            {
+                isEasing = false;
+            }
+        }
+        else
+        {
+            // Stop easing if the hook is already within the limit
+            isEasing = false;
+        }
+    }
+
+    // Enforce the maximum line length by clamping the hook's position
+    void EnforceLineLength()
+    {
+        Vector3 direction = hook.position - rodTip.position;
+        float distance = direction.magnitude;
+
+        if (distance > maxLineLength)
+        {
+            // Clamp the hook's position to the maximum line length
+            hook.position = rodTip.position + direction.normalized * maxLineLength;
         }
     }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UnityMainThreadDispatcher : MonoBehaviour
 {
-    private static readonly Queue<Action> _executionQueue = new Queue<Action>();
+    private static readonly Queue<Action> _executionQueue = new();
 
     private static UnityMainThreadDispatcher _instance;
 
@@ -12,7 +12,7 @@ public class UnityMainThreadDispatcher : MonoBehaviour
     {
         if (_instance == null)
         {
-            Debug.LogError("🚨 UnityMainThreadDispatcher is not found in the scene. Please add it manually.");
+            Debug.LogError("UnityMainThreadDispatcher not found in the scene.");
         }
         return _instance;
     }
@@ -21,12 +21,12 @@ public class UnityMainThreadDispatcher : MonoBehaviour
     {
         if (_instance == null)
         {
-            _instance = this; // ✅ Assign instance on Awake()
-            DontDestroyOnLoad(gameObject); // ✅ Ensure it persists across scenes
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject); // ✅ Prevent duplicates
+            Destroy(gameObject);
         }
     }
 

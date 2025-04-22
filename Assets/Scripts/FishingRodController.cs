@@ -1,10 +1,11 @@
 using UnityEngine;
 
-public class FishingCastController : MonoBehaviour
+public class FishingRodController : MonoBehaviour
 {
     public Rigidbody hookRigidbody;  // Assign Hook Rigidbody in Inspector
     public Transform rodTip;  // Assign Rod Tip in Inspector
     public float castForce = 10f;  // Adjust casting strength
+    public float CastTriggerDegrees = 10f;
     private Vector3 previousPosition;
     private Vector3 rodVelocity;
 

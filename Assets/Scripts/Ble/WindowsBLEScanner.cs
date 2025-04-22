@@ -235,7 +235,7 @@ public class WindowsBLEScanner : MonoBehaviour
     string message = $"<{val1:D3}{val2:D3}>"; // "<255255>" - 8 chars
     byte[] payload = Encoding.ASCII.GetBytes(message); // Should be exactly 8 bytes
 
-    BleApi.BLEData bleData = new BleApi.BLEData
+    BleApi.BLEData bleData = new()
     {
         buf = new byte[512],
         size = (short)payload.Length,
@@ -254,9 +254,8 @@ public class WindowsBLEScanner : MonoBehaviour
         Debug.Log("✅ Braille ASCII data sent successfully.");
     else
     {
-        BleApi.ErrorMessage error;
-        BleApi.GetError(out error);
-        Debug.LogError("❌ Failed to send Braille data: " + error.msg);
+            BleApi.GetError(out BleApi.ErrorMessage error);
+            Debug.LogError("❌ Failed to send Braille data: " + error.msg);
     }
 }
 

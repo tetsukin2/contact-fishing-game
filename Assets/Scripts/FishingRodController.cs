@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class FishingRodController : MonoBehaviour
 {
-    public Rigidbody hookRigidbody;  // Assign Hook Rigidbody in Inspector
-    public Transform rodTip;  // Assign Rod Tip in Inspector
+    [SerializeField] private Rigidbody hookRigidbody;  // Assign Hook Rigidbody in Inspector
+    [SerializeField] private Transform rodTip;  // Assign Rod Tip in Inspector
     public float castForce = 10f;  // Adjust casting strength
     public float RotationTriggerThreshold = 15f;  // Rotation threshold in degrees
     public float TriggerTimeWindow = 0.5f;  // Time window to detect rotation (in seconds)
@@ -85,7 +85,7 @@ public class FishingRodController : MonoBehaviour
                     break;
             }
 
-            if (cumulativeRotation >= angleRadians)
+            if ((angle < 0 && cumulativeRotation <= angleRadians) || (angle >= 0 && cumulativeRotation >= angleRadians))
             {
                 return true;  // Threshold reached  
             }

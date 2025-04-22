@@ -361,9 +361,8 @@ GameObject:
   - component: {fileID: 387807541}
   - component: {fileID: 387807540}
   - component: {fileID: 387807539}
-  - component: {fileID: 387807545}
   m_Layer: 0
-  m_Name: Hook
+  m_Name: Bobber
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -499,31 +498,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 387807538}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.939725, y: 2.8855653, z: -1.8604918}
+  m_LocalRotation: {x: -0.2588191, y: -0, z: -0, w: 0.9659258}
+  m_LocalPosition: {x: 2.439725, y: 0.79289377, z: -1.797798}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 673116353}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &387807545
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 387807538}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47c86bc7b46bf3b44884d41a9da77fe4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hookRigidbody: {fileID: 387807540}
-  rodTip: {fileID: 913585993}
-  castForce: 10
-  RotationTriggerThreshold: 15
-  TriggerTimeWindow: 0.5
-  RotationAxis: {x: 1, y: 0, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -732,8 +713,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 673116353}
+  - component: {fileID: 673116355}
+  - component: {fileID: 673116354}
   m_Layer: 0
-  m_Name: FishingRodHolder
+  m_Name: FishingRod
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -753,9 +736,43 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1813894666}
-  - {fileID: 913585993}
+  - {fileID: 1579834104}
+  - {fileID: 387807544}
   m_Father: {fileID: 638019827}
   m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
+--- !u!114 &673116354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673116352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47c86bc7b46bf3b44884d41a9da77fe4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hookRigidbody: {fileID: 387807540}
+  rodTip: {fileID: 913585993}
+  castForce: 10
+  RotationTriggerThreshold: 15
+  TriggerTimeWindow: 0.5
+  RotationAxis: {x: 1, y: 0, z: 0}
+--- !u!114 &673116355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673116352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 656b3406c7b124e43a503c26843e10f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FishingRod: {fileID: 1813894666}
+  sensitivity: 100
+  smoothFactor: 0.1
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,11 +848,11 @@ Transform:
   m_GameObject: {fileID: 913585992}
   serializedVersion: 2
   m_LocalRotation: {x: -0.2588191, y: -0, z: -0, w: 0.9659258}
-  m_LocalPosition: {x: -0.008, y: 2.979, z: 0.005}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.08000016, y: 0.98950005, z: 0.049999952}
+  m_LocalScale: {x: 10, y: 0.6557378, z: 1.7391298}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 673116353}
+  m_Father: {fileID: 1813894666}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &913585994
 Rigidbody:
@@ -966,53 +983,6 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 10, y: 1, z: 10}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1261081714
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1261081716}
-  - component: {fileID: 1261081715}
-  m_Layer: 0
-  m_Name: ArduinoController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1261081715
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1261081714}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 656b3406c7b124e43a503c26843e10f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FishingRod: {fileID: 673116353}
-  sensitivity: 100
-  smoothFactor: 0.1
---- !u!4 &1261081716
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1261081714}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1172,12 +1142,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1579834101}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.2588191, y: -0, z: -0, w: 0.9659258}
+  m_LocalPosition: {x: -1.5, y: -0.77583283, z: 1.256218}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 673116353}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1673678346
 GameObject:
@@ -1236,7 +1206,7 @@ GameObject:
   - component: {fileID: 1813894668}
   - component: {fileID: 1813894667}
   m_Layer: 0
-  m_Name: FishingRod
+  m_Name: Rod
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1254,7 +1224,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 0.1, y: 2, z: 0.1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 913585993}
   m_Father: {fileID: 673116353}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &1813894667
@@ -1370,9 +1341,6 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 638019827}
   - {fileID: 923297977}
-  - {fileID: 1579834104}
-  - {fileID: 387807544}
-  - {fileID: 1261081716}
   - {fileID: 1673678348}
   - {fileID: 354291446}
   - {fileID: 300943665}

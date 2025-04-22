@@ -521,6 +521,9 @@ MonoBehaviour:
   hookRigidbody: {fileID: 387807540}
   rodTip: {fileID: 913585993}
   castForce: 10
+  RotationTriggerThreshold: 15
+  TriggerTimeWindow: 0.5
+  RotationAxis: {x: 1, y: 0, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1187,7 +1190,7 @@ GameObject:
   - component: {fileID: 1673678348}
   - component: {fileID: 1673678347}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: InputDeviceManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1202,7 +1205,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1673678346}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eaabc9e424c94904a9a712ab229c6a83, type: 3}
+  m_Script: {fileID: 11500000, guid: 01d15850227cca94cabafb3a14796084, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &1673678348
@@ -1366,10 +1369,10 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 638019827}
-  - {fileID: 1261081716}
   - {fileID: 923297977}
   - {fileID: 1579834104}
   - {fileID: 387807544}
+  - {fileID: 1261081716}
   - {fileID: 1673678348}
   - {fileID: 354291446}
   - {fileID: 300943665}

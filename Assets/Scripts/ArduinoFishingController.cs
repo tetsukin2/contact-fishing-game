@@ -10,15 +10,15 @@ public class ArduinoFishingController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!WindowsBLEScanner.IsConnected) return;
+        if (!InputDeviceManager.IsConnected) return;
         ReadIMUData();
     }
 
     void ReadIMUData()
     {
-        Vector3 imuData = WindowsBLEScanner.imuRotation;
+        Vector3 imuData = InputDeviceManager.IMURotation;
 
-        rodRotation.x = Mathf.SmoothDamp(rodRotation.x, imuData.x * sensitivity, ref velocity.x, smoothFactor);
+        rodRotation.x = Mathf.SmoothDamp(rodRotation.x, -imuData.x * sensitivity, ref velocity.x, smoothFactor);
         rodRotation.y = Mathf.SmoothDamp(rodRotation.y, imuData.y * sensitivity, ref velocity.y, smoothFactor);
         rodRotation.z = Mathf.SmoothDamp(rodRotation.z, imuData.z * sensitivity, ref velocity.z, smoothFactor);
 

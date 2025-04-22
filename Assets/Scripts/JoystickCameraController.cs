@@ -9,7 +9,7 @@ public class JoystickCameraController : MonoBehaviour
 
     void Update()
     {
-        Vector2 input = WindowsBLEScanner.joystickInput;
+        Vector2 input = InputDeviceManager.joystickInput;
 
         float horizontal = input.x;
         float vertical = input.y;

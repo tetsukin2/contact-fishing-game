@@ -6,22 +6,22 @@ public class BrailleTestTrigger : MonoBehaviour
 
     void Update()
     {
-        if (!WindowsBLEScanner.IsConnected) return;
+        if (!InputDeviceManager.IsConnected) return;
 
         // Only send when state changes
-        if (WindowsBLEScanner.joystickPressed != lastPressedState)
+        if (InputDeviceManager.joystickPressed != lastPressedState)
         {
-            lastPressedState = WindowsBLEScanner.joystickPressed;
+            lastPressedState = InputDeviceManager.joystickPressed;
 
-            if (WindowsBLEScanner.joystickPressed)
+            if (InputDeviceManager.joystickPressed)
             {
                 Debug.Log("🧪 Thumbstick Pressed → Sending <255255>");
-                WindowsBLEScanner.SendBrailleASCII(255, 255);
+                InputDeviceManager.SendBrailleASCII(255, 255);
             }
             else
             {
                 Debug.Log("🧪 Thumbstick Released → Sending <000000>");
-                WindowsBLEScanner.SendBrailleASCII(0, 0);
+                InputDeviceManager.SendBrailleASCII(0, 0);
             }
         }
     }

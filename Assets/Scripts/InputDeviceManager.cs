@@ -4,29 +4,31 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
-public class WindowsBLEScanner : MonoBehaviour
+public class InputDeviceManager : MonoBehaviour
 {
+    public enum RotationAxis { x, y, z }
+
     private const string TARGET_DEVICE_NAME = "FishingRodIMU";
 
     private const string IMU_SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214"; 
     private const string IMU_CHARACTERISTIC_UUID = "19b10001-e8f2-537e-4f6c-d104768a1214"; 
 
-    private const string JOY_SERVICE_UUID = "19b20000-e8f2-537e-4f6c-d104768a1214";
+    //private const string JOY_SERVICE_UUID = "19b20000-e8f2-537e-4f6c-d104768a1214";
     private const string JOY_CHARACTERISTIC_UUID = "19b20001-e8f2-537e-4f6c-d104768a1214";
 
     private const string BRAILLE_SERVICE_UUID = "19b30000-e8f2-537e-4f6c-d104768a1214";
     private const string BRAILLE_CHARACTERISTIC_UUID = "19b30001-e8f2-537e-4f6c-d104768a1214";
 
     private static string targetDeviceId = null;
-    private string imuCharUUID = null;
-    private string joyCharUUID = null;
+    //private string imuCharUUID = null;
+    //private string joyCharUUID = null;
     private static string brailleCharUUID = null;
 
 
     private Thread scanThread;
     private bool isScanning = true;
 
-    public static Vector3 imuRotation = Vector3.zero; 
+    private static Vector3 imuRotation = Vector3.zero; 
     public static Vector2 joystickInput = Vector2.zero;
     public static bool joystickPressed = false;
     public static bool IsConnected = false;
@@ -34,6 +36,7 @@ public class WindowsBLEScanner : MonoBehaviour
     private static Vector2 joystickCenter = Vector2.zero;
     private static bool calibrated = false;
 
+    public static Vector3 IMURotation => imuRotation;
 
     void Start()
     {

@@ -4,6 +4,7 @@ public class FishingLineController : MonoBehaviour
 {
     [SerializeField] private Transform rodTip;  // Starting point
     [SerializeField] private Transform hook;  // End point
+    [SerializeField] private Rigidbody hookRigidbody;  // Rigidbody of the hook
 
     [SerializeField] private int segments = 20;  // More segments = smoother line
     [SerializeField] private float slack = 0.3f;  // Controls how much the line hangs
@@ -110,5 +111,12 @@ public class FishingLineController : MonoBehaviour
 
             lineRenderer.SetPosition(i, middle);
         }
+    }
+
+    public void Cast(float castForce, float drag)
+    {
+        SetLimitedLength(false);
+        hookRigidbody.velocity = transform.forward * castForce;
+        hookRigidbody.drag = drag;  // Lower drag to allow a longer cast
     }
 }

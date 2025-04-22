@@ -13,6 +13,7 @@ public class FishingRodController : MonoBehaviour
 
     private Queue<RotationData> rotationHistory = new();  // Stores rotation changes with timestamps
     private Vector3 previousRotation;  // Store the previous rotation of the IMU device
+    private float lastMeasuredAngle = 0f;  // Last measured angle from trigger
 
     void Start()
     {
@@ -88,6 +89,7 @@ public class FishingRodController : MonoBehaviour
 
             if ((angle < 0 && cumulativeRotation <= angleRadians) || (angle >= 0 && cumulativeRotation >= angleRadians))
             {
+                lastMeasuredAngle = cumulativeRotation;  // Store the last measured angle
                 return true;  // Threshold reached  
             }
         }
@@ -103,9 +105,7 @@ public class FishingRodController : MonoBehaviour
     void CastLine()
     {
         // Apply velocity to the hook based on the rod tip's forward direction
-        fishingLineController.SetLimitedLength(false);
-        hookRigidbody.velocity = transform.forward * castForce;
-        hookRigidbody.drag = 0.1f;  // Lower drag to allow a longer cast
+        fishingLineController.Cast(castForce * Mathf.Abs(lastMeasuredAngle), 0.1f);
         Debug.Log("Casting Fishing Line!");
     }
 

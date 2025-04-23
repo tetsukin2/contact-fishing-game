@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FishingRodInputManager : MonoBehaviour
+public class FishingRodInputHelper : MonoBehaviour
 {
     // Helper class to store rotation data
     private class RotationData
@@ -11,22 +11,20 @@ public class FishingRodInputManager : MonoBehaviour
     }
 
     [SerializeField] private FishingManager fishingStateManager;  // Assign Hook Rigidbody in Inspector
-    [SerializeField] private FishingLineController fishingLineController;  // Assign Fishing Line Controller in Inspector
+    [SerializeField] private FishingBobber fishingBobber;  // Assign Fishing Line Controller in Inspector
 
-    public float castForce = 10f;  // Adjust casting strength
-    public float RotationTriggerThreshold = 15f;  // Rotation threshold in degrees
-    public float TriggerTimeWindow = 0.5f;  // Time window to detect rotation (in seconds)
+    public float InputReadWindow = 0.5f;  // Time window to detect rotation (in seconds)
 
     private Queue<RotationData> rotationHistory = new();  // Stores rotation changes with timestamps
     private Vector3 previousRotation;  // Store the previous rotation of the IMU device
-    private float lastMeasuredAngle = 0f;  // Last measured angle from trigger
+    public float LastMeasuredAngle { get; private set; } = 0f; // Last measured angle from trigger
 
     void Start()
     {
-        // Initialize the fishing state manager
+        // Setup the fishing state manager
         fishingStateManager.TransitionToState(fishingStateManager.CastingState);
 
-        // Initialize the previous rotation with the current IMU rotation
+        // Setup the previous rotation with the current IMU rotation
         previousRotation = InputDeviceManager.IMURotation;
     }
 
@@ -38,18 +36,6 @@ public class FishingRodInputManager : MonoBehaviour
         TrackRotation();
 
         //Debug.Log(InputDeviceManager.IMURotation);
-
-        // Check if the rotation change reaches the trigger threshold within the time window
-        if (HasRotatedByDegrees(-RotationTriggerThreshold, InputDeviceManager.RotationAxis.y))
-        {
-            CastLine();
-        }
-
-        // Reel in when holding Left Click
-        if (InputDeviceManager.joystickPressed)
-        {
-            ReelIn();
-        }
     }
 
     void TrackRotation()
@@ -68,7 +54,7 @@ public class FishingRodInputManager : MonoBehaviour
         });
 
         // Remove old entries outside the time window
-        while (rotationHistory.Count > 0 && Time.time - rotationHistory.Peek().Timestamp > TriggerTimeWindow)
+        while (rotationHistory.Count > 0 && Time.time - rotationHistory.Peek().Timestamp > InputReadWindow)
         {
             rotationHistory.Dequeue();
         }
@@ -99,7 +85,7 @@ public class FishingRodInputManager : MonoBehaviour
 
             if ((angle < 0 && cumulativeRotation <= angleRadians) || (angle >= 0 && cumulativeRotation >= angleRadians))
             {
-                lastMeasuredAngle = cumulativeRotation;  // Store the last measured angle
+                LastMeasuredAngle = cumulativeRotation;  // Store the last measured angle
                 return true;  // Threshold reached  
             }
         }
@@ -107,21 +93,9 @@ public class FishingRodInputManager : MonoBehaviour
         return false;  // Threshold not reached  
     }
 
-    void CastLine()
+    public void ClearRotationHistory()
     {
-        rotationHistory.Clear();
-        // Apply velocity to the hook based on the rod tip's forward direction
-        fishingLineController.Cast(castForce * Mathf.Abs(lastMeasuredAngle), 0.1f);
-        Debug.Log("Casting Fishing Line!");
+        rotationHistory.Clear();  // Clear the rotation history
     }
 
-    void ReelIn()
-    {
-        //Vector3 pullDirection = (rodTip.position - hookRigidbody.position).normalized;
-        //hookRigidbody.AddForce(0.5f * castForce * pullDirection, ForceMode.Acceleration);
-        fishingLineController.SetLimitedLength(true);
-        Debug.Log("Reeling In!");
-    }
-
-    
 }

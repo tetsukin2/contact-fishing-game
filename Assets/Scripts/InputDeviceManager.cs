@@ -220,7 +220,7 @@ public class InputDeviceManager : MonoBehaviour
                     joystickInput = adjustedInput;
                     joystickPressed = (sw == 1);
 
-                    Debug.Log($"🎮 Joystick: ({normX:F2}, {normY:F2}), Pressed: {joystickPressed}");
+                    //Debug.Log($"🎮 Joystick: ({normX:F2}, {normY:F2}), Pressed: {joystickPressed}");
                 }
             }
             yield return new WaitForSeconds(0.01f);
@@ -258,7 +258,7 @@ public class InputDeviceManager : MonoBehaviour
     else
     {
             BleApi.GetError(out BleApi.ErrorMessage error);
-            Debug.LogError("❌ Failed to send Braille data: " + error.msg);
+            //Debug.LogError("❌ Failed to send Braille data: " + error.msg);
     }
 }
 

@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Fishing Rod Object rotation based on IMU data.
+/// </summary>
 public class FishingRodMovement : MonoBehaviour
 {
     public Transform FishingRod;

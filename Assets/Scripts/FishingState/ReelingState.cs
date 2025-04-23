@@ -12,9 +12,10 @@ public class ReelingState : FishingState
     public override void Update()
     {
         // Example: Transition to IdleState after reeling
-        if (Input.GetKeyDown(KeyCode.I))
+        if (InputDeviceManager.joystickPressed)
         {
-            _fishingManager.TransitionToState(new IdleState(_fishingManager));
+            fishingManager.ReelIn();
+            fishingManager.TransitionToState(fishingManager.CastingState);
         }
     }
 

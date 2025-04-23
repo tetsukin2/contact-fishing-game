@@ -14,7 +14,7 @@ public class BaitPreparationState : FishingState
         // Example: Transition to WaitingForBiteState after bait preparation
         if (Input.GetKeyDown(KeyCode.W))
         {
-            _fishingManager.TransitionToState(new WaitingForBiteState(_fishingManager));
+            fishingManager.TransitionToState(new WaitingForBiteState(fishingManager));
         }
     }
 

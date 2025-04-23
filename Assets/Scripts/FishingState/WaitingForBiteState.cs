@@ -14,7 +14,7 @@ public class WaitingForBiteState : FishingState
         // Example: Transition to ReelingState when a bite is detected
         if (Input.GetKeyDown(KeyCode.R))
         {
-            _fishingManager.TransitionToState(new ReelingState(_fishingManager));
+            fishingManager.TransitionToState(new ReelingState(fishingManager));
         }
     }
 

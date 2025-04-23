@@ -4,6 +4,19 @@ public class CastingState : FishingState
 {
     public CastingState(FishingManager fishingManager) : base(fishingManager) { }
 
+    private bool _hasCast;
+
+    public override void Setup()
+    {
+        _hasCast = false;
+        fishingManager.FishingBobber.HasHitWater.AddListener(() => {
+            if (_hasCast)
+            {
+                fishingManager.TransitionToState(fishingManager.ReelingState);
+                _hasCast = false;
+            }});
+    }
+
     public override void Enter()
     {
         Debug.Log("Entering Casting State");
@@ -11,10 +24,11 @@ public class CastingState : FishingState
 
     public override void Update()
     {
-        // Example: Transition to BaitPreparationState after casting
-        if (Input.GetKeyDown(KeyCode.B))
+        if (!_hasCast && fishingManager.InputHelper.HasRotatedByDegrees(-fishingManager.RotationTriggerThreshold, InputDeviceManager.RotationAxis.y))
         {
-            _fishingManager.TransitionToState(new BaitPreparationState(_fishingManager));
+            _hasCast = true;
+            fishingManager.CastLine();
+            //fishingManager.TransitionToState(fishingManager.ReelingState);
         }
     }
 

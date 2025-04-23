@@ -4,11 +4,16 @@ using UnityEngine;
 
 public abstract class FishingState
 {
-    protected FishingManager _fishingManager;
+    protected FishingManager fishingManager;
 
     public FishingState(FishingManager fishingManager)
     {
-        _fishingManager = fishingManager;
+        this.fishingManager = fishingManager;
+    }
+
+    public virtual void Setup()
+    {
+        // Setup any state-specific variables or settings here
     }
 
     // Called when entering the state

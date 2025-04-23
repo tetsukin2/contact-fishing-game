@@ -1,0 +1,25 @@
+using UnityEngine;
+
+public class WaitingForBiteState : FishingState
+{
+    public WaitingForBiteState(FishingManager fishingManager) : base(fishingManager) { }
+
+    public override void Enter()
+    {
+        Debug.Log("Entering Waiting For Bite State");
+    }
+
+    public override void Update()
+    {
+        // Example: Transition to ReelingState when a bite is detected
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            _fishingManager.TransitionToState(new ReelingState(_fishingManager));
+        }
+    }
+
+    public override void Exit()
+    {
+        Debug.Log("Exiting Waiting For Bite State");
+    }
+}

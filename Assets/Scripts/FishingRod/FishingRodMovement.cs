@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ArduinoFishingController : MonoBehaviour
+public class FishingRodMovement : MonoBehaviour
 {
     public Transform FishingRod;
     public float sensitivity = 100f;

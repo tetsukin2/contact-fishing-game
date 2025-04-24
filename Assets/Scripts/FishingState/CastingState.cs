@@ -6,13 +6,14 @@ public class CastingState : FishingState
 
     private bool _hasCast;
 
+    // Hook listener for bobber hitting water only once
     public override void Setup()
     {
         _hasCast = false;
         fishingManager.FishingBobber.HasHitWater.AddListener(() => {
             if (_hasCast)
             {
-                fishingManager.TransitionToState(fishingManager.ReelingState);
+                fishingManager.TransitionToState(fishingManager.WaitingForBiteState);
                 _hasCast = false;
             }});
     }

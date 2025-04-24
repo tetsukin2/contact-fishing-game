@@ -21,9 +21,6 @@ public class FishingRodInputHelper : MonoBehaviour
 
     void Start()
     {
-        // Setup the fishing state manager
-        fishingStateManager.TransitionToState(fishingStateManager.CastingState);
-
         // Setup the previous rotation with the current IMU rotation
         previousRotation = InputDeviceManager.IMURotation;
     }

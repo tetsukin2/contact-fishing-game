@@ -21,6 +21,8 @@ public class FishingRodMovement : MonoBehaviour
     {
         Vector3 imuData = InputDeviceManager.IMURotation;
 
+        //Debug.Log(imuData);
+
         rodRotation.x = Mathf.SmoothDamp(rodRotation.x, -imuData.x * sensitivity, ref velocity.x, smoothFactor);
         rodRotation.y = Mathf.SmoothDamp(rodRotation.y, imuData.y * sensitivity, ref velocity.y, smoothFactor);
         rodRotation.z = Mathf.SmoothDamp(rodRotation.z, imuData.z * sensitivity, ref velocity.z, smoothFactor);

@@ -10,12 +10,10 @@ public class FishingManager : MonoBehaviour
     public float RotationTriggerThreshold = 15f;  // Rotation threshold in degrees
 
     [Space]
-
     [Header("Casting")]
     public float CastForce = 10f;  // Adjust casting strength
 
     [Space]
-
     [Header("WaitingForBite")]
     public float FishBiteWaitDuration = 2f;
 
@@ -25,14 +23,17 @@ public class FishingManager : MonoBehaviour
     public int ReelProgressAmount = 5;
     public GameObject _reelGUI;
     [SerializeField] private Slider _reelProgressSlider;
+    public List<ReelingState.ReelActionName> ReelActionSequence; //Sequence of actions to follow
+
+    [Space]
+
+    [SerializeField] private FishingBobber _fishingBobber; // Reference to the FishingBobber script
+    [SerializeField] private FishingRodInputHelper _inputHelper;
 
     public BaitPreparationState BaitPreparationState { get; private set; }
     public CastingState CastingState { get; private set; }
     public WaitingForBiteState WaitingForBiteState { get; private set; }
     public ReelingState ReelingState { get; private set; }
-
-    [SerializeField] private FishingBobber _fishingBobber; // Reference to the FishingBobber script
-    [SerializeField] private FishingRodInputHelper _inputHelper;
 
     private FishingState _currentState;
 
@@ -51,11 +52,8 @@ public class FishingManager : MonoBehaviour
     void Start()
     {
         CastingState.Setup();
-
-        //setup reeling progress bar
-        _reelProgressSlider.wholeNumbers = true;
-        _reelProgressSlider.maxValue = ReelTotalProgress;
-        _reelProgressSlider.value = 0f; // Initialize the slider value
+        ReelingState.Setup();
+        StopReel(); // Hide the reel GUI at the start
 
         TransitionToState(CastingState);
     }
@@ -85,19 +83,34 @@ public class FishingManager : MonoBehaviour
     public void ReelIn()
     {
         _fishingBobber.Reel();
+
+        Fish caughtFish = FishLootTable.Instance.GetFishFromTable();
+
         Debug.Log("Reeling In!");
     }
 
-    public void ProgressReel()
+    public void StartReel()
     {
-        // Update the slider value
-        _reelProgressSlider.value = Mathf.Min(_reelProgressSlider.value + ReelProgressAmount, _reelProgressSlider.maxValue);
-        // Check if the reel progress is complete
-        if (_reelProgressSlider.value >= ReelTotalProgress)
-        {
-            Debug.Log("Reel Progress Complete!");
-            _reelProgressSlider.value = 0f; // Reset the slider value
-            TransitionToState(CastingState); // Transition back to casting state
-        }
+        _reelGUI.SetActive(true); // Show the reel GUI
+        SetupReelBar(); // Setup the reel progress bar
+    }
+
+    public void StopReel()
+    {
+        _reelGUI.SetActive(false); // Hide the reel GUI
+        _reelProgressSlider.value = 0f; // Reset the slider value
+    }
+
+    private void SetupReelBar()
+    {
+        _reelProgressSlider.wholeNumbers = true;
+        _reelProgressSlider.maxValue = ReelTotalProgress;
+        _reelProgressSlider.value = 0f; // Initialize the slider value
+    }
+
+    // Set the progress of the reel in slider
+    public void SetReelProgress(int value)
+    {
+        _reelProgressSlider.value = Mathf.Min(_reelProgressSlider.value + value, _reelProgressSlider.maxValue);
     }
 }

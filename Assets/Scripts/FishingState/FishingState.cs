@@ -1,20 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public abstract class FishingState
 {
     protected FishingManager fishingManager;
+
+    // Accessor if any other class needs to access the fishing manager
+    public FishingManager FishingManager => fishingManager;
 
     public FishingState(FishingManager fishingManager)
     {
         this.fishingManager = fishingManager;
     }
 
-    public virtual void Setup()
-    {
-        // Setup any state-specific variables or settings here
-    }
+    // Setup any state-specific variables or settings here
+    public virtual void Setup() { }
 
     // Called when entering the state
     public virtual void Enter() { }

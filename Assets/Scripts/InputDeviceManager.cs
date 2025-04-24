@@ -178,7 +178,9 @@ public class InputDeviceManager : MonoBehaviour
                     short y = BitConverter.ToInt16(data.buf, 2);
                     short z = BitConverter.ToInt16(data.buf, 4);
 
+                    //Debug.Log($"Raw IMU Data: X={x}, Y={y}, Z={z}");
                     imuRotation = new Vector3(x / 1000f, y / 1000f, z / 1000f);
+                    //Debug.Log($"Processed IMU Rotation: {imuRotation}");
                 }
             }
             yield return new WaitForSeconds(0.01f);
@@ -220,7 +222,7 @@ public class InputDeviceManager : MonoBehaviour
                     joystickInput = adjustedInput;
                     joystickPressed = (sw == 1);
 
-                    //Debug.Log($"🎮 Joystick: ({normX:F2}, {normY:F2}), Pressed: {joystickPressed}");
+                    //Debug.Log($"Joystick: ({normX:F2}, {normY:F2}), Pressed: {joystickPressed}");
                 }
             }
             yield return new WaitForSeconds(0.01f);

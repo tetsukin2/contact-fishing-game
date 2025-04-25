@@ -30,7 +30,7 @@ public class InputDeviceManager : MonoBehaviour
     private Thread scanThread;
     private bool isScanning = true;
 
-    private static Vector3 imuRotation = Vector3.zero; 
+    private static Vector3 imuRotationRaw = Vector3.zero; 
     public static Vector2 joystickInput = Vector2.zero;
     public static bool joystickPressed = false;
     public static bool IsConnected = false;
@@ -38,7 +38,10 @@ public class InputDeviceManager : MonoBehaviour
     private static Vector2 joystickCenter = Vector2.zero;
     private static bool calibrated = false;
 
-    public static Vector3 IMURotation => imuRotation;
+    /// <summary>
+    /// Returns IMU rotation in degrees
+    /// </summary>
+    public static Vector3 IMURotation => imuRotationRaw * 90f;
 
     void Start()
     {
@@ -181,8 +184,8 @@ public class InputDeviceManager : MonoBehaviour
                     short z = BitConverter.ToInt16(data.buf, 4);
 
                     //Debug.Log($"Raw IMU Data: X={x}, Y={y}, Z={z}");
-                    imuRotation = new Vector3(x / 1000f, y / 1000f, z / 1000f);
-                    if (debugMode) Debug.Log($"Processed IMU Rotation: {imuRotation}");
+                    imuRotationRaw = new Vector3(x / 1000f, y / 1000f, z / 1000f);
+                    if (debugMode) Debug.Log($"Processed IMU Rotation: {imuRotationRaw}");
                 }
             }
             yield return new WaitForSeconds(0.01f);
@@ -232,40 +235,44 @@ public class InputDeviceManager : MonoBehaviour
     }
     
     public static void SendBrailleASCII(int val1, int val2)
-{
-    if (!IsConnected)
     {
-        Debug.LogWarning("🟡 Not connected to BLE.");
-        return;
+        if (!IsConnected)
+        {
+            Debug.LogWarning("🟡 Not connected to BLE.");
+            return;
+        }
+
+        string message = $"<{val1:D3}{val2:D3}>"; // "<255255>" - 8 chars
+        byte[] payload = Encoding.ASCII.GetBytes(message); // Should be exactly 8 bytes
+
+        BleApi.BLEData bleData = new()
+        {
+            buf = new byte[512],
+            size = (short)payload.Length,
+            deviceId = targetDeviceId,
+            serviceUuid = BRAILLE_SERVICE_UUID,
+            characteristicUuid = brailleCharUUID
+        };
+
+        Array.Copy(payload, bleData.buf, payload.Length);
+
+        Debug.Log($"📤 Sending ASCII Braille payload: {message}");
+        Debug.Log($"📦 Raw Payload (hex): {BitConverter.ToString(payload)}");
+
+        bool success = BleApi.SendData(in bleData, false);
+        if (success)
+            Debug.Log("✅ Braille ASCII data sent successfully.");
+        else
+        {
+                BleApi.GetError(out BleApi.ErrorMessage error);
+                //Debug.LogError("❌ Failed to send Braille data: " + error.msg);
+        }
     }
 
-    string message = $"<{val1:D3}{val2:D3}>"; // "<255255>" - 8 chars
-    byte[] payload = Encoding.ASCII.GetBytes(message); // Should be exactly 8 bytes
-
-    BleApi.BLEData bleData = new()
-    {
-        buf = new byte[512],
-        size = (short)payload.Length,
-        deviceId = targetDeviceId,
-        serviceUuid = BRAILLE_SERVICE_UUID,
-        characteristicUuid = brailleCharUUID
-    };
-
-    Array.Copy(payload, bleData.buf, payload.Length);
-
-    Debug.Log($"📤 Sending ASCII Braille payload: {message}");
-    Debug.Log($"📦 Raw Payload (hex): {BitConverter.ToString(payload)}");
-
-    bool success = BleApi.SendData(in bleData, false);
-    if (success)
-        Debug.Log("✅ Braille ASCII data sent successfully.");
-    else
-    {
-            BleApi.GetError(out BleApi.ErrorMessage error);
-            //Debug.LogError("❌ Failed to send Braille data: " + error.msg);
-    }
-}
-
+    //public static void SendBraille(BrailleData data)
+    //{
+    //    SendBrailleASCII(data.val1, data.val2);
+    //}
 
     void OnApplicationQuit()
     {

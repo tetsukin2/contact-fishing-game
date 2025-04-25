@@ -37,7 +37,7 @@ public class FishInspectionState : FishingState
             -fishingManager.RotationTriggerThreshold, InputDeviceManager.RotationAxis.x))
         {
             Debug.Log("Fish released");
-            fishingManager.TransitionToState(fishingManager.CastingState);
+            fishingManager.TransitionToState(fishingManager.BaitPreparationState);
         }
     }
 

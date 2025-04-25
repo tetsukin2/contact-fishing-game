@@ -277,7 +277,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2569ba821730b8f479e844addc664ab7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _patternInterval: 0.1
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1020,9 +1019,16 @@ MonoBehaviour:
   - Name: ControllerSideDown
     Message: 
     Sprite: {fileID: 21300000, guid: 24baff6c275d298449b90dfdd43a4d5d, type: 3}
+  - Name: ControllerFullRight
+    Message: 
+    Sprite: {fileID: 21300000, guid: 43844334500546c4b988bde7b9794d14, type: 3}
+  - Name: ControllerFullLeft
+    Message: 
+    Sprite: {fileID: 21300000, guid: 8b469f4c6caa31c4abf6489bd475cfcf, type: 3}
   - Name: JoystickRotation
     Message: 
     Sprite: {fileID: 21300000, guid: 89d570b1d83180c4ca5b13edd65224b5, type: 3}
+  BaitPreparationSteps: 4
   CastForce: 10
   FishBiteWaitDuration: 1
   ReelTotalProgress: 20
@@ -1082,6 +1088,8 @@ MonoBehaviour:
   fishingStateManager: {fileID: 638019828}
   fishingBobber: {fileID: 387807545}
   InputReadWindow: 0.5
+  AbsoluteRotationAllowance: 10
+  _debugMode: 0
 --- !u!114 &673116355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1095,7 +1103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FishingRod: {fileID: 1813894666}
-  sensitivity: 100
+  sensitivity: 1
   smoothFactor: 0.1
 --- !u!1 &787806628
 GameObject:
@@ -2336,6 +2344,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1525671238}
   m_CullTransparentMesh: 1
+--- !u!1 &1557638056
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1557638058}
+  - component: {fileID: 1557638057}
+  m_Layer: 0
+  m_Name: BraillePatternPlayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1557638057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557638056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7da5a6a1c3cc4d44990a972c307b757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PatternDelay: 0.2
+  _braillePatternSequences:
+  - {fileID: 11400000, guid: 3e64a188bff7a3242ac6355559e49950, type: 2}
+--- !u!4 &1557638058
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557638056}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.35094, y: 7.191288, z: -3.7305498}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1579834101
 GameObject:
   m_ObjectHideFlags: 0
@@ -2527,7 +2582,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01d15850227cca94cabafb3a14796084, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugMode: 1
+  debugMode: 0
 --- !u!4 &1673678348
 Transform:
   m_ObjectHideFlags: 0
@@ -3253,3 +3308,4 @@ SceneRoots:
   - {fileID: 351825629}
   - {fileID: 902536572}
   - {fileID: 354486936}
+  - {fileID: 1557638058}

@@ -13,11 +13,17 @@ public class FishingRodInputHelper : MonoBehaviour
     [SerializeField] private FishingManager fishingStateManager;  // Assign Hook Rigidbody in Inspector
     [SerializeField] private FishingBobber fishingBobber;  // Assign Fishing Line Controller in Inspector
 
+    // Public for now, these may be configured?
     public float InputReadWindow = 0.5f;  // Time window to detect rotation (in seconds)
+    public float AbsoluteRotationAllowance = 10f; // Allowable rotation deviation for absolute rotation checks
 
     private Queue<RotationData> rotationHistory = new();  // Stores rotation changes with timestamps
     private Vector3 previousRotation;  // Store the previous rotation of the IMU device
     public float LastMeasuredAngle { get; private set; } = 0f; // Last measured angle from trigger
+
+    [Space]
+    [Tooltip("Enable debug printing to console")]
+    [SerializeField] private bool _debugMode = false;  // Enable debug mode for testing
 
     // Joystick rotation tracking
     private bool _trackJoystickClockwise = true; // Flag to track clockwise rotation
@@ -41,6 +47,8 @@ public class FishingRodInputHelper : MonoBehaviour
     void Update()
     {
         if (!InputDeviceManager.IsConnected) return;
+
+        if (_debugMode) Debug.Log(InputDeviceManager.IMURotation);
 
         // Track the rotation change in the current frame
         TrackRotation();
@@ -74,10 +82,15 @@ public class FishingRodInputHelper : MonoBehaviour
         previousRotation = currentRotation;
     }
 
+    /// <summary>
+    /// Checks whether device has rotated by a certain amount
+    /// </summary>
+    /// <param name="angle">Angle in degrees</param>
+    /// <param name="axis">Axis to check</param>
+    /// <returns></returns>
     public bool HasRotatedByDegrees(float angle, InputDeviceManager.RotationAxis axis)
     {
         float cumulativeRotation = 0f;
-        float angleRadians = angle * Mathf.Deg2Rad;  // Convert angle to radians
 
         foreach (var rotationData in rotationHistory)
         {
@@ -94,7 +107,7 @@ public class FishingRodInputHelper : MonoBehaviour
                     break;
             }
 
-            if ((angle < 0 && cumulativeRotation <= angleRadians) || (angle >= 0 && cumulativeRotation >= angleRadians))
+            if ((angle < 0 && cumulativeRotation <= angle) || (angle >= 0 && cumulativeRotation >= angle))
             {
                 LastMeasuredAngle = cumulativeRotation;  // Store the last measured angle
                 return true;  // Threshold reached  
@@ -102,6 +115,29 @@ public class FishingRodInputHelper : MonoBehaviour
         }
 
         return false;  // Threshold not reached  
+    }
+
+    /// <summary>
+    /// Checks if the device is currently in a specified rotation, with an allowance.
+    /// </summary>
+    public bool IsNearRotation(float angle, InputDeviceManager.RotationAxis axis)
+    {
+        float deviceRotation = 0f;
+        switch (axis)
+        {
+            case InputDeviceManager.RotationAxis.x:
+                deviceRotation = InputDeviceManager.IMURotation.x;
+                break;
+            case InputDeviceManager.RotationAxis.y:
+                deviceRotation = InputDeviceManager.IMURotation.y;
+                break;
+            case InputDeviceManager.RotationAxis.z:
+                deviceRotation = InputDeviceManager.IMURotation.z;
+                break;
+        }
+        if (_debugMode) Debug.Log("Rotation Difference: " + Mathf.Abs(angle - deviceRotation));
+        // Check if the absolute rotation is within the threshold and matches the angle sign
+        return Mathf.Abs(angle - deviceRotation) <= AbsoluteRotationAllowance;  
     }
 
     public void ClearRotationHistory()

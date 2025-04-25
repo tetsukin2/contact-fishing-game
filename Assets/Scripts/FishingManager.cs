@@ -22,6 +22,10 @@ public class FishingManager : MonoBehaviour
     [SerializeField] private List<InputPrompt> _inputPrompts; // List of sprites for input prompts
 
     [Space]
+    [Header("Bait Preparation")]
+    public int BaitPreparationSteps = 3;
+
+    [Space]
     [Header("Casting")]
     public float CastForce = 10f;  // Adjust casting strength
 
@@ -68,7 +72,7 @@ public class FishingManager : MonoBehaviour
         ReelingState.Setup();
         StopReel(); // Hide the reel GUI at the start
 
-        TransitionToState(CastingState);
+        TransitionToState(BaitPreparationState);
     }
 
     void Update()

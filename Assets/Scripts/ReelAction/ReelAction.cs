@@ -11,6 +11,8 @@ public abstract class ReelAction
         this.reelingState = reelingState;
     }
 
+    protected FishingManager fishingManager => reelingState.FishingManager;
+
     public virtual void Enter() { }
     public virtual void Update() { }
     public virtual void Exit() { }

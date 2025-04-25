@@ -20,9 +20,17 @@ public class FishingRodInputHelper : MonoBehaviour
     public float LastMeasuredAngle { get; private set; } = 0f; // Last measured angle from trigger
 
     // Joystick rotation tracking
+    private bool _trackJoystickClockwise = true; // Flag to track clockwise rotation
     private float _previousJoystickAngle = 0f; // Previous angle of the joystick
     private float _cumulativeJoystickAngle = 0f; // Cumulative angular change
     private int _rotationCount = 0; // Number of full rotations
+
+    // So we don't undo a bunch of progress by going the other way
+    public bool TrackJoystickClockwise
+    {
+        get => _trackJoystickClockwise;
+        set => _trackJoystickClockwise = value;
+    }
 
     void Start()
     {
@@ -126,8 +134,15 @@ public class FishingRodInputHelper : MonoBehaviour
         // Check if a full rotation (360 degrees) has been completed
         if (Mathf.Abs(_cumulativeJoystickAngle) >= 360f)
         {
-            // Increment or decrement the rotation count based on the direction
-            _rotationCount += (int)Mathf.Sign(_cumulativeJoystickAngle);
+            // Determine the direction of the rotation
+            bool isClockwise = Mathf.Sign(_cumulativeJoystickAngle) < 0;
+
+            // Increment or decrement the rotation count based on the direction and TrackJoystickClockwise
+            // We don't want to undo progress by going the other way
+            if ((isClockwise && _trackJoystickClockwise) || (!isClockwise && !_trackJoystickClockwise))
+            {
+                _rotationCount += (int)Mathf.Sign(_cumulativeJoystickAngle);
+            }
 
             // Reset the cumulative angle, keeping the overflow
             _cumulativeJoystickAngle %= 360f;

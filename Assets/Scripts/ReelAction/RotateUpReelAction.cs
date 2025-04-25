@@ -6,6 +6,7 @@ public class RotateUpReelAction : ReelAction
 
     public override void Enter()
     {
+        fishingManager.ShowInputPrompt("ControllerUp");
         Debug.Log("RotateUpReelAction: Enter");
     }
 

@@ -6,8 +6,20 @@ using UnityEngine.UI;
 // FishingManager with class-based state machine
 public class FishingManager : MonoBehaviour
 {
-    [Header("General")]
+    [System.Serializable]
+    public struct InputPrompt
+    {
+        public string Name;
+        public string Message;
+        public Sprite Sprite;
+    }
+
+    [Header("Fishing Rod")]
     public float RotationTriggerThreshold = 15f;  // Rotation threshold in degrees
+    [SerializeField] private FishingBobber _fishingBobber; // Reference to the FishingBobber script
+    [SerializeField] private FishingRodInputHelper _inputHelper;
+    [SerializeField] private InputPromptPanel _inputPromptPanel; // Reference to the input prompt panel
+    [SerializeField] private List<InputPrompt> _inputPrompts; // List of sprites for input prompts
 
     [Space]
     [Header("Casting")]
@@ -21,19 +33,19 @@ public class FishingManager : MonoBehaviour
     [Header("Reeling")]
     public int ReelTotalProgress = 20;
     public int ReelProgressAmount = 5;
-    public GameObject _reelGUI;
+    [SerializeField] private GUIPanel _reelGUI;
     [SerializeField] private Slider _reelProgressSlider;
     public List<ReelingState.ReelActionName> ReelActionSequence; //Sequence of actions to follow
 
     [Space]
-
-    [SerializeField] private FishingBobber _fishingBobber; // Reference to the FishingBobber script
-    [SerializeField] private FishingRodInputHelper _inputHelper;
+    [Header("Fish Inspection")]
+    [SerializeField] private FishInspectionPanel _fishInspectionGUI;
 
     public BaitPreparationState BaitPreparationState { get; private set; }
     public CastingState CastingState { get; private set; }
     public WaitingForBiteState WaitingForBiteState { get; private set; }
     public ReelingState ReelingState { get; private set; }
+    public FishInspectionState FishInspectionState { get; private set; }
 
     private FishingState _currentState;
 
@@ -47,6 +59,7 @@ public class FishingManager : MonoBehaviour
         CastingState = new(this);
         WaitingForBiteState = new(this);
         ReelingState = new(this);
+        FishInspectionState = new(this);
     }
 
     void Start()
@@ -91,13 +104,13 @@ public class FishingManager : MonoBehaviour
 
     public void StartReel()
     {
-        _reelGUI.SetActive(true); // Show the reel GUI
+        _reelGUI.Show(true); // Show the reel GUI
         SetupReelBar(); // Setup the reel progress bar
     }
 
     public void StopReel()
     {
-        _reelGUI.SetActive(false); // Hide the reel GUI
+        _reelGUI.Show(false); // Hide the reel GUI
         _reelProgressSlider.value = 0f; // Reset the slider value
     }
 
@@ -111,6 +124,31 @@ public class FishingManager : MonoBehaviour
     // Set the progress of the reel in slider
     public void SetReelProgress(int value)
     {
-        _reelProgressSlider.value = Mathf.Min(_reelProgressSlider.value + value, _reelProgressSlider.maxValue);
+        _reelProgressSlider.value = Mathf.Min(value, _reelProgressSlider.maxValue);
+    }
+
+    public void ShowFishInspection(Fish fish)
+    {
+        _fishInspectionGUI.Show(true);
+        _fishInspectionGUI.ShowFish(fish);
+    }
+
+    public void HideFishInspection()
+    {
+        _fishInspectionGUI.Show(false);
+    }
+
+    public void ShowInputPrompt(string name)
+    {
+        foreach (var prompt in _inputPrompts)
+        {
+            if (prompt.Name == name)
+            {
+                _inputPromptPanel.ShowPrompt(prompt.Sprite);
+                return;
+            }
+        }
+        _inputPromptPanel.ShowPrompt(null);
+        return;
     }
 }

@@ -20,6 +20,8 @@ public class CastingState : FishingState
 
     public override void Enter()
     {
+        fishingManager.InputHelper.ClearRotationHistory(); // Clean read for casting
+        fishingManager.ShowInputPrompt("ControllerDown");
         Debug.Log("Entering Casting State");
     }
 
@@ -28,8 +30,8 @@ public class CastingState : FishingState
         if (!_hasCast && fishingManager.InputHelper.HasRotatedByDegrees(-fishingManager.RotationTriggerThreshold, InputDeviceManager.RotationAxis.y))
         {
             _hasCast = true;
+            fishingManager.ShowInputPrompt("");
             fishingManager.CastLine();
-            //fishingManager.TransitionToState(fishingManager.ReelingState);
         }
     }
 

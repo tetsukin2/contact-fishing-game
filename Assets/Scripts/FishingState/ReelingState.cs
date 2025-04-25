@@ -65,7 +65,7 @@ public class ReelingState : FishingState
         {
             Debug.Log("Reel Progress Complete!");
             fishingManager.ReelIn(); // Call the reel in function
-            fishingManager.TransitionToState(fishingManager.CastingState); // Transition back to casting state
+            fishingManager.TransitionToState(fishingManager.FishInspectionState); // Transition back to casting state
         }
         else
         {

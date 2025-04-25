@@ -24,6 +24,8 @@ public class InputDeviceManager : MonoBehaviour
     //private string joyCharUUID = null;
     private static string brailleCharUUID = null;
 
+    [Tooltip("Whether to print IMU data in console")]
+    [SerializeField] private bool debugMode = false; // Set to true for debugging purposes
 
     private Thread scanThread;
     private bool isScanning = true;
@@ -180,7 +182,7 @@ public class InputDeviceManager : MonoBehaviour
 
                     //Debug.Log($"Raw IMU Data: X={x}, Y={y}, Z={z}");
                     imuRotation = new Vector3(x / 1000f, y / 1000f, z / 1000f);
-                    //Debug.Log($"Processed IMU Rotation: {imuRotation}");
+                    if (debugMode) Debug.Log($"Processed IMU Rotation: {imuRotation}");
                 }
             }
             yield return new WaitForSeconds(0.01f);

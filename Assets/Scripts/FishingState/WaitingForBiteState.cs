@@ -1,4 +1,5 @@
 using UnityEngine;
+using static FishingManager;
 
 public class WaitingForBiteState : FishingState
 {
@@ -8,6 +9,7 @@ public class WaitingForBiteState : FishingState
 
     public override void Enter()
     {
+        fishingManager.StateLabelPanel.SetLabel(FishingStateName.WaitingForBite);
         _elapsedTime = 0f; //reset timer
         Debug.Log("Entering Waiting For Bite State");
     }

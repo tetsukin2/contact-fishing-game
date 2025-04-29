@@ -1,4 +1,5 @@
 using UnityEngine;
+using static FishingManager;
 
 /// <summary>
 /// The fish is struggling
@@ -32,6 +33,7 @@ public class ReelingState : FishingState
 
     public override void Enter()
     {
+        fishingManager.StateLabelPanel.SetLabel(FishingStateName.Reeling);
         Debug.Log("Entering Reeling State");
         fishingManager.StartReel();
 

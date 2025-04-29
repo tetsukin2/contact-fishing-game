@@ -20,9 +20,16 @@ public class BrailleTestTrigger : MonoBehaviour
             if (InputDeviceManager.joystickPressed) patternActive = !patternActive;
 
             if (patternActive)
-                BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut");
+            {
+                BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", BraillePatternPlayer.Finger.THUMB, true);
+                //BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", BraillePatternPlayer.Finger.INDEX, true);
+            }
+                
             else
-                BraillePatternPlayer.Instance.StopPatternSequence();
+            {
+                BraillePatternPlayer.Instance.StopPatternSequence(BraillePatternPlayer.Finger.BOTH);
+            }
+                
 
             //if (InputDeviceManager.joystickPressed)
             //{

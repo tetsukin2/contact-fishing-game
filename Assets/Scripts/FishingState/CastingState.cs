@@ -1,4 +1,5 @@
 using UnityEngine;
+using static FishingManager;
 
 public class CastingState : FishingState
 {
@@ -14,13 +15,14 @@ public class CastingState : FishingState
             if (_hasCast)
             {
                 fishingManager.TransitionToState(fishingManager.WaitingForBiteState);
-                BraillePatternPlayer.Instance.StopPatternSequence();
+                BraillePatternPlayer.Instance.StopPatternSequence(BraillePatternPlayer.Finger.BOTH);
                 _hasCast = false;
             }});
     }
 
     public override void Enter()
     {
+        fishingManager.StateLabelPanel.SetLabel(FishingStateName.Casting);
         fishingManager.InputHelper.ClearRotationHistory(); // Clean read for casting
         fishingManager.ShowInputPrompt("ControllerDown");
         Debug.Log("Entering Casting State");
@@ -33,7 +35,8 @@ public class CastingState : FishingState
             _hasCast = true;
             fishingManager.ShowInputPrompt("");
             fishingManager.CastLine();
-            BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", true);
+            BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", BraillePatternPlayer.Finger.THUMB, true);
+            BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", BraillePatternPlayer.Finger.INDEX, true);
         }
     }
 

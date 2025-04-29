@@ -234,7 +234,7 @@ public class InputDeviceManager : MonoBehaviour
         }
     }
     
-    public static void SendBrailleASCII(int val1, int val2)
+    public static void SendBrailleASCII(char side, int val1, int val2)
     {
         if (!IsConnected)
         {
@@ -242,8 +242,8 @@ public class InputDeviceManager : MonoBehaviour
             return;
         }
 
-        string message = $"<{val1:D3}{val2:D3}>"; // "<255255>" - 8 chars
-        byte[] payload = Encoding.ASCII.GetBytes(message); // Should be exactly 8 bytes
+        string message = $"{side:D1}<{val1:D3}{val2:D3}>"; // "0<255255>" - 9 chars
+        byte[] payload = Encoding.ASCII.GetBytes(message); // Should be exactly 9 bytes
 
         BleApi.BLEData bleData = new()
         {

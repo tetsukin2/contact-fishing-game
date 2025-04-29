@@ -14,11 +14,24 @@ public class FishingManager : MonoBehaviour
         public Sprite Sprite;
     }
 
+    public enum FishingStateName
+    {
+        BaitPreparation,
+        Casting,
+        WaitingForBite,
+        Reeling,
+        FishInspection
+    }
+
     [Header("Fishing Rod")]
     public float RotationTriggerThreshold = 15f;  // Rotation threshold in degrees
     [SerializeField] private FishingBobber _fishingBobber; // Reference to the FishingBobber script
     [SerializeField] private FishingRodInputHelper _inputHelper;
-    [SerializeField] private InputPromptPanel _inputPromptPanel; // Reference to the input prompt panel
+
+    [Space]
+    [Header("UI")]
+    [SerializeField] private DynamicImagePanel _inputPromptPanel; // Reference to the input prompt panel
+    [SerializeField] private FishingStateLabelPanel _stateLabelPanel; // Reference to the state label panel
     [SerializeField] private List<InputPrompt> _inputPrompts; // List of sprites for input prompts
 
     [Space]
@@ -46,17 +59,20 @@ public class FishingManager : MonoBehaviour
     [SerializeField] private FishInspectionPanel _fishInspectionGUI;
     [SerializeField] private GameObject _hookedFish; // show and hide in inspection
 
+    private FishingState _currentState;
+
+    // Phase Accessors
     public BaitPreparationState BaitPreparationState { get; private set; }
     public CastingState CastingState { get; private set; }
     public WaitingForBiteState WaitingForBiteState { get; private set; }
     public ReelingState ReelingState { get; private set; }
     public FishInspectionState FishInspectionState { get; private set; }
 
-    private FishingState _currentState;
-
+    // Some properties, mostly for fish states to access
     public FishingBobber FishingBobber => _fishingBobber;
     public FishingRodInputHelper InputHelper => _inputHelper;
     public GameObject HookedFish => _hookedFish;
+    public FishingStateLabelPanel StateLabelPanel => _stateLabelPanel;
 
     private void Awake()
     {
@@ -152,11 +168,11 @@ public class FishingManager : MonoBehaviour
         {
             if (prompt.Name == name)
             {
-                _inputPromptPanel.ShowPrompt(prompt.Sprite);
+                _inputPromptPanel.SetImage(prompt.Sprite);
                 return;
             }
         }
-        _inputPromptPanel.ShowPrompt(null);
+        _inputPromptPanel.SetImage(null);
         return;
     }
 }

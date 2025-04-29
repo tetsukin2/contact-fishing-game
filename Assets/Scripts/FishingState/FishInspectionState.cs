@@ -1,4 +1,5 @@
 using UnityEngine;
+using static FishingManager;
 
 public class FishInspectionState : FishingState
 {
@@ -8,6 +9,7 @@ public class FishInspectionState : FishingState
 
     public override void Enter()
     {
+        fishingManager.StateLabelPanel.SetLabel(FishingStateName.FishInspection);
         fishingManager.InputHelper.ClearRotationHistory();
         fishingManager.ShowInputPrompt("ControllerSideUp");
         fishingManager.HookedFish.SetActive(true); // Show the fish in the inspection panel

@@ -1,4 +1,5 @@
 using UnityEngine;
+using static FishingManager;
 
 public class BaitPreparationState : FishingState
 {
@@ -8,6 +9,7 @@ public class BaitPreparationState : FishingState
 
     public override void Enter()
     {
+        fishingManager.StateLabelPanel.SetLabel(FishingStateName.BaitPreparation);
         _currentStep = 0; // Reset step counter
         fishingManager.ShowInputPrompt("ControllerFullRight");
         Debug.Log("Entering Bait Preparation State");

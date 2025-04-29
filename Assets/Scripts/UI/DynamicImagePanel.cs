@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InputPromptPanel : GUIPanel
+public class DynamicImagePanel : GUIPanel
 {
-    [SerializeField] private Image _promptImage;
+    [SerializeField] private Image _image;
 
     public void Start()
     {
@@ -13,7 +13,7 @@ public class InputPromptPanel : GUIPanel
         Show(false);
     }
 
-    public void ShowPrompt(Sprite promptSprite)
+    public void SetImage(Sprite promptSprite)
     {
         if (promptSprite == null)
         {
@@ -21,6 +21,6 @@ public class InputPromptPanel : GUIPanel
             return;
         }
         _content.SetActive(true);
-        _promptImage.sprite = promptSprite;
+        _image.sprite = promptSprite;
     }
 }

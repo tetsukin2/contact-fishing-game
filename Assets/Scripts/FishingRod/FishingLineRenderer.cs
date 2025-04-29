@@ -14,8 +14,10 @@ public class FishingLineRenderer : MonoBehaviour
     {
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = segments;
-        lineRenderer.startWidth = 0.02f;
-        lineRenderer.endWidth = 0.005f;
+        //lineRenderer.startWidth = 0.08f;
+        //lineRenderer.endWidth = 0.02f;
+        lineRenderer.startWidth = 0.015f;
+        lineRenderer.endWidth = 0.015f;
     }
 
     void Update()

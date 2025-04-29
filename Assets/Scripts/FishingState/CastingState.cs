@@ -14,6 +14,7 @@ public class CastingState : FishingState
             if (_hasCast)
             {
                 fishingManager.TransitionToState(fishingManager.WaitingForBiteState);
+                BraillePatternPlayer.Instance.StopPatternSequence();
                 _hasCast = false;
             }});
     }
@@ -32,6 +33,7 @@ public class CastingState : FishingState
             _hasCast = true;
             fishingManager.ShowInputPrompt("");
             fishingManager.CastLine();
+            BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", true);
         }
     }
 

@@ -10,6 +10,7 @@ public class FishInspectionState : FishingState
     {
         fishingManager.InputHelper.ClearRotationHistory();
         fishingManager.ShowInputPrompt("ControllerSideUp");
+        fishingManager.HookedFish.SetActive(true); // Show the fish in the inspection panel
         _fishInspected = false;
         Debug.Log("Entering Fish Inspection State");
     }
@@ -27,6 +28,7 @@ public class FishInspectionState : FishingState
             fishingManager.InputHelper.ClearRotationHistory(); // Clean read for fish release
             FishingManager.ShowFishInspection(FishLootTable.Instance.GetFishFromTable());
             fishingManager.ShowInputPrompt("ControllerSideDown");
+            fishingManager.HookedFish.SetActive(false); // Show the fish in the inspection panel
             _fishInspected = true;
             Debug.Log("Fish inspected");
         }

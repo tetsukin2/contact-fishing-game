@@ -48,6 +48,16 @@ public class BraillePatternPlayer : MonoBehaviour
 
     public void PlayPatternSequence(string name)
     {
+        PlayPatternSequence(name, false);
+    }
+    
+    /// <summary>
+    /// Play a braille pattern sequence
+    /// </summary>
+    /// <param name="name">Name of the sequence</param>
+    /// <param name="loop">Whether to repeatedly play the sequence</param>
+    public void PlayPatternSequence(string name, bool loop)
+    {
         foreach (var sequence in _encodedBraillePatternSequences)
         {
             if (sequence.SequenceName == name)
@@ -58,7 +68,7 @@ public class BraillePatternPlayer : MonoBehaviour
                     StopCoroutine(_patternCoroutine);
                 }
                 // Start the new pattern
-                _patternCoroutine = StartCoroutine(RunSequence(sequence));
+                _patternCoroutine = StartCoroutine(RunSequence(sequence, loop));
                 return;
             }
         }
@@ -130,7 +140,7 @@ public class BraillePatternPlayer : MonoBehaviour
         };
     }
 
-    private IEnumerator RunSequence(EncodedBraillePatternSequence sequence)
+    private IEnumerator RunSequence(EncodedBraillePatternSequence sequence, bool loop)
     {
         WaitForSeconds interval = new(PatternDelay);
         int currentPatternIndex = 0;
@@ -139,7 +149,9 @@ public class BraillePatternPlayer : MonoBehaviour
         {
             InputDeviceManager.SendBrailleASCII(sequence.Values[currentPatternIndex].Value1, sequence.Values[currentPatternIndex].Value2);
             yield return interval;
-            currentPatternIndex = (currentPatternIndex + 1) % sequence.Values.Count;
+            currentPatternIndex++;
+            if (loop && currentPatternIndex >= sequence.Values.Count) break;
+            currentPatternIndex %= sequence.Values.Count; // go back to start if exceed list size
         }
     }
 }

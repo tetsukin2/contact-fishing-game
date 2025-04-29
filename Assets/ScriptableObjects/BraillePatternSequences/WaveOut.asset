@@ -21,28 +21,8 @@ MonoBehaviour:
   - Row1: 0000
     Row2: 0000
     Row3: 1111
-    Row4: 1111
-  - Row1: 0000
-    Row2: 0000
-    Row3: 1111
-    Row4: 1111
-  - Row1: 0000
-    Row2: 1111
-    Row3: 1111
-    Row4: 1111
-  - Row1: 0000
-    Row2: 1111
-    Row3: 1111
     Row4: 0000
-  - Row1: 1111
-    Row2: 1111
-    Row3: 1111
-    Row4: 0000
-  - Row1: 1111
-    Row2: 1111
-    Row3: 0000
-    Row4: 0000
-  - Row1: 1111
+  - Row1: 0000
     Row2: 1111
     Row3: 0000
     Row4: 0000
@@ -50,7 +30,3 @@ MonoBehaviour:
     Row2: 0000
     Row3: 0000
     Row4: 0000
-  - Row1: 1111
-    Row2: 0000
-    Row3: 0000
-    Row4: 1111

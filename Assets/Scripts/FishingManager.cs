@@ -44,6 +44,7 @@ public class FishingManager : MonoBehaviour
     [Space]
     [Header("Fish Inspection")]
     [SerializeField] private FishInspectionPanel _fishInspectionGUI;
+    [SerializeField] private GameObject _hookedFish; // show and hide in inspection
 
     public BaitPreparationState BaitPreparationState { get; private set; }
     public CastingState CastingState { get; private set; }
@@ -55,6 +56,7 @@ public class FishingManager : MonoBehaviour
 
     public FishingBobber FishingBobber => _fishingBobber;
     public FishingRodInputHelper InputHelper => _inputHelper;
+    public GameObject HookedFish => _hookedFish;
 
     private void Awake()
     {
@@ -70,7 +72,9 @@ public class FishingManager : MonoBehaviour
     {
         CastingState.Setup();
         ReelingState.Setup();
+
         StopReel(); // Hide the reel GUI at the start
+        _hookedFish.SetActive(false);
 
         TransitionToState(BaitPreparationState);
     }

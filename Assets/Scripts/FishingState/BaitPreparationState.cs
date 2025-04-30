@@ -18,15 +18,13 @@ public class BaitPreparationState : FishingState
     public override void Update()
     {
         // Alternate directions, even (and start) directions go upward
-        if (_currentStep % 2 == 0 && fishingManager.InputHelper.IsNearRotation(
-            -90f, InputDeviceManager.RotationAxis.x))
+        if (_currentStep % 2 == 0 && fishingManager.InputHelper.IsNearRotationX(-90f))
         {
             fishingManager.ShowInputPrompt("ControllerFullLeft");
             //Debug.Log(_currentStep);
             _currentStep++;
         }
-        else if (_currentStep % 2 != 0 && fishingManager.InputHelper.IsNearRotation(
-            90f, InputDeviceManager.RotationAxis.x))
+        else if (_currentStep % 2 != 0 && fishingManager.InputHelper.IsNearRotationX(90f))
         {
             fishingManager.ShowInputPrompt("ControllerFullRight");
             //Debug.Log(_currentStep);

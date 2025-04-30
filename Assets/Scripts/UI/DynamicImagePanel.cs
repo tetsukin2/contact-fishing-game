@@ -7,7 +7,7 @@ public class DynamicImagePanel : GUIPanel
 {
     [SerializeField] private Image _image;
 
-    public void Start()
+    public void Awake()
     {
         // Hide the panel at the start
         Show(false);

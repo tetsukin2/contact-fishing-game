@@ -1760,6 +1760,8 @@ MonoBehaviour:
   RotationTriggerThreshold: 15
   _fishingBobber: {fileID: 387807545}
   _inputHelper: {fileID: 673116354}
+  RotateUpAngle: 30
+  RotateDownAngle: -30
   _inputPromptPanel: {fileID: 1847617989}
   _stateLabelPanel: {fileID: 873962102}
   _inputPrompts:
@@ -1786,12 +1788,22 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 89d570b1d83180c4ca5b13edd65224b5, type: 3}
   BaitPreparationSteps: 4
   CastForce: 10
+  CastSteps: 1
+  CastForwardPromptName: ControllerDown
+  CastBackPromptName: ControllerUp
   FishBiteWaitDuration: 1
   ReelTotalProgress: 20
   ReelProgressAmount: 5
+  ReelForwardPromptName: ControllerDown
+  ReelBackPromptName: ControllerUp
   _reelGUI: {fileID: 1294158555}
   _reelProgressSlider: {fileID: 1755902559}
   ReelActionSequence: 0000000001000000
+  SideRotateUpAngle: 30
+  SideRotateDownAngle: -30
+  InspectNeutralPromptName: ControllerDown
+  InspectPromptName: ControllerSideUp
+  InspectReleasePromptName: ControllerSideDown
   _fishInspectionGUI: {fileID: 1514559615}
   _hookedFish: {fileID: 1516249646}
 --- !u!1 &673116352
@@ -1842,8 +1854,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7aa660a4335b0340aeec87a1de4ec07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fishingStateManager: {fileID: 638019828}
-  fishingBobber: {fileID: 387807545}
   InputReadWindow: 0.5
   AbsoluteRotationAllowance: 10
   _debugMode: 0

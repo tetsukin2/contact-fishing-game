@@ -26,7 +26,9 @@ public class FishingManager : MonoBehaviour
     [Header("Fishing Rod")]
     public float RotationTriggerThreshold = 15f;  // Rotation threshold in degrees
     [SerializeField] private FishingBobber _fishingBobber; // Reference to the FishingBobber script
-    [SerializeField] private FishingRodInputHelper _inputHelper;
+    [SerializeField] private InputDeviceRotationHelper _inputHelper;
+    public float RotateUpAngle = 30f;
+    public float RotateDownAngle = -30f; // Y rod rotation thresholds
 
     [Space]
     [Header("UI")]
@@ -41,6 +43,9 @@ public class FishingManager : MonoBehaviour
     [Space]
     [Header("Casting")]
     public float CastForce = 10f;  // Adjust casting strength
+    public int CastSteps = 1;
+    public string CastForwardPromptName;
+    public string CastBackPromptName;
 
     [Space]
     [Header("WaitingForBite")]
@@ -50,12 +55,19 @@ public class FishingManager : MonoBehaviour
     [Header("Reeling")]
     public int ReelTotalProgress = 20;
     public int ReelProgressAmount = 5;
+    public string ReelForwardPromptName;
+    public string ReelBackPromptName;
     [SerializeField] private GUIPanel _reelGUI;
     [SerializeField] private Slider _reelProgressSlider;
     public List<ReelingState.ReelActionName> ReelActionSequence; //Sequence of actions to follow
 
     [Space]
     [Header("Fish Inspection")]
+    public float SideRotateUpAngle = 30f;
+    public float SideRotateDownAngle = -30f; // Y rod rotation thresholds
+    public string InspectNeutralPromptName;
+    public string InspectPromptName;
+    public string InspectReleasePromptName;
     [SerializeField] private FishInspectionPanel _fishInspectionGUI;
     [SerializeField] private GameObject _hookedFish; // show and hide in inspection
 
@@ -70,7 +82,7 @@ public class FishingManager : MonoBehaviour
 
     // Some properties, mostly for fish states to access
     public FishingBobber FishingBobber => _fishingBobber;
-    public FishingRodInputHelper InputHelper => _inputHelper;
+    public InputDeviceRotationHelper InputHelper => _inputHelper;
     public GameObject HookedFish => _hookedFish;
     public FishingStateLabelPanel StateLabelPanel => _stateLabelPanel;
 

@@ -18,7 +18,7 @@ public class ReelingState : FishingState
     private int _currentReelActionIndex; // Current Action in sequence array
     
     // Defining all the reel actions
-    private RotateUpReelAction _rotateUpReelAction;
+    private RotateVerticalReelAction _rotateUpReelAction;
     private JoystickClockwiseReelAction _joystickClockwiseReelAction;
 
     private ReelAction _currentReelActionState;

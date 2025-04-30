@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FishingRodInputHelper : MonoBehaviour
+public class InputDeviceRotationHelper : MonoBehaviour
 {
     // Helper class to store rotation data
     private class RotationData
@@ -9,9 +9,6 @@ public class FishingRodInputHelper : MonoBehaviour
         public Vector3 Rotation;  // The angle of rotation
         public float Timestamp;  // The time at which the rotation occurred
     }
-
-    [SerializeField] private FishingManager fishingStateManager;  // Assign Hook Rigidbody in Inspector
-    [SerializeField] private FishingBobber fishingBobber;  // Assign Fishing Line Controller in Inspector
 
     // Public for now, these may be configured?
     public float InputReadWindow = 0.5f;  // Time window to detect rotation (in seconds)
@@ -140,9 +137,88 @@ public class FishingRodInputHelper : MonoBehaviour
         return Mathf.Abs(angle - deviceRotation) <= AbsoluteRotationAllowance;  
     }
 
+    /// <summary>
+    /// Checks if the device is currently in a specified X rotation, with an allowance.
+    /// </summary>
+    public bool IsNearRotationX(float angle)
+    {
+        return IsNearRotation(angle, InputDeviceManager.RotationAxis.x);
+    }
+
+    /// <summary>
+    /// Checks if the device is currently in a specified X rotation, with an allowance.
+    /// </summary>
+    public bool IsNearRotationY(float angle)
+    {
+        return IsNearRotation(angle, InputDeviceManager.RotationAxis.y);
+    }
+
+    /// <summary>
+    /// Checks if the device is currently in a specified X rotation, with an allowance.
+    /// </summary>
+    public bool IsNearRotationZ(float angle)
+    {
+        return IsNearRotation(angle, InputDeviceManager.RotationAxis.z);
+    }
+
     public void ClearRotationHistory()
     {
         rotationHistory.Clear();  // Clear the rotation history
+    }
+
+    /// <summary>  
+    /// Checks if the device has reached or exceeded a specified rotation.  
+    /// 
+    /// Negative values measure rotation in the negative direction.
+    /// </summary>  
+    public bool HasReachedRotation(float angle, InputDeviceManager.RotationAxis axis)
+    {
+        float deviceRotation = 0f;
+        switch (axis)
+        {
+            case InputDeviceManager.RotationAxis.x:
+                deviceRotation = InputDeviceManager.IMURotation.x;
+                break;
+            case InputDeviceManager.RotationAxis.y:
+                deviceRotation = InputDeviceManager.IMURotation.y;
+                break;
+            case InputDeviceManager.RotationAxis.z:
+                deviceRotation = InputDeviceManager.IMURotation.z;
+                break;
+        }
+        // Return true if deviceRotation is greater than or equal to a positive or zero angle,  
+        // or less than a negative angle  
+        return (angle >= 0 && deviceRotation >= angle) || (angle < 0 && deviceRotation < angle);
+    }
+
+    /// <summary>  
+    /// Checks if the device has reached or exceeded a specified X rotation.  
+    /// 
+    /// Negative values measure rotation in the negative direction.
+    /// </summary>  
+    public bool HasReachedRotationX(float angle)
+    {
+        return HasReachedRotation(angle, InputDeviceManager.RotationAxis.x);
+    }
+
+    /// <summary>  
+    /// Checks if the device has reached or exceeded a specified Y rotation.  
+    /// 
+    /// Negative values measure rotation in the negative direction.
+    /// </summary>  
+    public bool HasReachedRotationY(float angle)
+    {
+        return HasReachedRotation(angle, InputDeviceManager.RotationAxis.y);
+    }
+
+    /// <summary>  
+    /// Checks if the device has reached or exceeded a specified Z rotation.  
+    /// 
+    /// Negative values measure rotation in the negative direction.
+    /// </summary>  
+    public bool HasReachedRotationZ(float angle)
+    {
+        return HasReachedRotation(angle, InputDeviceManager.RotationAxis.z);
     }
 
     /// <summary>

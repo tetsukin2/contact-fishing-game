@@ -13,14 +13,14 @@ public class DynamicImagePanel : GUIPanel
         Show(false);
     }
 
-    public void SetImage(Sprite promptSprite)
+    public void SetImage(Sprite sprite)
     {
-        if (promptSprite == null)
+        if (sprite == null)
         {
             _content.SetActive(false);
             return;
         }
         _content.SetActive(true);
-        _image.sprite = promptSprite;
+        _image.sprite = sprite;
     }
 }

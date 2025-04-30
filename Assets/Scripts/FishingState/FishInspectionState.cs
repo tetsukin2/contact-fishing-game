@@ -52,7 +52,8 @@ public class FishInspectionState : FishingState
             else if (_reachedInitialRotation && // Now rotate down
                 fishingManager.InputHelper.HasReachedRotationY(fishingManager.SideRotateDownAngle))
             {
-                Debug.Log("Fish released");
+                Debug.Log("Fish caught");
+                GameManager.Instance.AddFish();
                 fishingManager.TransitionToState(fishingManager.BaitPreparationState);
             }
         

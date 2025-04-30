@@ -15,16 +15,18 @@ public class UIManager : MonoBehaviour
     //// Singleton instance of the ui manager
     //public static UIManager Instance { get; private set; }
 
-    //[SerializeField]
-    //private TextMeshProUGUI gameClearTime;
-    //[SerializeField]
-    //private TextMeshProUGUI bestClearTime;
     [SerializeField] private TextMeshProUGUI _timerText;
     [SerializeField] private TextMeshProUGUI _fishCaughtNumberText;
 
     //[SerializeField]
-    //public float highScore = float.MaxValue;
+    //public float BestTime = float.MaxValue;
 
+    [Header("Game End Screen")]
+    [SerializeField] private GUIPanel _gameEndMenu;
+    [SerializeField] private TextMeshProUGUI _gameEndSessionText;
+    [SerializeField] private Color _gameEndBestTextColorNormal;
+    [SerializeField] private Color _gameEndBestTextColorNew;
+    [SerializeField] private TextMeshProUGUI _gameEndBestText;
     //public GameObject pauseMenu;
     //public GameObject gameOverMenu;
     //public GameObject gameWinMenu;
@@ -54,10 +56,15 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        // Subscribe to the FishCaughtUpdated event
         GameManager.Instance.FishCaughtUpdated.AddListener(OnFishCaughtUpdated);
+        GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
+        GameManager.Instance.GameEnded.AddListener(OnGameEnd);
+        GameManager.Instance.NewBestScoreReached.AddListener(OnNewBestScoreReached);
+
         // Initialize the fish caught number text
         _fishCaughtNumberText.text = $"{GameManager.Instance.FishCaught}/{GameManager.Instance.FishTotalToCatch}";
+
+        _gameEndMenu.Show(false);
     }
 
     private void Update()
@@ -70,6 +77,26 @@ public class UIManager : MonoBehaviour
     private void OnFishCaughtUpdated()
     {
         _fishCaughtNumberText.text = $"{GameManager.Instance.FishCaught}/{GameManager.Instance.FishTotalToCatch}";
+    }
+
+    private void OnGameStateUpdated()
+    {
+        // Set visibility of game end menu
+        _gameEndMenu.gameObject.SetActive(GameManager.Instance.CurrentGameState == GameManager.GameState.GAME_END);
+    }
+
+    private void OnGameEnd()
+    {
+        _gameEndMenu.Show(true);
+        _gameEndSessionText.text = $"Nice Haul! {GameManager.Instance.FishTotalToCatch} fish in {GameDataHandler.ConvertToTimeFormat(GameManager.Instance.timer)}";
+        _gameEndBestText.color = _gameEndBestTextColorNormal;
+        _gameEndBestText.text = $"Can you top your best of {GameManager.Instance.FishTotalToCatch} fish in {GameDataHandler.ConvertToTimeFormat(GameManager.Instance.CurrentGameData.BestTime)}?";
+    }
+
+    private void OnNewBestScoreReached()
+    {
+        _gameEndBestText.color = _gameEndBestTextColorNew;
+        _gameEndBestText.text = "New personal best!";
     }
 
     //public void Resume()
@@ -116,20 +143,7 @@ public class UIManager : MonoBehaviour
     //    newBestObject.SetActive(false);
     //}
 
-    //public void CompleteLevel(string path, string fileName, bool endOfArea)
-    //{
-    //    gameWinMenu.SetActive(true);
-    //    nextLevelButton.gameObject.SetActive(!endOfArea);
-    //    endOfAreaText.SetActive(endOfArea);
-    //    if (timer < highScore)
-    //    {
-    //        highScore = timer;
-    //        TGData.SaveLevelData(highScore, path, fileName);
-    //        newBestObject.SetActive(true);
-    //    }
-    //    gameClearTime.text = TGData.ConvertToTimeFormat(timer);
-    //    bestClearTime.text = TGData.ConvertToTimeFormat(highScore);
-    //}
+
 
 
 

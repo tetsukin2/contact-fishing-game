@@ -17,6 +17,7 @@ public class FishingManager : MonoBehaviour
 
     public enum FishingStateName
     {
+        Idle,
         BaitPreparation,
         Casting,
         WaitingForBite,

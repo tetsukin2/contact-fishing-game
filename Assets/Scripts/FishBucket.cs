@@ -2,13 +2,30 @@ using UnityEngine;
 
 public class FishBucket : MonoBehaviour
 {
+    [SerializeField] private GameObject _bucketUI;
     [SerializeField] private GameObject[] _fishes;
 
     // Start is called before the first frame update
     void Start()
     {
         GameManager.Instance.FishCaughtUpdated.AddListener(UpdateFishes);
+        GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
         UpdateFishes();
+    }
+
+    private void OnGameStateUpdated()
+    {
+        if (GameManager.Instance.IsPlaying
+            || GameManager.Instance.CurrentGameState == GameManager.GameState.PAUSED)
+        {
+            // Show the fish bucket when the game is playing
+            _bucketUI.SetActive(true);
+        }
+        else
+        {
+            // Hide the fish bucket when the game is not playing
+            _bucketUI.SetActive(false);
+        }
     }
 
     private void UpdateFishes()

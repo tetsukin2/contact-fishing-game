@@ -24,7 +24,7 @@ public class FishInspectionState : FishingState
         if (!_fishInspected)
         {
             if (!_reachedInitialRotation && // Start at side neutral
-                fishingManager.InputHelper.HasReachedRotationX(90f))
+                fishingManager.InputHelper.HasReachedRotationX(80f))
             {
                 _reachedInitialRotation = true;
                 fishingManager.ShowInputPrompt(fishingManager.InspectPromptName);
@@ -44,7 +44,7 @@ public class FishInspectionState : FishingState
         else if (_fishInspected)
         {
             if (!_reachedInitialRotation && // Return to neutral
-                fishingManager.InputHelper.HasReachedRotationX(90f))
+                fishingManager.InputHelper.HasReachedRotationX(80f))
             {
                 _reachedInitialRotation = true;
                 fishingManager.ShowInputPrompt(fishingManager.InspectReleasePromptName);

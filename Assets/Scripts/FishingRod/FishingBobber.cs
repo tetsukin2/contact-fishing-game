@@ -10,7 +10,7 @@ public class FishingBobber : MonoBehaviour
 
     //[SerializeField] private Transform _fishingRodTip;
 
-    public UnityEvent HasHitWater = new();
+    //public UnityEvent HasHitWater = new();
 
     private bool _hasBeenCast = false;  // Flag to check if the bobber has been cast, so reeling doesn't stick
 
@@ -23,36 +23,28 @@ public class FishingBobber : MonoBehaviour
         hookSpringJoint = GetComponent<SpringJoint>();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        // Setup line length
-        hookSpringJoint.maxDistance = ReeledMaxLineLength;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        // Check if the bobber collides with the water surface
-        if (_hasBeenCast && collision.gameObject.CompareTag("Water"))
-        {
-            HasHitWater.Invoke();
-            Debug.Log("Water Hit");
-            bobberRigidbody.isKinematic = true;  // Stop the bobber from moving
-        }
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    // Check if the bobber collides with the water surface
+    //    if (_hasBeenCast && collision.gameObject.CompareTag("Water"))
+    //    {
+    //        HasHitWater.Invoke();
+    //        Debug.Log("Water Hit");
+    //        bobberRigidbody.isKinematic = true;  // Stop the bobber from moving
+    //    }
+    //}
 
     public void Reel()
     {
-        _hasBeenCast = false;
         bobberRigidbody.isKinematic = false;
-        // Set the maximum distance to the reeling length
-        hookSpringJoint.maxDistance = ReeledMaxLineLength;
+        //_hasBeenCast = false;
+        //// Set the maximum distance to the reeling length
+        //hookSpringJoint.maxDistance = ReeledMaxLineLength;
+    }
+
+    public void Cast()
+    {
+        bobberRigidbody.isKinematic = true;
     }
 
     public void Cast(float castForce, float drag)

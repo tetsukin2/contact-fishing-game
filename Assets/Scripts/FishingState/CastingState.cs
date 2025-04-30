@@ -13,7 +13,7 @@ public class CastingState : FishingState
     public override void Setup()
     {
         _hasCast = false;
-        fishingManager.FishingBobber.HasHitWater.AddListener(() => {
+        fishingManager.BobberHitWater.AddListener(() => {
             if (_hasCast) // Flag as this object exists even when in another state
             {
                 fishingManager.TransitionToState(fishingManager.WaitingForBiteState);

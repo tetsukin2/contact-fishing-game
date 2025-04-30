@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 // FishingManager with class-based state machine
@@ -26,6 +27,7 @@ public class FishingManager : MonoBehaviour
     [Header("Fishing Rod")]
     public float RotationTriggerThreshold = 15f;  // Rotation threshold in degrees
     [SerializeField] private FishingBobber _fishingBobber; // Reference to the FishingBobber script
+    [SerializeField] private Transform _bobberLandTransform;
     [SerializeField] private InputDeviceRotationHelper _inputHelper;
     public float RotateUpAngle = 30f;
     public float RotateDownAngle = -30f; // Y rod rotation thresholds
@@ -44,6 +46,8 @@ public class FishingManager : MonoBehaviour
     [Header("Casting")]
     public float CastForce = 10f;  // Adjust casting strength
     public int CastSteps = 1;
+    public float CastDuration = 1f; // From bobber release to landing
+    public float CastHeight = 2f; // Additional height for the arc from bobber release point
     public string CastForwardPromptName;
     public string CastBackPromptName;
 
@@ -72,6 +76,7 @@ public class FishingManager : MonoBehaviour
     [SerializeField] private GameObject _hookedFish; // show and hide in inspection
 
     private FishingState _currentState;
+    private UnityEvent _bobberHitWater = new();
 
     // Phase Accessors
     public BaitPreparationState BaitPreparationState { get; private set; }
@@ -85,6 +90,7 @@ public class FishingManager : MonoBehaviour
     public InputDeviceRotationHelper InputHelper => _inputHelper;
     public GameObject HookedFish => _hookedFish;
     public FishingStateLabelPanel StateLabelPanel => _stateLabelPanel;
+    public UnityEvent BobberHitWater => _bobberHitWater;
 
     private void Awake()
     {
@@ -98,6 +104,7 @@ public class FishingManager : MonoBehaviour
 
     void Start()
     {
+        //CastLine();
         CastingState.Setup();
         ReelingState.Setup();
 
@@ -121,12 +128,61 @@ public class FishingManager : MonoBehaviour
         _currentState?.Enter(); // Enter the new state
     }
 
+    //public void CastLine()
+    //{
+    //    InputHelper.ClearRotationHistory();
+    //    // Apply velocity to the hook based on the rod tip's forward direction
+    //    _fishingBobber.Cast(CastForce * Mathf.Abs(InputHelper.LastMeasuredAngle), 0.1f);
+    //    Debug.Log("Casting Fishing Line!");
+    //}
+
     public void CastLine()
     {
         InputHelper.ClearRotationHistory();
-        // Apply velocity to the hook based on the rod tip's forward direction
-        _fishingBobber.Cast(CastForce * Mathf.Abs(InputHelper.LastMeasuredAngle), 0.1f);
+        _fishingBobber.Cast();
+
+        // Start the parabolic trajectory coroutine
+        StartCoroutine(MoveBobberToLanding(_bobberLandTransform.position));
+
         Debug.Log("Casting Fishing Line!");
+    }
+
+    private IEnumerator MoveBobberToLanding(Vector3 landingPosition)
+    {
+        // Get the starting position of the bobber
+        Vector3 startPosition = _fishingBobber.transform.position;
+
+        // Calculate the peak height of the trajectory
+        float peakHeight = Mathf.Max(startPosition.y, landingPosition.y) + CastHeight;
+        //float duration = Mathf.Clamp(castForce / 10f, 1f, 3f); // Adjust scal
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < CastDuration)
+        {
+            // Calculate the normalized time (0 to 1)
+            float t = elapsedTime / CastDuration;
+
+            // Interpolate the horizontal position (x and z)
+            Vector3 horizontalPosition = Vector3.Lerp(startPosition, landingPosition, t);
+
+            // Calculate the vertical position (y) using a parabolic equation
+            float verticalPosition = Mathf.Lerp(startPosition.y, peakHeight, t) * (1 - t) + Mathf.Lerp(peakHeight, landingPosition.y, t) * t;
+
+            // Update the bobber's position
+            _fishingBobber.transform.position = new Vector3(horizontalPosition.x, verticalPosition, horizontalPosition.z);
+
+            // Increment the elapsed time
+            elapsedTime += Time.deltaTime;
+
+            yield return null;
+        }
+
+        // Ensure the bobber ends exactly at the landing position
+        _fishingBobber.transform.position = landingPosition;
+        _bobberHitWater.Invoke();
+
+        Debug.Log("Bobber has landed!");
     }
 
     public void ReelIn()

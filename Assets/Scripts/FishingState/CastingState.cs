@@ -37,14 +37,14 @@ public class CastingState : FishingState
         if (_hasCast) // Don't do any more of this stuff if line alreaddy cast
             return;
 
-        // Cast back
+        // OnCast back
         if (!_hasCastBack 
             && fishingManager.InputHelper.HasReachedRotationY(fishingManager.RotateUpAngle))
         {
             _hasCastBack = true;
             fishingManager.ShowInputPrompt(fishingManager.CastForwardPromptName);
         }
-        // Cast forward
+        // OnCast forward
         else if (_hasCastBack 
             && fishingManager.InputHelper.HasReachedRotationY(fishingManager.RotateDownAngle))
         {

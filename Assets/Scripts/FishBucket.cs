@@ -11,13 +11,13 @@ public class FishBucket : MonoBehaviour
         _bucketUI.SetActive(false); // Hide the fish bucket UI at the start
         GameManager.Instance.FishCaughtUpdated.AddListener(UpdateFishes);
         GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
-        UpdateFishes();
+        UpdateFishes(GameManager.Instance.FishCaught, GameManager.Instance.FishTotalToCatch);
     }
 
-    private void OnGameStateUpdated()
+    private void OnGameStateUpdated(GameState newState)
     {
-        if (GameManager.Instance.IsPlaying
-            || GameManager.Instance.CurrentGameState == GameManager.GameState.PAUSED)
+        if (newState == GameManager.Instance.PlayingState
+            || newState == GameManager.Instance.EndScoreState)
         {
             // Show the fish bucket when the game is playing
             _bucketUI.SetActive(true);
@@ -29,11 +29,11 @@ public class FishBucket : MonoBehaviour
         }
     }
 
-    private void UpdateFishes()
+    private void UpdateFishes(int caught, int total)
     {
         // Progress as percentage, multiplied by length
         // Dunno why float cast is grayed out but it's important for the calc to work
-        float fishCaughtProgress = ( (float)GameManager.Instance.FishCaught / (float)GameManager.Instance.FishTotalToCatch);
+        float fishCaughtProgress = ( (float)caught / (float)total);
 
         // Determine how many fish objects should be visible based on the progress
         int visibleFishCount = Mathf.CeilToInt(fishCaughtProgress * _fishes.Length);

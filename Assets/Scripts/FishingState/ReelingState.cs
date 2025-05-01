@@ -65,7 +65,7 @@ public class ReelingState : FishingState
         // Check if the reel progress is complete
         if (_currentReelProgress >= fishingManager.ReelTotalProgress)
         {
-            Debug.Log("Reel Progress Complete!");
+            Debug.Log("OnReel Progress Complete!");
             fishingManager.ReelIn(); // Call the reel in function
             fishingManager.TransitionToState(fishingManager.FishInspectionState); // Transition back to casting state
         }
@@ -77,7 +77,7 @@ public class ReelingState : FishingState
         }
     }
 
-    // Reel state maching switching
+    // OnReel state maching switching
     private void SetReelAction(ReelActionName newAction)
     {
         _currentReelActionState?.Exit();
@@ -90,7 +90,7 @@ public class ReelingState : FishingState
                 _currentReelActionState = _joystickClockwiseReelAction;
                 break;
             default:
-                Debug.LogError("Undefined Reel Action");
+                Debug.LogError("Undefined OnReel Action");
                 return;
         }
         _currentReelActionState?.Enter();

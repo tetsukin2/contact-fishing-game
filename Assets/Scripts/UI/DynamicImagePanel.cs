@@ -9,8 +9,8 @@ public class DynamicImagePanel : GUIPanel
 
     public void Awake()
     {
-        // Hide the panel at the start
-        Show(false);
+        // Hide the panel at the start if nothing's assigned to it
+        Show(_image.sprite != null);
     }
 
     public void SetImage(Sprite sprite)

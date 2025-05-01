@@ -133,14 +133,14 @@ public class FishingManager : MonoBehaviour
     //{
     //    InputHelper.ClearRotationHistory();
     //    // Apply velocity to the hook based on the rod tip's forward direction
-    //    _fishingBobber.Cast(CastForce * Mathf.Abs(InputHelper.LastMeasuredAngle), 0.1f);
+    //    _fishingBobber.OnCast(CastForce * Mathf.Abs(InputHelper.LastMeasuredAngle), 0.1f);
     //    Debug.Log("Casting Fishing Line!");
     //}
 
     public void CastLine()
     {
         InputHelper.ClearRotationHistory();
-        _fishingBobber.Cast();
+        _fishingBobber.OnCast();
 
         // Start the parabolic trajectory coroutine
         StartCoroutine(MoveBobberToLanding(_bobberLandTransform.position));
@@ -188,7 +188,7 @@ public class FishingManager : MonoBehaviour
 
     public void ReelIn()
     {
-        _fishingBobber.Reel();
+        _fishingBobber.OnReel();
 
         Fish caughtFish = FishLootTable.Instance.GetFishFromTable();
 

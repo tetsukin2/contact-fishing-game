@@ -3,12 +3,13 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    //// Singleton instance of the ui manager
-    //public static UIManager Instance { get; private set; }
-
     [Header("Loading Screen")]
     [SerializeField] private GUIPanel _loadingScreen;
     [SerializeField] private TextMeshProUGUI _loadingText;
+
+    [Space]
+    [Header("Main Menu")]
+    [SerializeField] private GUIPanel _mainMenuSelectGUI;
 
     [Space]
     [Header("Game Start Screen")]
@@ -20,49 +21,23 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _timerText;
     [SerializeField] private TextMeshProUGUI _fishCaughtNumberText;
 
-    //[SerializeField]
-    //public float BestTime = float.MaxValue;
-
     [Space]
     [Header("Game End Screen")]
     [SerializeField] private GUIPanel _gameEndGUI;
+
+    [Space]
+    [Header("End Score Screen")]
+    [SerializeField] private GUIPanel _endScoreGUI;
+    [SerializeField] private GUIPanel _gameEndSelectGUI;
     [SerializeField] private TextMeshProUGUI _gameEndSessionText;
     [SerializeField] private Color _gameEndBestTextColorNormal;
     [SerializeField] private Color _gameEndBestTextColorNew;
     [SerializeField] private TextMeshProUGUI _gameEndBestText;
-    //public GameObject pauseMenu;
-    //public GameObject gameOverMenu;
-    //public GameObject gameWinMenu;
-    //public Button nextLevelButton;
-    //public GameObject endOfAreaText;
-    //public GameObject timerObject;
-    //public GameObject newBestObject;
-
-    //private void Awake()
-    //{
-    //    // Ensure only one instance of the GameManager exists
-    //    if (Instance == null)
-    //    {
-    //        Instance = this;
-    //        DontDestroyOnLoad(gameObject);
-    //    }
-    //    else
-    //    {
-    //        Destroy(gameObject);
-    //    }
-    //}
-
-    //private void Start()
-    //{
-    //    HideUI();
-    //}
 
     private void Start()
     {
-        // Start off with no game panels visible
-        _gameStartGUI.Show(false);
-        _gameplayGUI.Show(false);
-        _gameEndGUI.Show(false);
+        // Sync with the current game state
+        OnGameStateUpdated(GameManager.Instance.CurrentState);
 
         // Loading screen things
         _loadingScreen.Show(true);
@@ -73,7 +48,7 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.FishCaughtUpdated.AddListener(OnFishCaughtUpdated);
         GameManager.Instance.GameStarting.AddListener(OnGameStarting);
         GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
-        GameManager.Instance.GameEnded.AddListener(OnGameEnd);
+        GameManager.Instance.NewBestScoreReached.AddListener(OnNewBestScoreReached);
         GameManager.Instance.NewBestScoreReached.AddListener(OnNewBestScoreReached);
 
         // Initialize the fish caught number text
@@ -84,22 +59,34 @@ public class UIManager : MonoBehaviour
     {
         //only run if timer object exists
         if (_timerText)
-            _timerText.text = GameDataHandler.ConvertToTimeFormat(GameManager.Instance.timer);
+            _timerText.text = GameDataHandler.ConvertToTimeFormat(GameManager.Instance.Timer);
     }
 
-    private void OnFishCaughtUpdated()
+    private void OnFishCaughtUpdated(int caught, int total)
     {
-        _fishCaughtNumberText.text = $"{GameManager.Instance.FishCaught}/{GameManager.Instance.FishTotalToCatch}";
+        _fishCaughtNumberText.text = $"{caught}/{total}";
     }
 
-    private void OnGameStateUpdated()
+    private void OnGameStateUpdated(GameState newState)
     {
-        // Set visibility of game end menu
-        _gameEndGUI.Show(GameManager.Instance.CurrentGameState == GameManager.GameState.GAME_END);
+        // Set visibility of main menu
+        _mainMenuSelectGUI.Show(newState == GameManager.Instance.MainMenuState);
+
         // Set visibility of game start menu
-        _gameStartGUI.Show(GameManager.Instance.CurrentGameState == GameManager.GameState.GAME_START);
-        // Set visibility of gameplay menu
-        _gameplayGUI.Show(GameManager.Instance.CurrentGameState == GameManager.GameState.PLAYING);
+        _gameStartGUI.Show(newState == GameManager.Instance.GameStartState);
+
+        // Game end is technically an extension of playing
+        _gameplayGUI.Show(newState == GameManager.Instance.PlayingState 
+            || newState == GameManager.Instance.GameEndState);
+
+        // Set visibility of game end menu
+        _gameEndGUI.Show(newState == GameManager.Instance.GameEndState);
+
+        // End Score Menu
+        bool isEndScoreState = (newState == GameManager.Instance.EndScoreState);
+        _endScoreGUI.Show(isEndScoreState);
+        _gameEndSelectGUI.Show(isEndScoreState);
+        if (isEndScoreState) OnShowEndScore(); // Setup
     }
 
     private void OnGameStarting(int phase)
@@ -120,10 +107,9 @@ public class UIManager : MonoBehaviour
     }
 
     // Setup End UI
-    private void OnGameEnd()
+    private void OnShowEndScore()
     {
-        _gameEndGUI.Show(true);
-        _gameEndSessionText.text = $"Nice Haul! {GameManager.Instance.FishTotalToCatch} fish in {GameDataHandler.ConvertToTimeFormat(GameManager.Instance.timer)}";
+        _gameEndSessionText.text = $"Nice Haul! {GameManager.Instance.FishTotalToCatch} fish in {GameDataHandler.ConvertToTimeFormat(GameManager.Instance.Timer)}";
         _gameEndBestText.color = _gameEndBestTextColorNormal;
         _gameEndBestText.text = $"Can you top your best of {GameManager.Instance.FishTotalToCatch} fish in {GameDataHandler.ConvertToTimeFormat(GameManager.Instance.CurrentGameData.BestTime)}?";
     }
@@ -134,41 +120,5 @@ public class UIManager : MonoBehaviour
         _gameEndBestText.color = _gameEndBestTextColorNew;
         _gameEndBestText.text = "New personal best!";
     }
-
-    //public void Resume()
-    //{
-    //    GameManager.Instance.TogglePause();
-    //}
-
-    //public void LoadNextLevel()
-    //{
-    //    SceneLoadManager.Instance.LoadNextLevel();
-    //}
-
-    //public void Restart()
-    //{
-    //    SceneLoadManager.Instance.LoadLevel(SceneManager.GetActiveScene().buildIndex);
-    //}
-
-    //public void ReturnToMenu()
-    //{
-    //    SceneLoadManager.Instance.ReturnToMenu();
-    //}
-
-    //public void hideTimer()
-    //{
-    //    timerObject.SetActive(false);
-    //}
-
-    //public void showTimer()
-    //{
-    //    timerObject.SetActive(true);
-    //}
-
-
-
-
-
-
 }
 

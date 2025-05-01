@@ -35,7 +35,7 @@ public class InputDeviceManager : MonoBehaviour
 
     private static Vector3 imuRotationRaw = Vector3.zero; 
     public static Vector2 joystickInput = Vector2.zero;
-    public static bool joystickPressed = false;
+    public static bool JoystickHeld = false;
     public static bool IsConnected = false;
 
     private static Vector2 joystickCenter = Vector2.zero;
@@ -43,9 +43,11 @@ public class InputDeviceManager : MonoBehaviour
 
     private UnityEvent<string> _connectionStatusLog = new();
     private UnityEvent _characteristicsLoaded = new();
+    private UnityEvent _joystickPressed = new();
 
     public UnityEvent<string> ConnectionStatusLog => _connectionStatusLog;
     public UnityEvent CharacteristicsLoaded => _characteristicsLoaded;
+    public UnityEvent JoystickPressed => _joystickPressed;
 
     /// <summary>
     /// Returns IMU rotation in degrees
@@ -256,9 +258,14 @@ public class InputDeviceManager : MonoBehaviour
                         adjustedInput = Vector2.zero;
 
                     joystickInput = adjustedInput;
-                    joystickPressed = (sw == 1);
+                    bool wasJoystickPreviouslyPressed = JoystickHeld;
+                    JoystickHeld = (sw == 1);
+                    if ( !wasJoystickPreviouslyPressed && JoystickHeld)
+                    {
+                        UnityMainThreadDispatcher.Instance().Enqueue(() => JoystickPressed.Invoke());
+                    }
 
-                    //Debug.Log($"Joystick: ({normX:F2}, {normY:F2}), Pressed: {joystickPressed}");
+                    //Debug.Log($"Joystick: ({normX:F2}, {normY:F2}), Pressed: {JoystickHeld}");
                 }
             }
             yield return new WaitForSeconds(0.01f);

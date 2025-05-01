@@ -24,6 +24,13 @@ public class FishingRodMovement : MonoBehaviour
     private Vector3 rodRotation = Vector3.zero;
     private Vector3 velocity = Vector3.zero; 
     
+    public float MenuRotationMax => 30f;
+    public float MenuRotationMin => -30f;
+
+    private void Start()
+    {
+        GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
+    }
 
     void Update()
     {
@@ -58,6 +65,18 @@ public class FishingRodMovement : MonoBehaviour
         }
 
         
+    }
+
+    private void OnGameStateUpdated(GameState newState)
+    {
+        if (newState == GameManager.Instance.PlayingState)
+        {
+            _currentMovementMode = MovementMode.Normal;
+        }
+        else //if (GameManager.Instance.CurrentGameState == GameStateName.GameStart)
+        {
+            _currentMovementMode = MovementMode.Menu;
+        }
     }
 }
 

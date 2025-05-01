@@ -12,12 +12,12 @@ public class BrailleTestTrigger : MonoBehaviour
         if (!InputDeviceManager.IsConnected) return;
 
         // Only send when state changes
-        if (InputDeviceManager.joystickPressed != lastPressedState)
+        if (InputDeviceManager.JoystickHeld != lastPressedState)
         {
-            lastPressedState = InputDeviceManager.joystickPressed;
+            lastPressedState = InputDeviceManager.JoystickHeld;
 
             //toggle
-            if (InputDeviceManager.joystickPressed) patternActive = !patternActive;
+            if (InputDeviceManager.JoystickHeld) patternActive = !patternActive;
 
             if (patternActive)
             {
@@ -31,7 +31,7 @@ public class BrailleTestTrigger : MonoBehaviour
             }
                 
 
-            //if (InputDeviceManager.joystickPressed)
+            //if (InputDeviceManager.JoystickHeld)
             //{
             //    Debug.Log("🧪 Thumbstick Pressed → Sending <255255>");
             //    InputDeviceManager.SendBrailleASCII(255, 255);

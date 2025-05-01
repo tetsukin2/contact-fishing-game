@@ -3,9 +3,12 @@ using System.Collections;
 using System.Text;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class InputDeviceManager : MonoBehaviour
 {
+    public static InputDeviceManager Instance { get; private set; }
+
     public enum RotationAxis { x, y, z }
 
     private const string TARGET_DEVICE_NAME = "FishingRodIMU";
@@ -38,14 +41,32 @@ public class InputDeviceManager : MonoBehaviour
     private static Vector2 joystickCenter = Vector2.zero;
     private static bool calibrated = false;
 
+    private UnityEvent<string> _connectionStatusLog = new();
+    private UnityEvent _characteristicsLoaded = new();
+
+    public UnityEvent<string> ConnectionStatusLog => _connectionStatusLog;
+    public UnityEvent CharacteristicsLoaded => _characteristicsLoaded;
+
     /// <summary>
     /// Returns IMU rotation in degrees
     /// </summary>
     public static Vector3 IMURotation => imuRotationRaw * 90f;
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start()
     {
-        Debug.Log("⚡ Restarting BLE Scanner...");
+        QueueConnectionStatusLog("Restarting BLE Scanner...");
 
         BleApi.StopDeviceScan();
         Thread.Sleep(1000);
@@ -56,57 +77,58 @@ public class InputDeviceManager : MonoBehaviour
         scanThread = new Thread(ScanForDevices);
         scanThread.Start();
     }
- void ScanForDevices()
-{
-    Debug.Log("🔍 Scanning for FishingRodIMU...");
-
-    while (isScanning)
+     void ScanForDevices()
     {
-        DateTime scanStartTime = DateTime.Now;
-        BleApi.StartDeviceScan();
+        QueueConnectionStatusLog("Scanning for FishingRodIMU...");
 
-        bool found = false;
-
-        while ((DateTime.Now - scanStartTime).TotalMilliseconds < 2000)
+        while (isScanning)
         {
-            BleApi.DeviceUpdate device = new BleApi.DeviceUpdate();
-            BleApi.ScanStatus status = BleApi.PollDevice(ref device, true);
+            DateTime scanStartTime = DateTime.Now;
+            BleApi.StartDeviceScan();
 
-            if (status == BleApi.ScanStatus.AVAILABLE && 
-                !string.IsNullOrEmpty(device.name) && 
-                device.name.Contains(TARGET_DEVICE_NAME))
+            bool found = false;
+
+            while ((DateTime.Now - scanStartTime).TotalMilliseconds < 2000)
             {
-                Debug.Log($"✅ Found {TARGET_DEVICE_NAME}! Connecting...");
-                targetDeviceId = device.id;
-                isScanning = false;
-                BleApi.StopDeviceScan();
+                BleApi.DeviceUpdate device = new BleApi.DeviceUpdate();
+                BleApi.ScanStatus status = BleApi.PollDevice(ref device, true);
 
+                if (status == BleApi.ScanStatus.AVAILABLE && 
+                    !string.IsNullOrEmpty(device.name) && 
+                    device.name.Contains(TARGET_DEVICE_NAME))
+                {
+                    QueueConnectionStatusLog($"Found {TARGET_DEVICE_NAME}! Connecting...");
+                    targetDeviceId = device.id;
+                    isScanning = false;
+                    BleApi.StopDeviceScan();
+
+                    Thread.Sleep(500);
+                    ConnectToDevice(targetDeviceId);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                QueueConnectionStatusLog("Rescanning... Target device not found in this window.");
+                BleApi.StopDeviceScan();
                 Thread.Sleep(500);
-                ConnectToDevice(targetDeviceId);
-                found = true;
-                break;
             }
         }
-
-        if (!found)
-        {
-            Debug.Log("⏳ Rescanning... Target device not found in this window.");
-            BleApi.StopDeviceScan();
-            Thread.Sleep(500);
-        }
     }
-}
 
     void ConnectToDevice(string deviceId)
     {
-        Debug.Log($"🔗 Connecting to {TARGET_DEVICE_NAME}...");
+        QueueConnectionStatusLog($"Connecting to {TARGET_DEVICE_NAME}...");
         BleApi.ScanServices(deviceId);
         IsConnected = true;
 
         BleApi.Service service;
+        int characteristicsLoaded = 0;
         while (BleApi.PollService(out service, true) == BleApi.ScanStatus.AVAILABLE)
         {
-            Debug.Log($"📡 Service Found: {service.uuid}");
+            QueueConnectionStatusLog($"Service Found: {service.uuid}");
 
             BleApi.ScanCharacteristics(deviceId, service.uuid);
             BleApi.Characteristic characteristic;
@@ -115,18 +137,27 @@ public class InputDeviceManager : MonoBehaviour
             {
                 if (characteristic.uuid.ToLower().Contains(IMU_CHARACTERISTIC_UUID.ToLower()))
                 {
-                    Debug.Log("✅ IMU Characteristic Found!");
+                    QueueConnectionStatusLog("IMU Characteristic Found!");
                     SubscribeToIMU(deviceId, service.uuid, characteristic.uuid);
+                    characteristicsLoaded++;
                 }
                 else if (characteristic.uuid.ToLower().Contains(JOY_CHARACTERISTIC_UUID.ToLower()))
                 {
-                    Debug.Log("✅ Joystick Characteristic Found!");
+                    QueueConnectionStatusLog("Joystick Characteristic Found!");
                     SubscribeToJoystick(deviceId, service.uuid, characteristic.uuid);
+                    characteristicsLoaded++;
                 }
                 else if (characteristic.uuid.ToLower().Contains(BRAILLE_CHARACTERISTIC_UUID.ToLower()))
                 {
-                    Debug.Log("✅ Braille Characteristic Found!");
+                    QueueConnectionStatusLog("Braille Characteristic Found!");
                     brailleCharUUID = characteristic.uuid;
+                    characteristicsLoaded++;
+                }
+                if (characteristicsLoaded >= 3)
+                {
+                    UnityMainThreadDispatcher.Instance().Enqueue(() => CharacteristicsLoaded.Invoke());
+                    Debug.Log("All Characteristics Loaded!");
+                    return;
                 }
             }
         }
@@ -142,7 +173,7 @@ public class InputDeviceManager : MonoBehaviour
             bool subscribed = BleApi.SubscribeCharacteristic(deviceId, serviceUuid, characteristicUuid, true);
             if (subscribed)
             {
-                Debug.Log("✅ Subscribed to IMU!");
+                QueueConnectionStatusLog("Subscribed to IMU!");
                 UnityMainThreadDispatcher.Instance().Enqueue(() => StartCoroutine(ReadIMUData(deviceId, serviceUuid, characteristicUuid)));
                 return;
             }
@@ -160,7 +191,7 @@ public class InputDeviceManager : MonoBehaviour
             bool subscribed = BleApi.SubscribeCharacteristic(deviceId, serviceUuid, characteristicUuid, true);
             if (subscribed)
             {
-                Debug.Log("✅ Subscribed to Joystick!");
+                QueueConnectionStatusLog("Subscribed to Joystick!");
                 UnityMainThreadDispatcher.Instance().Enqueue(() => StartCoroutine(ReadJoystickData(deviceId, serviceUuid, characteristicUuid)));
                 return;
             }
@@ -216,7 +247,7 @@ public class InputDeviceManager : MonoBehaviour
                     {
                         joystickCenter = rawInput;
                         calibrated = true;
-                        Debug.Log($"🎯 Joystick Center Calibrated: {joystickCenter}");
+                        QueueConnectionStatusLog($"Joystick Center Calibrated: {joystickCenter}");
                     }
 
                     Vector2 adjustedInput = rawInput - joystickCenter;
@@ -273,6 +304,16 @@ public class InputDeviceManager : MonoBehaviour
     //{
     //    SendBrailleASCII(data.val1, data.val2);
     //}
+
+    /// <summary>
+    /// Queues a connection status log and event to the main thread
+    /// </summary>
+    /// <param name="message"></param>
+    private void QueueConnectionStatusLog(string message)
+    {
+        UnityMainThreadDispatcher.Instance().Enqueue(() => ConnectionStatusLog.Invoke(message));
+        Debug.Log(message);
+    }
 
     void OnApplicationQuit()
     {

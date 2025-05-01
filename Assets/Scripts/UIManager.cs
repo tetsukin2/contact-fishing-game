@@ -15,12 +15,18 @@ public class UIManager : MonoBehaviour
     //// Singleton instance of the ui manager
     //public static UIManager Instance { get; private set; }
 
+    [Header("Loading Screen")]
+    [SerializeField] private GUIPanel _loadingScreen;
+    [SerializeField] private TextMeshProUGUI _loadingText;
+
+    [Space]
     [SerializeField] private TextMeshProUGUI _timerText;
     [SerializeField] private TextMeshProUGUI _fishCaughtNumberText;
 
     //[SerializeField]
     //public float BestTime = float.MaxValue;
 
+    [Space]
     [Header("Game End Screen")]
     [SerializeField] private GUIPanel _gameEndMenu;
     [SerializeField] private TextMeshProUGUI _gameEndSessionText;
@@ -56,6 +62,10 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        // Loading screen things
+        InputDeviceManager.Instance.ConnectionStatusLog.AddListener((string message) => _loadingText.SetText(message));
+        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => _loadingScreen.Show(false));
+
         GameManager.Instance.FishCaughtUpdated.AddListener(OnFishCaughtUpdated);
         GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
         GameManager.Instance.GameEnded.AddListener(OnGameEnd);

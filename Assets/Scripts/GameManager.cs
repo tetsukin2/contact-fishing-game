@@ -113,6 +113,8 @@ public class GameManager : MonoBehaviour
     {
         // TODO: Load new data every time total fish to catch is updated
         CurrentGameData = GameDataHandler.GetGameData("data", $"{_fishTotalToCatch}");
+        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => Time.timeScale = 1f);
+        Time.timeScale = 0f;
     }
 
     private void Update()

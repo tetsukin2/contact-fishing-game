@@ -17,7 +17,7 @@ public class FishBucket : MonoBehaviour
     private void OnGameStateUpdated(GameState newState)
     {
         if (newState == GameManager.Instance.PlayingState
-            || newState == GameManager.Instance.EndScoreState)
+            || newState == GameManager.Instance.GameEndState)
         {
             // Show the fish bucket when the game is playing
             _bucketUI.SetActive(true);

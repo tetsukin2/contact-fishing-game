@@ -9,14 +9,23 @@ using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
+    public enum GameState
+    {
+        MAIN_MENU,
+        GAME_START,
+        PLAYING,
+        PAUSED,
+        GAME_END,
+        TRANSITION
+    }
+
     // Singleton instance of the game manager
     public static GameManager Instance { get; private set; }
 
     [Space]
-
+    [Header("Timings")]
+    [SerializeField] private float _gameStartDuration = 3f;
     public float timer;
-
-    
 
     [Min(1)]
     [SerializeField] private int _fishTotalToCatch = 10;
@@ -30,16 +39,7 @@ public class GameManager : MonoBehaviour
 
     //private bool gameFrozen = false;
 
-    public enum GameState
-    {
-        MAIN_MENU,
-        PLAYING,
-        PAUSED,
-        GAME_END,
-        TRANSITION
-    }
-
-    [SerializeField] private GameState _currentGameState = GameState.PLAYING;
+    [SerializeField] private GameState _currentGameState;
 
     //public bool GameFrozen
     //{
@@ -61,14 +61,19 @@ public class GameManager : MonoBehaviour
     //}
     public GameData CurrentGameData { get; private set; }
 
-    private UnityEvent _gameStateUpdated = new();
-    private UnityEvent _gameEnded = new();
-    private UnityEvent _newBestScoreReached = new();
-    private UnityEvent _fishCaughtUpdated = new();
+    private readonly UnityEvent _gameStateUpdated = new();
+    private readonly UnityEvent<int> _gameStarting = new();
+    private readonly UnityEvent _gameEnded = new();
+    private readonly UnityEvent _newBestScoreReached = new();
+    private readonly UnityEvent _fishCaughtUpdated = new();
 
     // Can see references (on VS at least) if doing it this way
     public UnityEvent FishCaughtUpdated => _fishCaughtUpdated;
     public UnityEvent GameStateUpdated => _gameStateUpdated;
+    /// <summary>
+    /// Int parameter is stage of game start
+    /// </summary>
+    public UnityEvent<int> GameStarting => _gameStarting;
     public UnityEvent GameEnded => _gameEnded;
     public UnityEvent NewBestScoreReached => _newBestScoreReached;
 
@@ -111,10 +116,15 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        CurrentGameState = GameState.MAIN_MENU;
+
         // TODO: Load new data every time total fish to catch is updated
         CurrentGameData = GameDataHandler.GetGameData("data", $"{_fishTotalToCatch}");
         InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => Time.timeScale = 1f);
         Time.timeScale = 0f;
+
+        // Testing: wait until connection established before starting game
+        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(StartGameInitial);
     }
 
     private void Update()
@@ -133,6 +143,19 @@ public class GameManager : MonoBehaviour
             Debug.Log("Debug: Deleting Data");
         }
 
+    }
+
+    // Temp for testing, remove listener as soon as device loaded
+    private void StartGameInitial()
+    {
+        InputDeviceManager.Instance.CharacteristicsLoaded.RemoveListener(StartGameInitial);
+        StartGame();
+    }
+
+    public void StartGame()
+    {
+        CurrentGameState = GameState.GAME_START;
+        StartCoroutine(GameStartActions());
     }
 
     public void AddFish()
@@ -159,6 +182,24 @@ public class GameManager : MonoBehaviour
         GameEnded.Invoke();
         // Ensure everything else has acted before announcing a new best
         if (newBest) _newBestScoreReached.Invoke();
+    }
+
+    public void resetTimer()
+    {
+        timer = 0f;
+    }
+
+    private IEnumerator GameStartActions()
+    {
+        WaitForSeconds wait = new(_gameStartDuration/3);
+
+        GameStarting.Invoke(0);
+        yield return wait;
+        GameStarting.Invoke(1);
+        yield return wait;
+        GameStarting.Invoke(2);
+        yield return wait;
+        CurrentGameState = GameState.PLAYING;
     }
 
     //public void CompleteLevel(string path, string fileName, bool endOfArea)

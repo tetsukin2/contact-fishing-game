@@ -1,14 +1,5 @@
-using System;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using DG.Tweening.Core.Easing;
 
 public class UIManager : MonoBehaviour
 {
@@ -20,6 +11,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _loadingText;
 
     [Space]
+    [Header("Game Start Screen")]
+    [SerializeField] private GameStartPanel _gameStartGUI;
+
+    [Space]
+    [Header("Gameplay")]
+    [SerializeField] private GUIPanel _gameplayGUI;
     [SerializeField] private TextMeshProUGUI _timerText;
     [SerializeField] private TextMeshProUGUI _fishCaughtNumberText;
 
@@ -28,7 +25,7 @@ public class UIManager : MonoBehaviour
 
     [Space]
     [Header("Game End Screen")]
-    [SerializeField] private GUIPanel _gameEndMenu;
+    [SerializeField] private GUIPanel _gameEndGUI;
     [SerializeField] private TextMeshProUGUI _gameEndSessionText;
     [SerializeField] private Color _gameEndBestTextColorNormal;
     [SerializeField] private Color _gameEndBestTextColorNew;
@@ -62,19 +59,25 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        // Loading screen things
-        InputDeviceManager.Instance.ConnectionStatusLog.AddListener((string message) => _loadingText.SetText(message));
-        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => _loadingScreen.Show(false));
+        // Start off with no game panels visible
+        _gameStartGUI.Show(false);
+        _gameplayGUI.Show(false);
+        _gameEndGUI.Show(false);
 
+        // Loading screen things
+        _loadingScreen.Show(true);
+        InputDeviceManager.Instance.ConnectionStatusLog.AddListener((string message) => _loadingText.SetText(message));
+        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => _loadingScreen.Show(false));        
+
+        // Listen to GameManager's Ramblings
         GameManager.Instance.FishCaughtUpdated.AddListener(OnFishCaughtUpdated);
+        GameManager.Instance.GameStarting.AddListener(OnGameStarting);
         GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
         GameManager.Instance.GameEnded.AddListener(OnGameEnd);
         GameManager.Instance.NewBestScoreReached.AddListener(OnNewBestScoreReached);
 
         // Initialize the fish caught number text
         _fishCaughtNumberText.text = $"{GameManager.Instance.FishCaught}/{GameManager.Instance.FishTotalToCatch}";
-
-        _gameEndMenu.Show(false);
     }
 
     private void Update()
@@ -92,17 +95,40 @@ public class UIManager : MonoBehaviour
     private void OnGameStateUpdated()
     {
         // Set visibility of game end menu
-        _gameEndMenu.gameObject.SetActive(GameManager.Instance.CurrentGameState == GameManager.GameState.GAME_END);
+        _gameEndGUI.Show(GameManager.Instance.CurrentGameState == GameManager.GameState.GAME_END);
+        // Set visibility of game start menu
+        _gameStartGUI.Show(GameManager.Instance.CurrentGameState == GameManager.GameState.GAME_START);
+        // Set visibility of gameplay menu
+        _gameplayGUI.Show(GameManager.Instance.CurrentGameState == GameManager.GameState.PLAYING);
     }
 
+    private void OnGameStarting(int phase)
+    {
+        // Show the appropriate phase of the game start menu
+        switch (phase)
+        {
+            case 0:
+                _gameStartGUI.OnReady();
+                break;
+            case 1:
+                _gameStartGUI.OnSet();
+                break;
+            case 2:
+                _gameStartGUI.OnFish();
+                break;
+        }
+    }
+
+    // Setup End UI
     private void OnGameEnd()
     {
-        _gameEndMenu.Show(true);
+        _gameEndGUI.Show(true);
         _gameEndSessionText.text = $"Nice Haul! {GameManager.Instance.FishTotalToCatch} fish in {GameDataHandler.ConvertToTimeFormat(GameManager.Instance.timer)}";
         _gameEndBestText.color = _gameEndBestTextColorNormal;
         _gameEndBestText.text = $"Can you top your best of {GameManager.Instance.FishTotalToCatch} fish in {GameDataHandler.ConvertToTimeFormat(GameManager.Instance.CurrentGameData.BestTime)}?";
     }
 
+    // Setup New Best details
     private void OnNewBestScoreReached()
     {
         _gameEndBestText.color = _gameEndBestTextColorNew;
@@ -137,20 +163,6 @@ public class UIManager : MonoBehaviour
     //public void showTimer()
     //{
     //    timerObject.SetActive(true);
-    //}
-
-    //public void resetTimer()
-    //{
-    //    timer = 0f;
-    //}
-
-    //public void HideUI()
-    //{
-    //    timerObject.SetActive(false);
-    //    pauseMenu.SetActive(false);
-    //    gameOverMenu.SetActive(false);
-    //    gameWinMenu.SetActive(false);
-    //    newBestObject.SetActive(false);
     //}
 
 

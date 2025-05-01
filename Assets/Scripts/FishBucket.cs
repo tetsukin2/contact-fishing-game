@@ -8,6 +8,7 @@ public class FishBucket : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _bucketUI.SetActive(false); // Hide the fish bucket UI at the start
         GameManager.Instance.FishCaughtUpdated.AddListener(UpdateFishes);
         GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
         UpdateFishes();

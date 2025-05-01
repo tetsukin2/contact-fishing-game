@@ -18,7 +18,7 @@ public class GameEndSelect : MenuSelect
                 GameManager.Instance.TransitionToState(GameManager.Instance.GameStartState);
                 break;
             case MAIN_MENU_ACTION:
-                Debug.Log("return to menu");
+                GameManager.Instance.TransitionToState(GameManager.Instance.MainMenuState);
                 break;
             case EXIT_ACTION:
                 GameManager.QuitGame();

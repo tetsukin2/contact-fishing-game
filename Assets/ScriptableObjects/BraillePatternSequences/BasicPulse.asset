@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f00867fde896045b938d3ac9bdcd5e, type: 3}
+  m_Name: BasicPulse
+  m_EditorClassIdentifier: 
+  SequenceName: BasicPulse
+  Sequence:
+  - Row1: 1111
+    Row2: 1111
+    Row3: 1111
+    Row4: 1111
+  - Row1: 0000
+    Row2: 0000
+    Row3: 0000
+    Row4: 0000

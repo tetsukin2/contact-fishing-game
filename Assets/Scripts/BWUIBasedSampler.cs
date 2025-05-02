@@ -20,8 +20,9 @@ public class BWUIBasedSampler : MonoBehaviour
     public BWImage[] bwImages;      // All possible BW images to check against
 
     [Header("Colors")]
-    public Color blackColor = Color.red;     // Color if over black pixel
-    public Color whiteColor = Color.blue;    // Color if over white or outside
+    public Color upColor = Color.red;     // Color if over black 
+    public Color downColor = Color.blue;    // Color if over white or outside
+    public float AlphaThreshold = 50f; // Transparent color for no hit
 
     [Header("Output")]
     public UnityEvent<Image> onImageSelected;       // UnityEvent triggered when the most-hit image changes
@@ -74,7 +75,11 @@ public class BWUIBasedSampler : MonoBehaviour
             // Set color based on detection
             if (hitImage != null)
             {
-                point.color = pixel.r < 128 ? blackColor : whiteColor;
+                point.color = (pixel.r > 128 
+                    && pixel.g > 128
+                    && pixel.b > 128
+                    && pixel.a >= AlphaThreshold)
+                    ? upColor : downColor;
 
                 // Track hit count
                 if (!hitCounts.ContainsKey(hitImage))
@@ -84,7 +89,7 @@ public class BWUIBasedSampler : MonoBehaviour
             }
             else
             {
-                point.color = whiteColor;
+                point.color = downColor;
             }
         }
 

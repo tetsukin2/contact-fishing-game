@@ -16,7 +16,7 @@ public class MainMenuSelect : MenuSelect
                 GameManager.Instance.TransitionToState(GameManager.Instance.GameStartState);
                 break;
             case ENCYCLOPEDIA_ACTION:
-                Debug.Log("Encyclopedia not yet implemented");
+                GameManager.Instance.TransitionToState(GameManager.Instance.EncyclopediaState);
                 break;
             case EXIT_ACTION:
                 GameManager.QuitGame();

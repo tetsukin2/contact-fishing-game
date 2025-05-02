@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    public static UIManager Instance { get; private set; }
+
     [Header("Loading Screen")]
     [SerializeField] private GUIPanel _loadingScreen;
     [SerializeField] private TextMeshProUGUI _loadingText;
@@ -10,6 +12,11 @@ public class UIManager : MonoBehaviour
     [Space]
     [Header("Main Menu")]
     [SerializeField] private GUIPanel _mainMenuSelectGUI;
+
+    [Space]
+    [Header("Encyclopedia")]
+    [SerializeField] private GUIPanel _encyclopediaGUI;
+    [SerializeField] private JoystickCursor _joystickCursor;
 
     [Space]
     [Header("Game Start Screen")]
@@ -33,6 +40,21 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Color _gameEndBestTextColorNormal;
     [SerializeField] private Color _gameEndBestTextColorNew;
     [SerializeField] private TextMeshProUGUI _gameEndBestText;
+
+    public JoystickCursor JoystickCursor => _joystickCursor;
+
+    private void Awake()
+    {
+        // Singleton pattern
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -71,6 +93,9 @@ public class UIManager : MonoBehaviour
     {
         // Set visibility of main menu
         _mainMenuSelectGUI.Show(newState == GameManager.Instance.MainMenuState);
+
+        // Set visibility of encyclopedia
+        _encyclopediaGUI.Show(newState == GameManager.Instance.EncyclopediaState);
 
         // Set visibility of game start menu
         _gameStartGUI.Show(newState == GameManager.Instance.GameStartState);

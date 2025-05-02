@@ -20,8 +20,7 @@ public class CursorBraillePin : MonoBehaviour
     public void SetActuated(bool isActive)
     {
         _pinImage.color = isActive ? _pinUpColor : _pinDownColor;
-        // TODO: SWAP LATER I THINK ITS INVERTED IDK
-        Value = isActive ? 0 : 1; // Set the value based on the pin state
+        Value = isActive ? 1 : 0; // Set the value based on the pin state
         
     }
 }

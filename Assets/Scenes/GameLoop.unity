@@ -1522,7 +1522,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CursorRect: {fileID: 345619191}
-  MovementAreaRect: {fileID: 928006685}
+  CanvasRect: {fileID: 351825629}
   CursorSpeed: 500
   _00: {fileID: 1945991003}
   _01: {fileID: 861542901}

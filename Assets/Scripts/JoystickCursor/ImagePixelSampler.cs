@@ -27,6 +27,7 @@ public class ImagePixelSampler : MonoBehaviour
     void Update()
     {
         if (GameManager.Instance.CurrentState != GameManager.Instance.EncyclopediaState) return;
+        Debug.Log(CurrentSelectable);
 
         Dictionary<JoystickCursorSelectable, int> hitCounts = new();
 
@@ -105,6 +106,22 @@ public class ImagePixelSampler : MonoBehaviour
     /// </summary>
     bool TryGetPixelFromImage(JoystickCursorSelectable img, Vector2 screenPos, out Color32 pixel)
     {
+        pixel = default;
+
+        // Null check for img
+        if (img == null)
+        {
+            Debug.LogError("JoystickCursorSelectable is null.");
+            return false;
+        }
+
+        // Null check for rectTransform
+        if (img.rectTransform == null)
+        {
+            Debug.LogError($"RectTransform is null for JoystickCursorSelectable: {img.name}");
+            return false;
+        }
+
         Vector2 localPoint;
 
         // Convert screen point to local UI position

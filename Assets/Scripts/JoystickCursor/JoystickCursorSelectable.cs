@@ -15,8 +15,10 @@ public class JoystickCursorSelectable : MonoBehaviour
     public int height { get; private set; }        // Texture dimensions
     public RectTransform rectTransform { get; private set; }  // Cached rectTransform
 
-    private void Start()
+    private void Awake()
     {
+        // Putting this in start causes errors when encyclopedia opens
+        // I guess start happens much later
         texture = BWImage.sprite.texture;
 
         if (!texture.isReadable)

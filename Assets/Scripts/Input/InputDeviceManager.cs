@@ -274,13 +274,14 @@ public class InputDeviceManager : MonoBehaviour
                     JoystickInput = adjustedInput;
                     bool wasJoystickPreviouslyPressed = JoystickHeld;
                     JoystickHeld = (sw == 1) || Input.GetKey(KeyCode.T);
+                    //Debug.Log($"{wasJoystickPreviouslyPressed}, {JoystickHeld}");
                     if ( !wasJoystickPreviouslyPressed && JoystickHeld)
                     {
                         UnityMainThreadDispatcher.Instance().Enqueue(() => JoystickPressed.Invoke());
                         Debug.Log("Joystick Pressed!");
                     }
 
-                    Debug.Log(Input.GetKey(KeyCode.T));
+                    //Debug.Log(Input.GetKey(KeyCode.T));
 
                     //Debug.Log($"JoystickCursor: ({normX:F2}, {normY:F2}), {JoystickInput}");
                 }
@@ -296,6 +297,10 @@ public class InputDeviceManager : MonoBehaviour
             Debug.Log("Not yet connected to BLE.");
             return;
         }
+
+        // TEMPORARY FLIPPER SINCE WE'RE INVERTED SOMEHOW
+        val1 = ~val1 & 0xFF; // Invert all bits and mask to 8 bits
+        val2 = ~val2 & 0xFF; // Invert all bits and mask to 8 bits
 
         //string message = $"<{t1:D3}{t2:D3}{i1:D3}{i2:D3}>"; // "<AAABBBCCCDDD>"
         string message = $"<{val1:D3}{val2:D3}>"; // "<AAABBBCCCDDD>"

@@ -1078,7 +1078,7 @@ GameObject:
   - component: {fileID: 270373275}
   - component: {fileID: 270373274}
   m_Layer: 5
-  m_Name: ActuationPoint (13)
+  m_Name: p21
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1401,17 +1401,17 @@ RectTransform:
   - {fileID: 1632936996}
   - {fileID: 2122526751}
   - {fileID: 740138819}
-  - {fileID: 1349539206}
-  - {fileID: 374416191}
+  - {fileID: 1949818678}
+  - {fileID: 2076717759}
+  - {fileID: 1913530823}
   - {fileID: 1069399594}
   - {fileID: 270373273}
   - {fileID: 645661539}
   - {fileID: 1828235200}
+  - {fileID: 1349539206}
+  - {fileID: 374416191}
   - {fileID: 1453269521}
   - {fileID: 1432121701}
-  - {fileID: 1949818678}
-  - {fileID: 2076717759}
-  - {fileID: 1913530823}
   m_Father: {fileID: 351825629}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1654,6 +1654,7 @@ RectTransform:
   - {fileID: 1261046790}
   - {fileID: 1455504133}
   - {fileID: 612172218}
+  - {fileID: 1493807878}
   - {fileID: 345619191}
   m_Father: {fileID: 551481134}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1769,7 +1770,7 @@ GameObject:
   - component: {fileID: 374416193}
   - component: {fileID: 374416192}
   m_Layer: 5
-  m_Name: ActuationPoint (9)
+  m_Name: p31
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3029,7 +3030,7 @@ GameObject:
   - component: {fileID: 645661541}
   - component: {fileID: 645661540}
   m_Layer: 5
-  m_Name: ActuationPoint (14)
+  m_Name: p22
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3691,7 +3692,7 @@ GameObject:
   - component: {fileID: 740138821}
   - component: {fileID: 740138820}
   m_Layer: 5
-  m_Name: ActuationPoint (4)
+  m_Name: p10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4416,7 +4417,7 @@ GameObject:
   - component: {fileID: 861542900}
   - component: {fileID: 861542899}
   m_Layer: 5
-  m_Name: ActuationPoint (1)
+  m_Name: p01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5839,7 +5840,7 @@ GameObject:
   - component: {fileID: 1069399596}
   - component: {fileID: 1069399595}
   m_Layer: 5
-  m_Name: ActuationPoint (12)
+  m_Name: p20
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6657,7 +6658,7 @@ GameObject:
   - component: {fileID: 1349539208}
   - component: {fileID: 1349539207}
   m_Layer: 5
-  m_Name: ActuationPoint (8)
+  m_Name: p30
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6732,7 +6733,7 @@ GameObject:
   - component: {fileID: 1432121703}
   - component: {fileID: 1432121702}
   m_Layer: 5
-  m_Name: ActuationPoint (11)
+  m_Name: p33
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6993,7 +6994,7 @@ GameObject:
   - component: {fileID: 1453269523}
   - component: {fileID: 1453269522}
   m_Layer: 5
-  m_Name: ActuationPoint (10)
+  m_Name: p32
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7293,6 +7294,81 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1493807877
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1493807878}
+  - component: {fileID: 1493807880}
+  - component: {fileID: 1493807879}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1493807878
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1493807877}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 351825629}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -474, y: -138}
+  m_SizeDelta: {x: 550.7113, y: 550.7113}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1493807879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1493807877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 0e7e815f0ca588a4da6b1e710b7d36d5, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1493807880
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1493807877}
+  m_CullTransparentMesh: 1
 --- !u!1 &1493931537
 GameObject:
   m_ObjectHideFlags: 0
@@ -7445,7 +7521,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1499402925}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff20911d5dbeb7d4b9eaca728131051e, type: 3}
   m_Name: 
@@ -7456,26 +7532,27 @@ MonoBehaviour:
   - {fileID: 1632936997}
   - {fileID: 2122526752}
   - {fileID: 740138820}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1949818679}
+  - {fileID: 2076717760}
+  - {fileID: 1913530824}
+  - {fileID: 1069399595}
+  - {fileID: 270373274}
+  - {fileID: 645661540}
+  - {fileID: 1828235201}
+  - {fileID: 1349539207}
+  - {fileID: 374416192}
+  - {fileID: 1453269522}
+  - {fileID: 1432121702}
   bwImages:
-  - uiImage: {fileID: 0}
+  - uiImage: {fileID: 1493807879}
     tex: {fileID: 0}
     pixelData: []
     width: 0
     height: 0
     rectTransform: {fileID: 0}
-  blackColor: {r: 1, g: 0, b: 0, a: 1}
-  whiteColor: {r: 0, g: 0, b: 1, a: 1}
+  blackColor: {r: 1, g: 1, b: 1, a: 0.5058824}
+  whiteColor: {r: 1, g: 0.041579183, b: 0, a: 0.5019608}
+  AlphaThreshold: 50
   onImageSelected:
     m_PersistentCalls:
       m_Calls: []
@@ -8079,7 +8156,7 @@ GameObject:
   - component: {fileID: 1632936998}
   - component: {fileID: 1632936997}
   m_Layer: 5
-  m_Name: ActuationPoint (2)
+  m_Name: p02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9060,7 +9137,7 @@ GameObject:
   - component: {fileID: 1828235202}
   - component: {fileID: 1828235201}
   m_Layer: 5
-  m_Name: ActuationPoint (15)
+  m_Name: p23
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9433,7 +9510,7 @@ GameObject:
   - component: {fileID: 1913530825}
   - component: {fileID: 1913530824}
   m_Layer: 5
-  m_Name: ActuationPoint (7)
+  m_Name: p13
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9623,7 +9700,7 @@ GameObject:
   - component: {fileID: 1945991002}
   - component: {fileID: 1945991001}
   m_Layer: 5
-  m_Name: ActuationPoint
+  m_Name: p00
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9833,7 +9910,7 @@ GameObject:
   - component: {fileID: 1949818680}
   - component: {fileID: 1949818679}
   m_Layer: 5
-  m_Name: ActuationPoint (5)
+  m_Name: p11
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9958,7 +10035,7 @@ GameObject:
   - component: {fileID: 2076717761}
   - component: {fileID: 2076717760}
   m_Layer: 5
-  m_Name: ActuationPoint (6)
+  m_Name: p12
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10033,7 +10110,7 @@ GameObject:
   - component: {fileID: 2122526753}
   - component: {fileID: 2122526752}
   m_Layer: 5
-  m_Name: ActuationPoint (3)
+  m_Name: p03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

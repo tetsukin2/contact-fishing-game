@@ -21,7 +21,10 @@ public abstract class MenuSelect : GUIPanel
             _selectionPoints.Add(selectionPoint);
         }
 
-        InputDeviceManager.Instance.JoystickPressed.AddListener(OnOptionSelected);
+        // Define these in subclasses, lest the event be listened to between scenes
+        //  (as in go handle active subbing and unsubbing from the events)
+        //  ONLY listen during the correct state
+        //InputDeviceManager.Instance.JoystickPressed.AddListener(OnOptionSelected);
     }
 
     // Update is called once per frame

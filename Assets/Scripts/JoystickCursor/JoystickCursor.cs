@@ -5,7 +5,7 @@ using UnityEngine;
 public class JoystickCursor : MonoBehaviour
 {
     public RectTransform CursorRect;       // Assign your UI cursor object here
-    public RectTransform MovementAreaRect;       // Reference to your Canvas (should use Screen Space - Overlay or Camera)
+    public RectTransform CanvasRect;       // Reference to your Canvas (should use Screen Space - Overlay or Camera)
     public float CursorSpeed = 500f;             // Movement CursorSpeed in pixels per second
 
     [SerializeField] private CursorBraillePin _00;
@@ -32,6 +32,7 @@ public class JoystickCursor : MonoBehaviour
     void Start()
     {
         CurrentCursorPos = CursorRect.anchoredPosition;
+        GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
     }
 
     void Update()
@@ -39,6 +40,16 @@ public class JoystickCursor : MonoBehaviour
         if (GameManager.Instance.CurrentState != GameManager.Instance.EncyclopediaState) return;
         UpdateCursorPosition();
         UpdateBrailleValues();
+    }
+
+    private void OnGameStateUpdated(GameState state)
+    {
+        if (state == GameManager.Instance.EncyclopediaState)
+        {
+            // Reset cursor position when entering the encyclopedia state
+            CurrentCursorPos = Vector2.zero;
+            CursorRect.anchoredPosition = CurrentCursorPos;
+        }
     }
 
     private void UpdateCursorPosition()
@@ -52,7 +63,7 @@ public class JoystickCursor : MonoBehaviour
 
         // Clamp to stay inside the canvas rect
         Vector2 halfCursorSize = CursorRect.sizeDelta * 0.5f;
-        Vector2 halfCanvasSize = MovementAreaRect.sizeDelta * 0.5f; // 0,0 is center of canvas man
+        Vector2 halfCanvasSize = CanvasRect.sizeDelta * 0.5f; // 0,0 is center of canvas man
         float minX = -halfCanvasSize.x + halfCursorSize.x;
         float maxX = halfCanvasSize.x - halfCursorSize.x;
         float minY = -halfCanvasSize.y + halfCursorSize.y;

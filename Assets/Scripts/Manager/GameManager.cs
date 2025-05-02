@@ -69,6 +69,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // Reset ahead just in case, remove when inversion is fixed
+        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() =>
+        {
+            InputDeviceManager.SendBrailleASCII(0, 0);
+        });
+
         // TODO: Load new data every time total fish to catch is updated
         CurrentGameData = GameDataHandler.GetGameData("data", $"{_fishTotalToCatch}");
         InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => Time.timeScale = 1f);
@@ -88,6 +94,10 @@ public class GameManager : MonoBehaviour
             GameDataHandler.DeleteAllData();
             CurrentGameData = GameDataHandler.GetGameData("data", $"{_fishTotalToCatch}");
             Debug.Log("Debug: Deleting Data");
+        }
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            InputDeviceManager.Instance.JoystickPressed.Invoke();
         }
     }
 

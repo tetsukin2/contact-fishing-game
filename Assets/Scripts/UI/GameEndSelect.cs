@@ -8,6 +8,12 @@ public class GameEndSelect : MenuSelect
     private const string MAIN_MENU_ACTION = "MainMenu";
     private const string EXIT_ACTION = "Exit";
 
+    protected override void Start()
+    {
+        base.Start();
+        InputDeviceManager.Instance.JoystickPressed.AddListener(OnOptionSelected);
+    }
+
     protected override void OnOptionSelected()
     {
         if (GameManager.Instance.CurrentState != GameManager.Instance.EndScoreState) return;

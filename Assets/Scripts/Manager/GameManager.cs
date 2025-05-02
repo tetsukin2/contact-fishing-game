@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 
     // Game states
     public MainMenuGameState MainMenuState { get; private set; }
+    public EncyclopediaGameState EncyclopediaState { get; private set; }
     public GameStartGameState GameStartState { get; private set; }
     public PlayingGameState PlayingState { get; private set; }
     public GameEndGameState GameEndState { get; private set; }
@@ -59,6 +60,7 @@ public class GameManager : MonoBehaviour
 
         // Initialize states
         MainMenuState = new MainMenuGameState(this);
+        EncyclopediaState = new EncyclopediaGameState(this);
         GameStartState = new GameStartGameState(this);
         PlayingState = new PlayingGameState(this);
         GameEndState = new GameEndGameState(this);

@@ -5,7 +5,7 @@ public class BrailleTestTrigger : MonoBehaviour
 {
     [SerializeField] private string _thumbPatternSequence;
     [SerializeField] private string _indexPatternSequence;
-    [SerializeField] private bool _active = false;
+    //[SerializeField] private bool _active = false;
 
     private bool lastPressedState = false;
 

@@ -239,6 +239,7 @@ public class InputDeviceManager : MonoBehaviour
                     byte rawX = data.buf[0];
                     byte rawY = data.buf[1];
                     byte sw = data.buf[2];
+                    //Debug.Log(sw);
 
                     float normX = (rawX - 128) / 128f;
                     float normY = (rawY - 128) / 128f;
@@ -272,11 +273,14 @@ public class InputDeviceManager : MonoBehaviour
 
                     JoystickInput = adjustedInput;
                     bool wasJoystickPreviouslyPressed = JoystickHeld;
-                    JoystickHeld = (sw == 1);
+                    JoystickHeld = (sw == 1) || Input.GetKey(KeyCode.T);
                     if ( !wasJoystickPreviouslyPressed && JoystickHeld)
                     {
                         UnityMainThreadDispatcher.Instance().Enqueue(() => JoystickPressed.Invoke());
+                        Debug.Log("Joystick Pressed!");
                     }
+
+                    Debug.Log(Input.GetKey(KeyCode.T));
 
                     //Debug.Log($"JoystickCursor: ({normX:F2}, {normY:F2}), {JoystickInput}");
                 }

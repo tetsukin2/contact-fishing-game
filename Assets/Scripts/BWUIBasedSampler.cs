@@ -16,7 +16,7 @@ public class BWUIBasedSampler : MonoBehaviour
     }
 
     [Header("Input")]
-    public Image[] pointImages;     // Small UI images that represent points around the cursor
+    public List<BraillePin> _braillePins;     // Small UI images that represent points around the cursor
     public BWImage[] bwImages;      // All possible BW images to check against
 
     [Header("Colors")]
@@ -52,11 +52,11 @@ public class BWUIBasedSampler : MonoBehaviour
 
     void Update()
     {
-        Dictionary<BWImage, int> hitCounts = new Dictionary<BWImage, int>();
+        Dictionary<BWImage, int> hitCounts = new();
         mostHitImage = null;
 
         // For each point, detect which image it intersects
-        foreach (var point in pointImages)
+        foreach (var point in _braillePins)
         {
             Vector2 screenPoint = point.rectTransform.position; // Center position in screen space
             Color32 pixel = default;
@@ -75,11 +75,10 @@ public class BWUIBasedSampler : MonoBehaviour
             // Set color based on detection
             if (hitImage != null)
             {
-                point.color = (pixel.r > 128 
+                point.SetActuated(pixel.r > 128
                     && pixel.g > 128
                     && pixel.b > 128
-                    && pixel.a >= AlphaThreshold)
-                    ? upColor : downColor;
+                    && pixel.a >= AlphaThreshold);
 
                 // Track hit count
                 if (!hitCounts.ContainsKey(hitImage))
@@ -89,7 +88,7 @@ public class BWUIBasedSampler : MonoBehaviour
             }
             else
             {
-                point.color = downColor;
+                point.SetActuated(false);
             }
         }
 

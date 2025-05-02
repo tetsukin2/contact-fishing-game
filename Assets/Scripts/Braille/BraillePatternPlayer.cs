@@ -5,7 +5,6 @@ using UnityEngine;
 public class BraillePatternPlayer : MonoBehaviour
 {
     public static BraillePatternPlayer Instance { get; private set; }
-
     public float PatternDelay = 0.2f; // Delay between patterns
 
     private class EncodedBraillePatternSequence

@@ -134,6 +134,8 @@ public class BraillePatternPlayer : MonoBehaviour
 
         return new EncodedBraillePattern
         {
+            //Value1 = (64 * v1[0] + 4 * v1[1] + 2 * v1[2] + v1[3] + 128 * v1[4] + 32 * v1[5] + 16 * v1[6] + 8 * v1[7]),
+            //Value2 = (64 * v2[0] + 4 * v2[1] + 2 * v2[2] + v2[3] + 128 * v2[4] + 32 * v2[5] + 16 * v2[6] + 8 * v2[7])
             Value1 = (64 * v1[0] + 4 * v1[1] + 2 * v1[2] + v1[3] + 128 * v1[4] + 32 * v1[5] + 16 * v1[6] + 8 * v1[7]),
             Value2 = (64 * v2[0] + 4 * v2[1] + 2 * v2[2] + v2[3] + 128 * v2[4] + 32 * v2[5] + 16 * v2[6] + 8 * v2[7])
         };

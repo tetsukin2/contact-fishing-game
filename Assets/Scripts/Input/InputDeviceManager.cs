@@ -278,7 +278,7 @@ public class InputDeviceManager : MonoBehaviour
                         UnityMainThreadDispatcher.Instance().Enqueue(() => JoystickPressed.Invoke());
                     }
 
-                    Debug.Log($"JoystickCursor: ({normX:F2}, {normY:F2}), {JoystickInput}");
+                    //Debug.Log($"JoystickCursor: ({normX:F2}, {normY:F2}), {JoystickInput}");
                 }
             }
             yield return new WaitForSeconds(0.01f);

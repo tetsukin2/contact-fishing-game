@@ -298,9 +298,9 @@ public class InputDeviceManager : MonoBehaviour
             return;
         }
 
-        // TEMPORARY FLIPPER SINCE WE'RE INVERTED SOMEHOW
-        val1 = ~val1 & 0xFF; // Invert all bits and mask to 8 bits
-        val2 = ~val2 & 0xFF; // Invert all bits and mask to 8 bits
+        // TEMPORARY FLIPPING UNTIL INVERSION FIXED OR IDK
+        val1 = 255 - val1;
+        val2 = 255 - val2;
 
         //string message = $"<{t1:D3}{t2:D3}{i1:D3}{i2:D3}>"; // "<AAABBBCCCDDD>"
         string message = $"<{val1:D3}{val2:D3}>"; // "<AAABBBCCCDDD>"

@@ -9,6 +9,10 @@ public class JoystickCursorSelectable : MonoBehaviour
     public Image BWImage;                 // The black-and-white image to detect over
     [SerializeField] private Sprite _normalSprite;
     [SerializeField] private Sprite _hoverSprite;
+    public bool TriggersActuation = true;
+    public string TooltipTitle;
+    public string TooltipDescription;
+
     public Texture2D texture { get; private set; }          // Cached texture
     public Color32[] pixelData { get; private set; }      // Cached pixels
     public int width { get; private set; }

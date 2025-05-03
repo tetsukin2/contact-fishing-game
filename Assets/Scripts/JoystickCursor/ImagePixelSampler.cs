@@ -16,6 +16,7 @@ public class ImagePixelSampler : MonoBehaviour
     public JoystickCursorSelectable CurrentSelectable { get; private set; } = null; // Internally tracked most-hit image
 
     private List<CursorBraillePin> _braillePins; // Small UI images that represent points around the cursor
+    private bool _tooltipShowing = false;
 
     private void Start()
     {
@@ -27,10 +28,11 @@ public class ImagePixelSampler : MonoBehaviour
     void Update()
     {
         if (GameManager.Instance.CurrentState != GameManager.Instance.EncyclopediaState) return;
-        Debug.Log(CurrentSelectable);
+        //Debug.Log(CurrentSelectable);
 
         Dictionary<JoystickCursorSelectable, int> hitCounts = new();
 
+        int pinsThatWouldActivate = 0;
         // For each point, detect which image it intersects
         foreach (var point in _braillePins)
         {
@@ -51,7 +53,8 @@ public class ImagePixelSampler : MonoBehaviour
             // Set color based on detection
             if (hitSelectable != null)
             {
-                point.SetActuated(pixel.r > 128
+                point.SetActuated(hitSelectable.TriggersActuation
+                    && pixel.r > 128
                     && pixel.g > 128
                     && pixel.b > 128
                     && pixel.a >= AlphaThreshold);
@@ -59,13 +62,13 @@ public class ImagePixelSampler : MonoBehaviour
                 // Track hit count
                 if (!hitCounts.ContainsKey(hitSelectable))
                     hitCounts[hitSelectable] = 0;
-
                 hitCounts[hitSelectable]++;
             }
             else
             {
                 point.SetActuated(false);
             }
+            pinsThatWouldActivate += point.Value; // Sum activations of all pins
         }
 
         // Determine which image had the most hits
@@ -86,11 +89,36 @@ public class ImagePixelSampler : MonoBehaviour
             CurrentSelectable = newSelectable;
             onImageSelected.Invoke(CurrentSelectable != null ? CurrentSelectable.BWImage : null);
 
+            if (CurrentSelectable != null)
+            {
+                UIManager.Instance.JoystickCursor.Tooltip.Show(
+                    CurrentSelectable.TooltipTitle,
+                    CurrentSelectable.TooltipDescription);
+            }
+            else
+            {
+                UIManager.Instance.JoystickCursor.Tooltip.Hide();
+            }
+
             // Update hover states for all selectables
             foreach (var selectable in SelectablesToSample)
             {
                 selectable.SetHover(selectable == CurrentSelectable);
             }
+        }
+
+        // Handle tooltip visibility
+        if (!_tooltipShowing && CurrentSelectable != null && pinsThatWouldActivate > 0)
+        {
+            _tooltipShowing = true;
+            UIManager.Instance.JoystickCursor.Tooltip.Show(
+                CurrentSelectable.TooltipTitle,
+                CurrentSelectable.TooltipDescription);
+        }
+        else if (_tooltipShowing && pinsThatWouldActivate == 0)
+        {
+            _tooltipShowing = false;
+            UIManager.Instance.JoystickCursor.Tooltip.Hide();
         }
     }
 

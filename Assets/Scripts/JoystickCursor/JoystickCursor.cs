@@ -6,8 +6,12 @@ public class JoystickCursor : MonoBehaviour
 {
     public RectTransform CursorRect;       // Assign your UI cursor object here
     public RectTransform CanvasRect;       // Reference to your Canvas (should use Screen Space - Overlay or Camera)
+    public Vector2 ResetPosition;
     public float CursorSpeed = 500f;             // Movement CursorSpeed in pixels per second
+    [SerializeField] private JoystickCursorTooltip _tooltip; // Tooltip for the cursor
 
+    [Space]
+    [Header("Pins")]
     [SerializeField] private CursorBraillePin _00;
     [SerializeField] private CursorBraillePin _01;
     [SerializeField] private CursorBraillePin _02;
@@ -29,6 +33,14 @@ public class JoystickCursor : MonoBehaviour
     public int BrailleVal2 { get; private set; } = 0;
     private Vector2 CurrentCursorPos;
 
+    public JoystickCursorTooltip Tooltip => _tooltip;
+
+    private void Awake()
+    {
+        // Initialize the tooltip with the cursor and canvas rect transforms
+        _tooltip.Initialize(CursorRect, CanvasRect);
+    }
+
     void Start()
     {
         CurrentCursorPos = CursorRect.anchoredPosition;
@@ -47,7 +59,7 @@ public class JoystickCursor : MonoBehaviour
         if (state == GameManager.Instance.EncyclopediaState)
         {
             // Reset cursor position when entering the encyclopedia state
-            CurrentCursorPos = Vector2.zero;
+            CurrentCursorPos = ResetPosition;
             CursorRect.anchoredPosition = CurrentCursorPos;
         }
     }

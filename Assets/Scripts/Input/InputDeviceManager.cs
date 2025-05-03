@@ -34,7 +34,7 @@ public class InputDeviceManager : MonoBehaviour
     private bool isScanning = true;
 
     private static Vector3 imuRotationRaw = Vector3.zero; 
-    public static Vector2 joystickInput = Vector2.zero;
+    public static Vector2 JoystickInput { get; private set; } = Vector2.zero;
     public static bool JoystickHeld = false;
     public static bool IsConnected = false;
 
@@ -145,7 +145,7 @@ public class InputDeviceManager : MonoBehaviour
                 }
                 else if (characteristic.uuid.ToLower().Contains(JOY_CHARACTERISTIC_UUID.ToLower()))
                 {
-                    QueueConnectionStatusLog("Joystick Characteristic Found!");
+                    QueueConnectionStatusLog("JoystickCursor Characteristic Found!");
                     SubscribeToJoystick(deviceId, service.uuid, characteristic.uuid);
                     characteristicsLoaded++;
                 }
@@ -193,12 +193,12 @@ public class InputDeviceManager : MonoBehaviour
             bool subscribed = BleApi.SubscribeCharacteristic(deviceId, serviceUuid, characteristicUuid, true);
             if (subscribed)
             {
-                QueueConnectionStatusLog("Subscribed to Joystick!");
+                QueueConnectionStatusLog("Subscribed to JoystickCursor!");
                 UnityMainThreadDispatcher.Instance().Enqueue(() => StartCoroutine(ReadJoystickData(deviceId, serviceUuid, characteristicUuid)));
                 return;
             }
         }
-        Debug.LogError("❌ Failed to subscribe to Joystick after retries.");
+        Debug.LogError("❌ Failed to subscribe to JoystickCursor after retries.");
     }
 
     private IEnumerator ReadIMUData(string deviceId, string serviceUuid, string characteristicUuid)
@@ -239,49 +239,72 @@ public class InputDeviceManager : MonoBehaviour
                     byte rawX = data.buf[0];
                     byte rawY = data.buf[1];
                     byte sw = data.buf[2];
+                    //Debug.Log(sw);
 
                     float normX = (rawX - 128) / 128f;
                     float normY = (rawY - 128) / 128f;
 
-                    Vector2 rawInput = new Vector2(normX, normY);
+                    Vector2 rawInput = new(normX, normY);
 
                     if (!calibrated && rawInput != Vector2.zero)
                     {
                         joystickCenter = rawInput;
                         calibrated = true;
-                        QueueConnectionStatusLog($"Joystick Center Calibrated: {joystickCenter}");
+                        QueueConnectionStatusLog($"JoystickCursor Center Calibrated: {joystickCenter}");
                     }
 
-                    Vector2 adjustedInput = rawInput - joystickCenter;
+                    // Adjust for calibrated center
+                    Vector2 adjustedInputRaw = rawInput - joystickCenter;
 
+                    // Compute per-axis scaling, as center calibration may not be 0,0
+                    float scaledX = ( adjustedInputRaw.x >= 0 )
+                        ? adjustedInputRaw.x / (1f - joystickCenter.x)
+                        : adjustedInputRaw.x / (1f + joystickCenter.x);
+
+                    float scaledY = ( adjustedInputRaw.y >= 0 )
+                        ? adjustedInputRaw.y / (1f - joystickCenter.y)
+                        : adjustedInputRaw.y / (1f + joystickCenter.y);
+
+                    Vector2 adjustedInput = new(scaledX, scaledY);
+
+                    // Deadzone
                     if (adjustedInput.magnitude < 0.2f)
                         adjustedInput = Vector2.zero;
 
-                    joystickInput = adjustedInput;
+                    JoystickInput = adjustedInput;
                     bool wasJoystickPreviouslyPressed = JoystickHeld;
-                    JoystickHeld = (sw == 1);
+                    JoystickHeld = (sw == 1) || Input.GetKey(KeyCode.T);
+                    //Debug.Log($"{wasJoystickPreviouslyPressed}, {JoystickHeld}");
                     if ( !wasJoystickPreviouslyPressed && JoystickHeld)
                     {
                         UnityMainThreadDispatcher.Instance().Enqueue(() => JoystickPressed.Invoke());
+                        Debug.Log("Joystick Pressed!");
                     }
 
-                    //Debug.Log($"Joystick: ({normX:F2}, {normY:F2}), Pressed: {JoystickHeld}");
+                    //Debug.Log(Input.GetKey(KeyCode.T));
+
+                    //Debug.Log($"JoystickCursor: ({normX:F2}, {normY:F2}), {JoystickInput}");
                 }
             }
             yield return new WaitForSeconds(0.01f);
         }
     }
     
-    public static void SendBrailleASCII(char side, int val1, int val2)
+    public static void SendBrailleASCII(int val1, int val2)
     {
         if (!IsConnected)
         {
-            Debug.LogWarning("🟡 Not connected to BLE.");
+            Debug.Log("Not yet connected to BLE.");
             return;
         }
 
-        string message = $"{side:D1}<{val1:D3}{val2:D3}>"; // "0<255255>" - 9 chars
-        byte[] payload = Encoding.ASCII.GetBytes(message); // Should be exactly 9 bytes
+        // TEMPORARY FLIPPING UNTIL INVERSION FIXED OR IDK
+        val1 = 255 - val1;
+        val2 = 255 - val2;
+
+        //string message = $"<{t1:D3}{t2:D3}{i1:D3}{i2:D3}>"; // "<AAABBBCCCDDD>"
+        string message = $"<{val1:D3}{val2:D3}>"; // "<AAABBBCCCDDD>"
+        byte[] payload = Encoding.ASCII.GetBytes(message); // Should be exactly ? bytes
 
         BleApi.BLEData bleData = new()
         {

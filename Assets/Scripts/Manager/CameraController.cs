@@ -14,7 +14,8 @@ public class CameraController : MonoBehaviour
     private void OnGameStateUpdated(GameState newState)
     {
         if (newState == GameManager.Instance.MainMenuState
-            || newState == GameManager.Instance.EndScoreState)
+            || newState == GameManager.Instance.EndScoreState
+            || newState == GameManager.Instance.EncyclopediaState)
         {
             _gameplayVCam.Priority = 0;
             _menuVCam.Priority = 10;

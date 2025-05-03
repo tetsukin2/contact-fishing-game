@@ -17,7 +17,7 @@ public class CastingState : FishingState
             if (_hasCast) // Flag as this object exists even when in another state
             {
                 fishingManager.TransitionToState(fishingManager.WaitingForBiteState);
-                BraillePatternPlayer.Instance.StopPatternSequence(BraillePatternPlayer.Finger.BOTH);
+                BraillePatternPlayer.Instance.StopPatternSequence();
                 _hasCast = false;
             }});
     }
@@ -57,7 +57,7 @@ public class CastingState : FishingState
                 _hasCast = true;
                 _currentCastSteps = 0;
                 fishingManager.CastLine();
-                BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", BraillePatternPlayer.Finger.THUMB, true);
+                BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", true);
                 //BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", BraillePatternPlayer.Finger.INDEX, true);
             }
             else // Update prompt otherwise

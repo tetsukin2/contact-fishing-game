@@ -7,6 +7,7 @@ public class FishingRodMovement : MonoBehaviour
 {
     public enum MovementMode
     {
+        Idle,
         Normal,
         Menu
     }
@@ -22,13 +23,16 @@ public class FishingRodMovement : MonoBehaviour
     [SerializeField] private float _menuOffsetRotation = -30f;
 
     private Vector3 rodRotation = Vector3.zero;
-    private Vector3 velocity = Vector3.zero; 
+    private Vector3 velocity = Vector3.zero;
+
+    private Vector3 _defaultRotation;
     
     public float MenuRotationMax => 30f;
     public float MenuRotationMin => -30f;
 
     private void Start()
     {
+        _defaultRotation = FishingRodPivot.localRotation.eulerAngles;
         GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
     }
 
@@ -63,15 +67,27 @@ public class FishingRodMovement : MonoBehaviour
 
             FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y + _menuOffsetRotation, 0, -rodRotation.x);
         }
+        else if (_currentMovementMode == MovementMode.Idle)
+        {
+            rodRotation.x = Mathf.SmoothDamp(rodRotation.x, _defaultRotation.x * sensitivity, ref velocity.x, smoothFactor);
+            rodRotation.y = Mathf.SmoothDamp(rodRotation.y, _defaultRotation.y * sensitivity, ref velocity.y, smoothFactor);
+            rodRotation.z = Mathf.SmoothDamp(rodRotation.z, _defaultRotation.z * sensitivity, ref velocity.z, smoothFactor);
 
-        
+            FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y, 0, -rodRotation.x);
+        }
+
     }
 
     private void OnGameStateUpdated(GameState newState)
     {
+        Debug.Log("updating fishing rod movement mode");
         if (newState == GameManager.Instance.PlayingState)
         {
             _currentMovementMode = MovementMode.Normal;
+        }
+        else if (newState == GameManager.Instance.EncyclopediaState)
+        {
+            _currentMovementMode = MovementMode.Idle;
         }
         else //if (GameManager.Instance.CurrentGameState == GameStateName.GameStart)
         {

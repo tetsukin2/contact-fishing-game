@@ -22,7 +22,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
     [Tooltip("Enable debug printing to console")]
     [SerializeField] private bool _debugMode = false;  // Enable debug mode for testing
 
-    // Joystick rotation tracking
+    // JoystickCursor rotation tracking
     private bool _trackJoystickClockwise = true; // Flag to track clockwise rotation
     private float _previousJoystickAngle = 0f; // Previous angle of the joystick
     private float _cumulativeJoystickAngle = 0f; // Cumulative angular change
@@ -227,7 +227,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
     private void TrackJoystickRotations()
     {
         // Get the current joystick input
-        Vector2 joystickInput = InputDeviceManager.joystickInput;
+        Vector2 joystickInput = InputDeviceManager.JoystickInput;
 
         // Ignore if the joystick is not being moved
         if (joystickInput == Vector2.zero) return;
@@ -259,7 +259,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
             // Reset the cumulative angle, keeping the overflow
             _cumulativeJoystickAngle %= 360f;
 
-            Debug.Log($"Joystick Rotations: {_rotationCount}");
+            Debug.Log($"JoystickCursor Rotations: {_rotationCount}");
         }
 
         // Update the previous angle for the next frame

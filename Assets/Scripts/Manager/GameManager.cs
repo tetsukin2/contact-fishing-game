@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 
     // Game states
     public MainMenuGameState MainMenuState { get; private set; }
+    public EncyclopediaGameState EncyclopediaState { get; private set; }
     public GameStartGameState GameStartState { get; private set; }
     public PlayingGameState PlayingState { get; private set; }
     public GameEndGameState GameEndState { get; private set; }
@@ -59,6 +60,7 @@ public class GameManager : MonoBehaviour
 
         // Initialize states
         MainMenuState = new MainMenuGameState(this);
+        EncyclopediaState = new EncyclopediaGameState(this);
         GameStartState = new GameStartGameState(this);
         PlayingState = new PlayingGameState(this);
         GameEndState = new GameEndGameState(this);
@@ -67,6 +69,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // Reset ahead just in case, remove when inversion is fixed
+        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() =>
+        {
+            InputDeviceManager.SendBrailleASCII(0, 0);
+        });
+
         // TODO: Load new data every time total fish to catch is updated
         CurrentGameData = GameDataHandler.GetGameData("data", $"{_fishTotalToCatch}");
         InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => Time.timeScale = 1f);
@@ -86,6 +94,10 @@ public class GameManager : MonoBehaviour
             GameDataHandler.DeleteAllData();
             CurrentGameData = GameDataHandler.GetGameData("data", $"{_fishTotalToCatch}");
             Debug.Log("Debug: Deleting Data");
+        }
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            InputDeviceManager.Instance.JoystickPressed.Invoke();
         }
     }
 

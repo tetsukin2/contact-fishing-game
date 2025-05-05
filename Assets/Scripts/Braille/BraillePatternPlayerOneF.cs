@@ -9,7 +9,7 @@ public class BraillePatternPlayerOneF : MonoBehaviour
 
     //private class EncodedBraillePatternSequence
     //{
-    //    public string SequenceName; // Name of the sequence
+    //    public string SequenceName; // PromptName of the sequence
     //    public List<EncodedBraillePattern> Values; // List of encoded patterns
     //}
 
@@ -53,7 +53,7 @@ public class BraillePatternPlayerOneF : MonoBehaviour
     ///// <summary>
     ///// Play a braille pattern sequence
     ///// </summary>
-    ///// <param name="name">Name of the sequence</param>
+    ///// <param name="name">PromptName of the sequence</param>
     ///// <param name="loop">Whether to repeatedly play the sequence</param>
     //public void PlayPatternSequence(string name, bool loop)
     //{

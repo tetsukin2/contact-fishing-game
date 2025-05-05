@@ -17,7 +17,7 @@ public class PlayingGameState : GameState
         if (Input.GetKeyDown(KeyCode.E))
         {
             gameManager.AddFish();
-            Debug.Log("Debug: Adding Fish");
+            Debug.Log("Debug: Adding FishData");
         }
         
     }

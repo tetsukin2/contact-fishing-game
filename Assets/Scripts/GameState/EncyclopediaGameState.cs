@@ -18,7 +18,7 @@ public class EncyclopediaGameState : GameState
 
     public override void Exit()
     {
-        InputDeviceManager.SendBrailleASCII(0, 0); // Reset braille values
+        InputDeviceManager.SendBrailleASCII(0, 0, 0, 0); // Reset braille values
         Debug.Log("Exiting Encyclopedia State");
     }
 }

@@ -25,6 +25,9 @@ public class FishingManager : MonoBehaviour
         FishInspection
     }
 
+    [SerializeField] private FishTargeting _fishTargeting;
+
+    [Space]
     [Header("Fishing Rod")]
     public float RotationTriggerThreshold = 15f;  // Rotation threshold in degrees
     [SerializeField] private FishingBobber _fishingBobber; // Reference to the FishingBobber script
@@ -41,7 +44,7 @@ public class FishingManager : MonoBehaviour
 
     [Space]
     [Header("Bait Preparation")]
-    public int BaitPreparationSteps = 3;
+    public int BaitPreparationSteps = 1;
 
     [Space]
     [Header("Casting")]
@@ -62,12 +65,13 @@ public class FishingManager : MonoBehaviour
     public int ReelProgressAmount = 5;
     public string ReelForwardPromptName;
     public string ReelBackPromptName;
+    public float ReelForce = 1f; // Force applied to the bobber upward
     [SerializeField] private GUIPanel _reelGUI;
     [SerializeField] private Slider _reelProgressSlider;
     public List<ReelingState.ReelActionName> ReelActionSequence; //Sequence of actions to follow
 
     [Space]
-    [Header("Fish Inspection")]
+    [Header("FishData Inspection")]
     public float SideRotateUpAngle = 30f;
     public float SideRotateDownAngle = -30f; // Y rod rotation thresholds
     public string InspectNeutralPromptName;
@@ -87,6 +91,7 @@ public class FishingManager : MonoBehaviour
     public FishInspectionState FishInspectionState { get; private set; }
 
     // Some properties, mostly for fish states to access
+    public FishTargeting Targeting => _fishTargeting;
     public FishingBobber FishingBobber => _fishingBobber;
     public InputDeviceRotationHelper InputHelper => _inputHelper;
     public GameObject HookedFish => _hookedFish;
@@ -143,7 +148,7 @@ public class FishingManager : MonoBehaviour
         _fishingBobber.OnCast();
 
         // Start the parabolic trajectory coroutine
-        StartCoroutine(MoveBobberToLanding(_bobberLandTransform.position));
+        StartCoroutine(MoveBobberToLanding(_fishTargeting.Selection.transform.position));
 
         Debug.Log("Casting Fishing Line!");
     }
@@ -188,9 +193,9 @@ public class FishingManager : MonoBehaviour
 
     public void ReelIn()
     {
-        _fishingBobber.OnReel();
+        _fishingBobber.OnReel(ReelForce);
 
-        Fish caughtFish = FishLootTable.Instance.GetFishFromTable();
+        FishData caughtFish = FishLootTable.Instance.GetFishFromTable();
 
         Debug.Log("Reeling In!");
     }
@@ -220,7 +225,7 @@ public class FishingManager : MonoBehaviour
         _reelProgressSlider.value = Mathf.Min(value, _reelProgressSlider.maxValue);
     }
 
-    public void ShowFishInspection(Fish fish)
+    public void ShowFishInspection(FishData fish)
     {
         _fishInspectionGUI.Show(true);
         _fishInspectionGUI.ShowFish(fish);

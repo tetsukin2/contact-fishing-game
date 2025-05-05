@@ -15,7 +15,7 @@ public class FishInspectionPanel : GUIPanel
         Show(false);
     }
 
-    public void ShowFish(Fish fish)
+    public void ShowFish(FishData fish)
     {
         _fishImage.sprite = fish.Sprite;
         _fishNameText.text = fish.FishName;

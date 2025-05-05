@@ -20,7 +20,7 @@ public class WaitingForBiteState : FishingState
         if (_elapsedTime >= fishingManager.FishBiteWaitDuration)
         {
             // Simulate a fish bite
-            Debug.Log("Fish bit the bait!");
+            Debug.Log("FishData bit the bait!");
             fishingManager.TransitionToState(fishingManager.ReelingState);
         }
     }

@@ -72,16 +72,18 @@ public class GameManager : MonoBehaviour
         // Reset ahead just in case, remove when inversion is fixed
         InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() =>
         {
-            InputDeviceManager.SendBrailleASCII(0, 0);
+            InputDeviceManager.SendBrailleASCII(0, 0, 0, 0);
         });
 
         // TODO: Load new data every time total fish to catch is updated
         CurrentGameData = GameDataHandler.GetGameData("data", $"{_fishTotalToCatch}");
         InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => Time.timeScale = 1f);
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
 
         // Start in the main menu state
-        TransitionToState(MainMenuState);
+        //TransitionToState(MainMenuState);
+
+        TransitionToState(PlayingState);
     }
 
     private void Update()

@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a10e1e1a835e3f9408ede1f0d79d4363, type: 3}
+  m_Script: {fileID: 11500000, guid: 0acac9c70764aad4fb9571274963a0e7, type: 3}
   m_Name: SeaBass
   m_EditorClassIdentifier: 
-  FishName: Sea Bass
+  FishName: Seabass
   Sprite: {fileID: 21300000, guid: c3b53553e98122344a0b33ff3636d19c, type: 3}
   Rarity: 0

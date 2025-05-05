@@ -51,6 +51,7 @@ public class ReelingState : FishingState
 
     public override void Exit()
     {
+        CameraController.Instance.FishSelectVCam.Priority = 0; // Reset camera priority
         Debug.Log("Exiting Reeling State");
         fishingManager.StopReel();
     }
@@ -67,6 +68,7 @@ public class ReelingState : FishingState
         {
             Debug.Log("OnReel Progress Complete!");
             fishingManager.ReelIn(); // Call the reel in function
+            fishingManager.Targeting.CatchSelected(); // Catch the fish and do resets
             fishingManager.TransitionToState(fishingManager.FishInspectionState); // Transition back to casting state
         }
         else

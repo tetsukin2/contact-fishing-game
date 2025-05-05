@@ -290,7 +290,7 @@ public class InputDeviceManager : MonoBehaviour
         }
     }
     
-    public static void SendBrailleASCII(int val1, int val2)
+    public static void SendBrailleASCII(int t0, int t1, int i0, int i1)
     {
         if (!IsConnected)
         {
@@ -299,11 +299,11 @@ public class InputDeviceManager : MonoBehaviour
         }
 
         // TEMPORARY FLIPPING UNTIL INVERSION FIXED OR IDK
-        val1 = 255 - val1;
-        val2 = 255 - val2;
+        //val1 = 255 - val1;
+        //val2 = 255 - val2;
 
-        //string message = $"<{t1:D3}{t2:D3}{i1:D3}{i2:D3}>"; // "<AAABBBCCCDDD>"
-        string message = $"<{val1:D3}{val2:D3}>"; // "<AAABBBCCCDDD>"
+        string message = $"<{t0:D3}{t1:D3}{i0:D3}{i1:D3}>"; // "<AAABBBCCCDDD>"
+        //string message = $"<{val1:D3}{val2:D3}>"; // "<AAABBBCCCDDD>"
         byte[] payload = Encoding.ASCII.GetBytes(message); // Should be exactly ? bytes
 
         BleApi.BLEData bleData = new()
@@ -318,7 +318,7 @@ public class InputDeviceManager : MonoBehaviour
         Array.Copy(payload, bleData.buf, payload.Length);
 
         Debug.Log($"📤 Sending ASCII Braille payload: {message}");
-        Debug.Log($"📦 Raw Payload (hex): {BitConverter.ToString(payload)}");
+        //Debug.Log($"📦 Raw Payload (hex): {BitConverter.ToString(payload)}");
 
         bool success = BleApi.SendData(in bleData, false);
         if (success)

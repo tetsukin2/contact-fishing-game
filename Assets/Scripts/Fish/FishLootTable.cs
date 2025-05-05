@@ -13,7 +13,7 @@ public class FishLootTable : MonoBehaviour
     [System.Serializable]
     private class FishLoot
     {
-        public Fish Fish;
+        public FishData Fish;
         public int Weight;
     }
 
@@ -37,7 +37,7 @@ public class FishLootTable : MonoBehaviour
     //public void ChangeWeights(FishRarity fishRarity, int value)
     //{
     //    foreach (FishLoot fishLoot in _fishLootTable)
-    //        if (fishLoot.Fish.Rarity == fishRarity)
+    //        if (fishLoot.FishData.Rarity == fishRarity)
     //            fishLoot.Weight = Mathf.Clamp(fishLoot.Weight + value, 0, int.MaxValue);
     //}
 
@@ -45,7 +45,7 @@ public class FishLootTable : MonoBehaviour
     /// called by GetFish to get a fish from a specific table
     /// </summary>
     /// <returns>a fish</returns>
-    public Fish GetFishFromTable()
+    public FishData GetFishFromTable()
     {
         // Calculate total table weight
         int totalWeight = 0;
@@ -71,7 +71,7 @@ public class FishLootTable : MonoBehaviour
             weight -= fishLoot.Weight;
         }
 
-        Debug.LogError("Get Fish from DB error");
+        Debug.LogError("Get FishData from DB error");
         return null;
     }
 }

@@ -9,9 +9,10 @@ public class FishingBobber : MonoBehaviour
         bobberRigidbody = GetComponent<Rigidbody>();
     }
 
-    public void OnReel()
+    public void OnReel(float reelForce)
     {
         bobberRigidbody.isKinematic = false;
+        bobberRigidbody.AddForce(Vector3.up * reelForce, ForceMode.Impulse);
     }
 
     public void OnCast()

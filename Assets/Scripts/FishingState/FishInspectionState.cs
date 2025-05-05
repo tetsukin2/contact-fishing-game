@@ -6,7 +6,7 @@ public class FishInspectionState : FishingState
     public FishInspectionState(FishingManager fishingManager) : base(fishingManager) { }
 
     private bool _reachedInitialRotation = false; // Rotation is weird on this axis
-    private bool _fishInspected = false; // Fish needs to be picked up first
+    private bool _fishInspected = false; // FishData needs to be picked up first
 
     public override void Enter()
     {
@@ -16,7 +16,7 @@ public class FishInspectionState : FishingState
         fishingManager.HookedFish.SetActive(true); // Show the fish in the inspection panel
         _reachedInitialRotation = false;
         _fishInspected = false;
-        Debug.Log("Entering Fish Inspection State");
+        Debug.Log("Entering FishData Inspection State");
     }
 
     public override void Update()
@@ -38,7 +38,7 @@ public class FishInspectionState : FishingState
                 fishingManager.ShowInputPrompt(fishingManager.InspectNeutralPromptName);
                 fishingManager.HookedFish.SetActive(false); // Hide the fish, we caught it
                 _fishInspected = true;
-                Debug.Log("Fish inspected");
+                Debug.Log("FishData inspected");
             }
         }
         else if (_fishInspected)
@@ -52,7 +52,7 @@ public class FishInspectionState : FishingState
             else if (_reachedInitialRotation && // Now rotate down
                 fishingManager.InputHelper.HasReachedRotationY(fishingManager.SideRotateDownAngle))
             {
-                Debug.Log("Fish caught");
+                Debug.Log("FishData caught");
                 GameManager.Instance.AddFish();
                 fishingManager.TransitionToState(fishingManager.BaitPreparationState);
             }
@@ -62,7 +62,7 @@ public class FishInspectionState : FishingState
 
     public override void Exit()
     {
-        Debug.Log("Exiting Fish Inspection State");
+        Debug.Log("Exiting FishData Inspection State");
         fishingManager.HideFishInspection();
 
     }

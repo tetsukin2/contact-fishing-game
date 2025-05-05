@@ -16,6 +16,7 @@ public class CastingState : FishingState
         fishingManager.BobberHitWater.AddListener(() => {
             if (_hasCast) // Flag as this object exists even when in another state
             {
+                fishingManager.Targeting.LureFish(); // Lure the fish
                 fishingManager.TransitionToState(fishingManager.WaitingForBiteState);
                 BraillePatternPlayer.Instance.StopPatternSequence();
                 _hasCast = false;
@@ -24,11 +25,20 @@ public class CastingState : FishingState
 
     public override void Enter()
     {
+        // Fish selection setup
+        CameraController.Instance.FishSelectVCam.Priority = 10;
+        fishingManager.Targeting.CanChangeSelection = true;
+        fishingManager.Targeting.SetRandomFishAsSelected();
+
+        // Cast tracking
         _currentCastSteps = 0;
         _hasCast = false;
+
+        // Cast labels
         fishingManager.StateLabelPanel.SetLabel(FishingStateName.Casting);
-        fishingManager.InputHelper.ClearRotationHistory(); // Clean read for casting
         fishingManager.ShowInputPrompt(fishingManager.CastBackPromptName);
+
+        fishingManager.InputHelper.ClearRotationHistory(); // Clean read for casting
         Debug.Log("Entering Casting State");
     }
 
@@ -48,6 +58,8 @@ public class CastingState : FishingState
         else if (_hasCastBack 
             && fishingManager.InputHelper.HasReachedRotationY(fishingManager.RotateDownAngle))
         {
+            fishingManager.Targeting.CanChangeSelection = false; // Disable fish selection while casting
+            
             // Reset for return to cast forward
             _hasCastBack = false;
             fishingManager.ShowInputPrompt("");

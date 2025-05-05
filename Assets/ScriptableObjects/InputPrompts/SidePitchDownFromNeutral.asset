@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SidePitchDownFromNeutral
   m_EditorClassIdentifier: 
   PromptName: SidePitchDownFromNeutral
-  Message: 
+  Message: While on its side, tilt controller downwards
   Video: {fileID: 32900000, guid: 5c5724a0090e4c24199f64d11951aa42, type: 3}

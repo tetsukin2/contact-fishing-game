@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class FishEntity : MonoBehaviour
 {
@@ -21,8 +22,14 @@ public class FishEntity : MonoBehaviour
     public float struggleAngle = 20f;     // degrees
     public float struggleSpeed = 6f;
 
+    /// <summary>
+    /// Event to trigger when the fish reaches the lure location
+    /// </summary>
+    public UnityEvent ReachedLureLocation { get; private set; } = new();
+
     private float _struggleTimer = 0f;
     private bool _isBeingLured = false; // Flag to check if the fish is being lured
+    private bool _hasReachedLureLocation = false;
     private float currentTurnSpeed = 0f;
     private Vector3 targetPoint;
 
@@ -52,6 +59,7 @@ public class FishEntity : MonoBehaviour
 
     public void ReleaseFish()
     {
+        _hasReachedLureLocation = false;
         _isBeingLured = false;
         _struggleTimer = 0f; // Reset struggle timer
     }
@@ -92,6 +100,13 @@ public class FishEntity : MonoBehaviour
         Vector3 toTarget = transform.position - Fish.position;
         if (Vector3.Distance(Fish.position, transform.position) < 0.2f)
         {
+            if (!_hasReachedLureLocation)
+            {
+                Debug.Log("Fish reached lure location");
+                _hasReachedLureLocation = true;
+                Fish.position = transform.position; // snap to lure position
+                ReachedLureLocation.Invoke(); // trigger event
+            }
             DoFishStruggle();
         }
 
@@ -139,6 +154,6 @@ public class FishEntity : MonoBehaviour
     {
         Vector2 randomOffset = Random.insideUnitCircle * SwimMaxRadius;
         targetPoint = transform.position + new Vector3(randomOffset.x, -SwimDepth, randomOffset.y);
-        Debug.Log("picked new point at " + targetPoint);
+        //Debug.Log("picked new point at " + targetPoint);
     }
 }

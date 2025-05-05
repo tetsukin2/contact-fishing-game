@@ -37,6 +37,7 @@ public class CastingState : FishingState
         // Cast labels
         fishingManager.StateLabelPanel.SetLabel(FishingStateName.Casting);
         fishingManager.ShowInputPrompt(fishingManager.CastBackPromptName);
+        fishingManager.ShowSecondInputPrompt(fishingManager.CastSelectPromptName);
 
         fishingManager.InputHelper.ClearRotationHistory(); // Clean read for casting
         Debug.Log("Entering Casting State");
@@ -47,35 +48,45 @@ public class CastingState : FishingState
         if (_hasCast) // Don't do any more of this stuff if line alreaddy cast
             return;
 
-        // OnCast back
         if (!_hasCastBack 
             && fishingManager.InputHelper.HasReachedRotationY(fishingManager.RotateUpAngle))
         {
-            _hasCastBack = true;
-            fishingManager.ShowInputPrompt(fishingManager.CastForwardPromptName);
+            OnCastBack();
         }
         // OnCast forward
         else if (_hasCastBack 
             && fishingManager.InputHelper.HasReachedRotationY(fishingManager.RotateDownAngle))
         {
-            fishingManager.Targeting.CanChangeSelection = false; // Disable fish selection while casting
-            
-            // Reset for return to cast forward
-            _hasCastBack = false;
+            OnCastForward();
+        }
+    }
+
+    private void OnCastBack()
+    {
+        _hasCastBack = true;
+        fishingManager.ShowInputPrompt(fishingManager.CastForwardPromptName);
+    }
+
+    private void OnCastForward()
+    {
+        fishingManager.Targeting.CanChangeSelection = false; // Disable fish selection while casting
+
+        // Reset for return to cast forward
+        _hasCastBack = false;
+        _currentCastSteps++;
+        if (_currentCastSteps >= fishingManager.CastSteps) // cast proper if steps reached
+        {
+            _hasCast = true;
+            _currentCastSteps = 0;
+            fishingManager.CastLine();
             fishingManager.ShowInputPrompt("");
-            _currentCastSteps++;
-            if (_currentCastSteps >= fishingManager.CastSteps) // cast proper if steps reached
-            {
-                _hasCast = true;
-                _currentCastSteps = 0;
-                fishingManager.CastLine();
-                BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", true);
-                //BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", BraillePatternPlayer.Finger.INDEX, true);
-            }
-            else // Update prompt otherwise
-            {
-                fishingManager.ShowInputPrompt(fishingManager.CastBackPromptName);
-            }
+            fishingManager.ShowSecondInputPrompt("");
+            BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", true);
+            //BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", BraillePatternPlayer.Finger.INDEX, true);
+        }
+        else // Update prompt otherwise
+        {
+            fishingManager.ShowInputPrompt(fishingManager.CastBackPromptName);
         }
     }
 

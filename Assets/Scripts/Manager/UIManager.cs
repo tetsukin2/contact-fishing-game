@@ -12,6 +12,11 @@ public class UIManager : MonoBehaviour
     [Space]
     [Header("Main Menu")]
     [SerializeField] private GUIPanel _mainMenuSelectGUI;
+    [SerializeField] private GUIPanel _mainMenuGUI;
+    [SerializeField] private InputPromptPanel _mainMenuPrompt; // Reference to the input prompt panel
+    [SerializeField] private InputPromptPanel _mainMenuSecondPrompt; // Reference to the input prompt panel
+    [SerializeField] private InputPrompt _mainMenuInput; // List of sprites for input prompts
+    [SerializeField] private InputPrompt _mainMenuSecondInput; // List of sprites for input prompts
 
     [Space]
     [Header("Encyclopedia")]
@@ -93,6 +98,9 @@ public class UIManager : MonoBehaviour
     {
         // Set visibility of main menu
         _mainMenuSelectGUI.Show(newState == GameManager.Instance.MainMenuState);
+        _mainMenuGUI.Show(newState == GameManager.Instance.MainMenuState);
+        _mainMenuPrompt.SetInputPrompt(_mainMenuInput);
+        _mainMenuSecondPrompt.SetInputPrompt(_mainMenuSecondInput);
 
         // Set visibility of encyclopedia
         _encyclopediaGUI.Show(newState == GameManager.Instance.EncyclopediaState);

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: RollRight
   m_EditorClassIdentifier: 
   PromptName: RollRight
-  Message: 
+  Message: Tilt controller all the way to the right
   Video: {fileID: 32900000, guid: b149063509fd2b343944b7bcf8c6791d, type: 3}

@@ -81,9 +81,9 @@ public class GameManager : MonoBehaviour
         //Time.timeScale = 0f;
 
         // Start in the main menu state
-        //TransitionToState(MainMenuState);
+        TransitionToState(MainMenuState);
 
-        TransitionToState(PlayingState);
+        //TransitionToState(PlayingState);
     }
 
     private void Update()

@@ -31,7 +31,8 @@ public class FishingManager : MonoBehaviour
 
     [Space]
     [Header("UI")]
-    [SerializeField] private DynamicVideoPanel _inputPromptPanel; // Reference to the input prompt panel
+    [SerializeField] private InputPromptPanel _inputPromptPanel; // Reference to the input prompt panel
+    [SerializeField] private InputPromptPanel _secondInputPromptPanel; // Reference to the input prompt panel
     [SerializeField] private FishingStateLabelPanel _stateLabelPanel; // Reference to the state label panel
     [SerializeField] private List<InputPrompt> _inputPrompts; // List of sprites for input prompts
 
@@ -53,7 +54,7 @@ public class FishingManager : MonoBehaviour
 
     [Space]
     [Header("WaitingForBite")]
-    public float FishBiteWaitDuration = 2f;
+    //public float FishBiteWaitDuration = 2f;
 
     [Space]
     [Header("Reeling")]
@@ -111,6 +112,7 @@ public class FishingManager : MonoBehaviour
         //CastLine();
         CastingState.Setup();
         ReelingState.Setup();
+        _secondInputPromptPanel.Show(false);
 
         StopReel(); // Hide the reel GUI at the start
         _hookedFish.SetActive(false);
@@ -234,17 +236,40 @@ public class FishingManager : MonoBehaviour
         _fishInspectionGUI.Show(false);
     }
 
+    /// <summary>
+    /// Show primary input prompt
+    /// </summary>
+    /// <param name="name"></param>
     public void ShowInputPrompt(string name)
     {
         foreach (var prompt in _inputPrompts)
         {
             if (prompt.PromptName == name)
             {
-                _inputPromptPanel.SetVideo(prompt.Video);
+                _inputPromptPanel.SetInputPrompt(prompt);
                 return;
             }
         }
-        _inputPromptPanel.SetVideo(null);
+        _inputPromptPanel.SetInputPrompt(null);
+        return;
+    }
+
+    /// <summary>
+    /// Show secondary input prompt
+    /// </summary>
+    /// <param name="name"></param>
+    public void ShowSecondInputPrompt(string name)
+    {
+        Debug.Log($"2nd prompt {name}");
+        foreach (var prompt in _inputPrompts)
+        {
+            if (prompt.PromptName == name)
+            {
+                _secondInputPromptPanel.SetInputPrompt(prompt);
+                return;
+            }
+        }
+        _secondInputPromptPanel.SetInputPrompt(null);
         return;
     }
 }

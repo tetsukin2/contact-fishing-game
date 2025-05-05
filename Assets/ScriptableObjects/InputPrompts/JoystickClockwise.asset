@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: JoystickClockwise
   m_EditorClassIdentifier: 
   PromptName: JoystickClockwise
-  Message: 
+  Message: Rotate joystick clockwise
   Video: {fileID: 32900000, guid: ef4f40b2e8db7054f8beaef8284b126a, type: 3}

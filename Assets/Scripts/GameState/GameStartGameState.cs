@@ -19,7 +19,7 @@ public class GameStartGameState : GameState
     public override void Update()
     {
         _gameStartTimer += Time.deltaTime;
-        Debug.Log(_gameStartTimer);
+        //Debug.Log(_gameStartTimer);
         // Must be in this order or lowest always triggers
         if (_gameStartTimer >= gameManager.GameStartDuration)
         {

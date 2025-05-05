@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: RotateSide
   m_EditorClassIdentifier: 
   PromptName: RotateSide
-  Message: 
+  Message: Turn controller on its side
   Video: {fileID: 32900000, guid: 9262dd04e51ea13469635305810e6ec5, type: 3}

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: JoystickSnap
   m_EditorClassIdentifier: 
   PromptName: JoystickSnap
-  Message: 
+  Message: Move the joystick to select a fish
   Video: {fileID: 32900000, guid: 52f06b21842c2814e939f22dc1a7c7df, type: 3}

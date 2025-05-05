@@ -10,7 +10,11 @@ public class DynamicVideoPanel : GUIPanel
     public void Awake()
     {
         // Hide the panel at the start if nothing's assigned to it
-        Show(_videoPlayer.clip != null);
+        // formatted this way as directly assigning value may cause panel to show up unintended
+        if (_videoPlayer.clip == null)
+        {
+            Show(false);
+        }
     }
 
     public void SetVideo(VideoClip videoClip)

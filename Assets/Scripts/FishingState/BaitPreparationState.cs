@@ -11,7 +11,7 @@ public class BaitPreparationState : FishingState
     {
         fishingManager.StateLabelPanel.SetLabel(FishingStateName.BaitPreparation);
         _currentStep = 0; // Reset step counter
-        fishingManager.ShowInputPrompt("ControllerFullRight");
+        fishingManager.ShowInputPrompt(fishingManager.BaitPrepPromptRightName);
         Debug.Log("Entering Bait Preparation State");
     }
 
@@ -20,13 +20,13 @@ public class BaitPreparationState : FishingState
         // Alternate directions, even (and start) directions go upward
         if (_currentStep % 2 == 0 && fishingManager.InputHelper.IsNearRotationX(-80f))
         {
-            fishingManager.ShowInputPrompt("ControllerFullLeft");
+            fishingManager.ShowInputPrompt(fishingManager.BaitPrepPromptLeftName);
             //Debug.Log(_currentStep);
             _currentStep++;
         }
         else if (_currentStep % 2 != 0 && fishingManager.InputHelper.IsNearRotationX(80f))
         {
-            fishingManager.ShowInputPrompt("ControllerFullRight");
+            fishingManager.ShowInputPrompt(fishingManager.BaitPrepPromptRightName);
             //Debug.Log(_currentStep);
             _currentStep++;
         }

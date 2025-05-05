@@ -17,7 +17,7 @@ public class BraillePatternPlayer : MonoBehaviour
 
     private class EncodedBraillePatternSequence
     {
-        public string SequenceName; // Name of the sequence
+        public string SequenceName; // PromptName of the sequence
         public List<EncodedBraillePattern> Values; // List of encoded patterns
     }
 

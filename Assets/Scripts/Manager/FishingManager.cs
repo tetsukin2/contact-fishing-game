@@ -3,18 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 // FishingManager with class-based state machine
 public class FishingManager : MonoBehaviour
 {
-    [System.Serializable]
-    public struct InputPrompt
-    {
-        public string Name;
-        public string Message;
-        public Sprite Sprite;
-    }
-
     public enum FishingStateName
     {
         Idle,
@@ -38,13 +31,15 @@ public class FishingManager : MonoBehaviour
 
     [Space]
     [Header("UI")]
-    [SerializeField] private DynamicImagePanel _inputPromptPanel; // Reference to the input prompt panel
+    [SerializeField] private DynamicVideoPanel _inputPromptPanel; // Reference to the input prompt panel
     [SerializeField] private FishingStateLabelPanel _stateLabelPanel; // Reference to the state label panel
     [SerializeField] private List<InputPrompt> _inputPrompts; // List of sprites for input prompts
 
     [Space]
     [Header("Bait Preparation")]
     public int BaitPreparationSteps = 1;
+    public string BaitPrepPromptRightName;
+    public string BaitPrepPromptLeftName;
 
     [Space]
     [Header("Casting")]
@@ -54,6 +49,7 @@ public class FishingManager : MonoBehaviour
     public float CastHeight = 2f; // Additional height for the arc from bobber release point
     public string CastForwardPromptName;
     public string CastBackPromptName;
+    public string CastSelectPromptName;
 
     [Space]
     [Header("WaitingForBite")]
@@ -65,6 +61,7 @@ public class FishingManager : MonoBehaviour
     public int ReelProgressAmount = 5;
     public string ReelForwardPromptName;
     public string ReelBackPromptName;
+    public string ReelClockwisePromptName;
     public float ReelForce = 1f; // Force applied to the bobber upward
     [SerializeField] private GUIPanel _reelGUI;
     [SerializeField] private Slider _reelProgressSlider;
@@ -74,9 +71,10 @@ public class FishingManager : MonoBehaviour
     [Header("FishData Inspection")]
     public float SideRotateUpAngle = 30f;
     public float SideRotateDownAngle = -30f; // Y rod rotation thresholds
-    public string InspectNeutralPromptName;
+    public string InspectReadyPromptName;
     public string InspectPromptName;
-    public string InspectReleasePromptName;
+    public string ReleaseReadyPromptName;
+    public string ReleasePromptName;
     [SerializeField] private FishInspectionPanel _fishInspectionGUI;
     [SerializeField] private GameObject _hookedFish; // show and hide in inspection
 
@@ -240,13 +238,13 @@ public class FishingManager : MonoBehaviour
     {
         foreach (var prompt in _inputPrompts)
         {
-            if (prompt.Name == name)
+            if (prompt.PromptName == name)
             {
-                _inputPromptPanel.SetImage(prompt.Sprite);
+                _inputPromptPanel.SetVideo(prompt.Video);
                 return;
             }
         }
-        _inputPromptPanel.SetImage(null);
+        _inputPromptPanel.SetVideo(null);
         return;
     }
 }

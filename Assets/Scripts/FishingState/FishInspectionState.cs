@@ -12,7 +12,7 @@ public class FishInspectionState : FishingState
     {
         fishingManager.StateLabelPanel.SetLabel(FishingStateName.FishInspection);
         fishingManager.InputHelper.ClearRotationHistory();
-        fishingManager.ShowInputPrompt(fishingManager.InspectNeutralPromptName);
+        fishingManager.ShowInputPrompt(fishingManager.InspectReadyPromptName);
         fishingManager.HookedFish.SetActive(true); // Show the fish in the inspection panel
         _reachedInitialRotation = false;
         _fishInspected = false;
@@ -35,7 +35,7 @@ public class FishInspectionState : FishingState
                 _reachedInitialRotation = false; // Reset for release rotation
                 fishingManager.InputHelper.ClearRotationHistory(); // Clean read for fish release
                 FishingManager.ShowFishInspection(FishLootTable.Instance.GetFishFromTable());
-                fishingManager.ShowInputPrompt(fishingManager.InspectNeutralPromptName);
+                fishingManager.ShowInputPrompt(fishingManager.ReleaseReadyPromptName);
                 fishingManager.HookedFish.SetActive(false); // Hide the fish, we caught it
                 _fishInspected = true;
                 Debug.Log("FishData inspected");
@@ -47,7 +47,7 @@ public class FishInspectionState : FishingState
                 fishingManager.InputHelper.HasReachedRotationX(80f))
             {
                 _reachedInitialRotation = true;
-                fishingManager.ShowInputPrompt(fishingManager.InspectReleasePromptName);
+                fishingManager.ShowInputPrompt(fishingManager.ReleasePromptName);
             }
             else if (_reachedInitialRotation && // Now rotate down
                 fishingManager.InputHelper.HasReachedRotationY(fishingManager.SideRotateDownAngle))

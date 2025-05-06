@@ -22,6 +22,10 @@ public class UIManager : MonoBehaviour
     [Header("Encyclopedia")]
     [SerializeField] private GUIPanel _encyclopediaGUI;
     [SerializeField] private JoystickCursor _joystickCursor;
+    [SerializeField] private InputPromptPanel _encyclopediaPrompt; // Reference to the input prompt panel
+    [SerializeField] private InputPromptPanel _encyclopediaSecondPrompt; // Reference to the input prompt panel
+    [SerializeField] private InputPrompt _encyclopediaInput; // List of sprites for input prompts
+    [SerializeField] private InputPrompt _encyclopediaSecondInput; // List of sprites for input prompts
 
     [Space]
     [Header("Game Start Screen")]
@@ -104,6 +108,8 @@ public class UIManager : MonoBehaviour
 
         // Set visibility of encyclopedia
         _encyclopediaGUI.Show(newState == GameManager.Instance.EncyclopediaState);
+        _encyclopediaPrompt.SetInputPrompt(_encyclopediaInput);
+        _encyclopediaSecondPrompt.SetInputPrompt(_encyclopediaSecondInput);
 
         // Set visibility of game start menu
         _gameStartGUI.Show(newState == GameManager.Instance.GameStartState);

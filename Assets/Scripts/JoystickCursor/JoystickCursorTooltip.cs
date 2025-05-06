@@ -1,13 +1,11 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class JoystickCursorTooltip : MonoBehaviour
 {
     public RectTransform Content;        // The root panel of the tooltip
     public TextMeshProUGUI Title;
     public TextMeshProUGUI Description;
-    public Vector2 defaultOffset = new(20, -20);
 
     private RectTransform _canvasRectTransform;
     private RectTransform _cursorRectTransform;
@@ -71,7 +69,7 @@ public class JoystickCursorTooltip : MonoBehaviour
         // If tooltip goes off right edge, switch to left
         if (tooltipRightPos > canvasWidth)
         {
-            Debug.Log("leftswapping");
+            //Debug.Log("leftswapping");
             offset.x = -offset.x - size.x;
             Content.pivot = new Vector2(1f, Content.pivot.y); // flip horizontally
         }

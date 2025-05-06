@@ -11,26 +11,47 @@ public class JoystickCursor : MonoBehaviour
     [SerializeField] private JoystickCursorTooltip _tooltip; // Tooltip for the cursor
 
     [Space]
-    [Header("Pins")]
-    [SerializeField] private CursorBraillePin _00;
-    [SerializeField] private CursorBraillePin _01;
-    [SerializeField] private CursorBraillePin _02;
-    [SerializeField] private CursorBraillePin _03;
-    [SerializeField] private CursorBraillePin _10;
-    [SerializeField] private CursorBraillePin _11;
-    [SerializeField] private CursorBraillePin _12;
-    [SerializeField] private CursorBraillePin _13;
-    [SerializeField] private CursorBraillePin _20;
-    [SerializeField] private CursorBraillePin _21;
-    [SerializeField] private CursorBraillePin _22;
-    [SerializeField] private CursorBraillePin _23;
-    [SerializeField] private CursorBraillePin _30;
-    [SerializeField] private CursorBraillePin _31;
-    [SerializeField] private CursorBraillePin _32;
-    [SerializeField] private CursorBraillePin _33;
+    [Header("Pins")] // I wanna read this easier for mapping later
+    // Might swap this out for something to automatically register pins cuz this aint good manually
+    [SerializeField] private CursorBraillePin _t00;
+    [SerializeField] private CursorBraillePin _t01;
+    [SerializeField] private CursorBraillePin _t02;
+    [SerializeField] private CursorBraillePin _t03;
+    [SerializeField] private CursorBraillePin _t10;
+    [SerializeField] private CursorBraillePin _t11;
+    [SerializeField] private CursorBraillePin _t12;
+    [SerializeField] private CursorBraillePin _t13;
+    [SerializeField] private CursorBraillePin _t20;
+    [SerializeField] private CursorBraillePin _t21;
+    [SerializeField] private CursorBraillePin _t22;
+    [SerializeField] private CursorBraillePin _t23;
+    [SerializeField] private CursorBraillePin _t30;
+    [SerializeField] private CursorBraillePin _t31;
+    [SerializeField] private CursorBraillePin _t32;
+    [SerializeField] private CursorBraillePin _t33;
 
-    public int BrailleVal1 { get; private set; } = 0;
-    public int BrailleVal2 { get; private set; } = 0;
+    [Space]
+    [SerializeField] private CursorBraillePin _i00;
+    [SerializeField] private CursorBraillePin _i01;
+    [SerializeField] private CursorBraillePin _i02;
+    [SerializeField] private CursorBraillePin _i03;
+    [SerializeField] private CursorBraillePin _i10;
+    [SerializeField] private CursorBraillePin _i11;
+    [SerializeField] private CursorBraillePin _i12;
+    [SerializeField] private CursorBraillePin _i13;
+    [SerializeField] private CursorBraillePin _i20;
+    [SerializeField] private CursorBraillePin _i21;
+    [SerializeField] private CursorBraillePin _i22;
+    [SerializeField] private CursorBraillePin _i23;
+    [SerializeField] private CursorBraillePin _i30;
+    [SerializeField] private CursorBraillePin _i31;
+    [SerializeField] private CursorBraillePin _i32;
+    [SerializeField] private CursorBraillePin _i33;
+
+    public int T0 { get; private set; } = 0;
+    public int T1 { get; private set; } = 0;
+    public int I0 { get; private set; } = 0;
+    public int I1 { get; private set; } = 0;
     private Vector2 CurrentCursorPos;
 
     public JoystickCursorTooltip Tooltip => _tooltip;
@@ -90,21 +111,29 @@ public class JoystickCursor : MonoBehaviour
 
     private void UpdateBrailleValues()
     {
+        int temp_t0 = 64 * _t00.Value + 4 * _t01.Value + 2 * _t02.Value + _t03.Value
+            + 128 * _t10.Value + 32 * _t11.Value + 16 * _t12.Value + 8 * _t13.Value;
+        int temp_t1 = 64 * _t20.Value + 4 * _t21.Value + 2 * _t22.Value + _t23.Value
+            + 128 * _t30.Value + 32 * _t31.Value + 16 * _t32.Value + 8 * _t33.Value;
+
+        int temp_i0 = 64 * _i00.Value + 4 * _i01.Value + 2 * _i02.Value + _i03.Value
+            + 128 * _i10.Value + 32 * _i11.Value + 16 * _i12.Value + 8 * _i13.Value;
+        int temp_i1 = 64 * _i20.Value + 4 * _t21.Value + 2 * _i22.Value + _i23.Value
+            + 128 * _i30.Value + 32 * _i31.Value + 16 * _i32.Value + 8 * _i33.Value;
+
         // TEMPORARY FLIPPING UNTIL INVERSION FIXED OR IDK
-        int val1 = 64 * _00.Value + 4 * _01.Value + 2 * _02.Value + _03.Value
-            + 128 * _10.Value + 32 * _11.Value + 16 * _12.Value + 8 * _13.Value;
-        int val2 = 64 * _20.Value + 4 * _21.Value + 2 * _22.Value + _23.Value
-            + 128 * _30.Value + 32 * _31.Value + 16 * _32.Value + 8 * _33.Value;
         //int val1 = 1 * _00.Value + 2 * _01.Value + 3 * _02.Value + 64 * _03.Value
         //    + 8 * _10.Value + 16 * _11.Value + 32 * _12.Value + 128 * _13.Value;
         //int val2 = 1 * _20.Value + 2 * _21.Value + 3 * _22.Value + 64 * _23.Value
         //    + 8 * _30.Value + 16 * _31.Value + 32 * _32.Value + 128 * _33.Value;
 
-        if (val1 != BrailleVal1 || val2 != BrailleVal2)
+        if (temp_t0 != T0 || temp_t1 != T1 || temp_i0 != I0 || temp_i1 != I1)
         {
-            BrailleVal1 = val1;
-            BrailleVal2 = val2;
-            InputDeviceManager.SendBrailleASCII(BrailleVal1, BrailleVal2, 255 - BrailleVal1, 255 - BrailleVal2);
+            T0 = temp_t0;
+            T1 = temp_t1;
+            I0 = temp_i0;
+            I1 = temp_i1;
+            InputDeviceManager.SendBrailleASCII(T0, T1, I0, I1);
         }
     }
 
@@ -113,10 +142,14 @@ public class JoystickCursor : MonoBehaviour
     {
         return new List<CursorBraillePin>
             {
-                _00, _01, _02, _03,
-                _10, _11, _12, _13,
-                _20, _21, _22, _23,
-                _30, _31, _32, _33
+                _t00, _t01, _t02, _t03,
+                _t10, _t11, _t12, _t13,
+                _t20, _t21, _t22, _t23,
+                _t30, _t31, _t32, _t33,
+                _i00, _i01, _i02, _i03,
+                _i10, _i11, _i12, _i13,
+                _i20, _i21, _i22, _i23,
+                _i30, _i31, _i32, _i33
             };
     }
 }

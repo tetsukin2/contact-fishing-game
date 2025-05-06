@@ -4352,6 +4352,7 @@ MonoBehaviour:
   ReelBackPromptName: PitchUpFromDown
   ReelClockwisePromptName: JoystickClockwise
   ReelForce: 1
+  ReelDecayRate: 0.3
   _reelGUI: {fileID: 1294158555}
   _reelProgressSlider: {fileID: 1755902559}
   ReelActionSequence: 0000000001000000
@@ -14085,7 +14086,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 1
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:

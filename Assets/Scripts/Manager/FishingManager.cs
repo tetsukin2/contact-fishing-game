@@ -58,12 +58,13 @@ public class FishingManager : MonoBehaviour
 
     [Space]
     [Header("Reeling")]
-    public int ReelTotalProgress = 20;
-    public int ReelProgressAmount = 5;
+    public float ReelTotalProgress = 20;
+    public float ReelProgressAmount = 5;
     public string ReelForwardPromptName;
     public string ReelBackPromptName;
     public string ReelClockwisePromptName;
     public float ReelForce = 1f; // Force applied to the bobber upward
+    public float ReelDecayRate = 0.3f;
     [SerializeField] private GUIPanel _reelGUI;
     [SerializeField] private Slider _reelProgressSlider;
     public List<ReelingState.ReelActionName> ReelActionSequence; //Sequence of actions to follow
@@ -214,13 +215,12 @@ public class FishingManager : MonoBehaviour
 
     private void SetupReelBar()
     {
-        _reelProgressSlider.wholeNumbers = true;
         _reelProgressSlider.maxValue = ReelTotalProgress;
         _reelProgressSlider.value = 0f; // Initialize the slider value
     }
 
     // Set the progress of the reel in slider
-    public void SetReelProgress(int value)
+    public void SetReelProgress(float value)
     {
         _reelProgressSlider.value = Mathf.Min(value, _reelProgressSlider.maxValue);
     }

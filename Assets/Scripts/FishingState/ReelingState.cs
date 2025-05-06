@@ -22,7 +22,7 @@ public class ReelingState : FishingState
     private JoystickClockwiseReelAction _joystickClockwiseReelAction;
 
     private ReelAction _currentReelActionState;
-    private int _currentReelProgress;
+    private float _currentReelProgress;
 
     public override void Setup()
     {
@@ -41,12 +41,14 @@ public class ReelingState : FishingState
         _currentReelActionIndex = 0;
         SetReelAction(fishingManager.ReelActionSequence[_currentReelActionIndex]);
 
-        _currentReelProgress = 0;
+        _currentReelProgress = 0f;
     }
 
     public override void Update()
     {
         _currentReelActionState?.Update();
+        _currentReelProgress -= Mathf.Max(0f, Time.deltaTime * fishingManager.ReelDecayRate); // Decay progress over time
+        fishingManager.SetReelProgress(_currentReelProgress);
     }
 
     public override void Exit()
@@ -61,7 +63,7 @@ public class ReelingState : FishingState
         // Update reel progress
         _currentReelProgress += fishingManager.ReelProgressAmount;
         Debug.Log(_currentReelProgress);
-        fishingManager.SetReelProgress(_currentReelProgress);
+        //fishingManager.SetReelProgress(_currentReelProgress);
 
         // Check if the reel progress is complete
         if (_currentReelProgress >= fishingManager.ReelTotalProgress)

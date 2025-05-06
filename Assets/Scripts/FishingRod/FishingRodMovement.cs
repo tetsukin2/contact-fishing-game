@@ -9,7 +9,8 @@ public class FishingRodMovement : MonoBehaviour
     {
         Idle,
         Normal,
-        Menu
+        Menu,
+        Free
     }
 
     [SerializeField] private MovementMode _currentMovementMode = MovementMode.Normal;
@@ -59,6 +60,16 @@ public class FishingRodMovement : MonoBehaviour
             //rodRotation.z = Mathf.Clamp(rodRotation.z, -30f, 30f);
 
             FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y, 0, -rodRotation.x);
+        }
+        else if (_currentMovementMode == MovementMode.Free)
+        {
+            rodRotation.x = Mathf.SmoothDamp(rodRotation.x, -imuData.x * sensitivity, ref velocity.x, smoothFactor);
+            rodRotation.y = Mathf.SmoothDamp(rodRotation.y, imuData.y * sensitivity, ref velocity.y, smoothFactor);
+            rodRotation.z = Mathf.SmoothDamp(rodRotation.z, imuData.z * sensitivity, ref velocity.z, smoothFactor);
+            rodRotation.x = Mathf.Clamp(rodRotation.x, -60f, 60f);
+            rodRotation.y = Mathf.Clamp(rodRotation.y, -60f, 60f);
+            rodRotation.z = Mathf.Clamp(rodRotation.z, -60f, 60f);
+            FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y + _menuOffsetRotation, 0, -rodRotation.x);
         }
         else if (_currentMovementMode == MovementMode.Menu)
         {

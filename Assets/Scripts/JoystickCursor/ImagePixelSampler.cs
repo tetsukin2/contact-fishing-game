@@ -31,54 +31,86 @@ public class ImagePixelSampler : MonoBehaviour
         //Debug.Log(CurrentSelectable);
 
         Dictionary<JoystickCursorSelectable, int> hitCounts = new();
+        Dictionary<JoystickCursorSelectable, int> actuationCounts = new();
 
         int pinsThatWouldActivate = 0;
         // For each point, detect which image it intersects
         foreach (var point in _braillePins)
         {
             Vector2 screenPoint = point.rectTransform.position; // Center position in screen space
-            Color32 pixel = default;
-            JoystickCursorSelectable hitSelectable = null;
 
-            // Try all BW images, find first one that contains the point
+            // Get the best selectable
+            JoystickCursorSelectable bestSelectable = null;
+            Color32 bestPixel = default;
+
             foreach (var selectable in SelectablesToSample)
             {
-                if (TryGetPixelFromImage(selectable, screenPoint, out pixel))
+                if (!selectable.isSelectable) continue;
+
+                if (TryGetPixelFromImage(selectable, screenPoint, out Color32 candidatePixel))
                 {
-                    hitSelectable = selectable;
-                    break; // Only take the first one found
+                    bool pixelWouldActuate = candidatePixel.r > 128 &&
+                                             candidatePixel.g > 128 &&
+                                             candidatePixel.b > 128 &&
+                                             candidatePixel.a >= AlphaThreshold;
+
+                    // Use the first selectable that would actuate
+                    if (pixelWouldActuate)
+                    {
+                        bestSelectable = selectable;
+                        bestPixel = candidatePixel;
+                        break; // Stop early if it's good
+                    }
+
+                    // Otherwise, keep the pixel in case no actuating one is found
+                    if (bestSelectable == null)
+                    {
+                        bestSelectable = selectable;
+                        bestPixel = candidatePixel;
+                    }
                 }
             }
 
-            // Set color based on detection
-            if (hitSelectable != null)
+            if (bestSelectable != null)
             {
-                point.SetActuated(hitSelectable.TriggersActuation
-                    && pixel.r > 128
-                    && pixel.g > 128
-                    && pixel.b > 128
-                    && pixel.a >= AlphaThreshold);
+                bool pixelWouldActuate = bestPixel.r > 128 &&
+                                          bestPixel.g > 128 &&
+                                          bestPixel.b > 128 &&
+                                          bestPixel.a >= AlphaThreshold;
 
-                // Track hit count
-                if (!hitCounts.ContainsKey(hitSelectable))
-                    hitCounts[hitSelectable] = 0;
-                hitCounts[hitSelectable]++;
+                bool finalActuation = bestSelectable.TriggersActuation && pixelWouldActuate;
+
+                point.SetActuated(finalActuation);
+
+                // Count hits for hover logic
+                if (!hitCounts.ContainsKey(bestSelectable))
+                    hitCounts[bestSelectable] = 0;
+                hitCounts[bestSelectable]++;
+
+                // Count actuation separately
+                if (pixelWouldActuate)
+                {
+                    if (!actuationCounts.ContainsKey(bestSelectable))
+                        actuationCounts[bestSelectable] = 0;
+                    actuationCounts[bestSelectable]++;
+
+                    pinsThatWouldActivate += point.Value;
+                }
             }
             else
             {
                 point.SetActuated(false);
             }
-            pinsThatWouldActivate += point.Value; // Sum activations of all pins
         }
 
         // Determine which image had the most hits
         JoystickCursorSelectable newSelectable = null;
-        int maxHits = 0;
-        foreach (var kvp in hitCounts)
+        int maxActuations = 0;
+        foreach (var kvp in actuationCounts)
         {
-            if (kvp.Value > maxHits)
+            if (kvp.Value > maxActuations)
             {
-                maxHits = kvp.Value;
+                maxActuations = kvp.Value;
                 newSelectable = kvp.Key;
             }
         }

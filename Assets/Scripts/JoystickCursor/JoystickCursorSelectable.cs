@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class JoystickCursorSelectable : MonoBehaviour
+public class JoystickCursorSelectable : GUIPanel
 {
     public Image DisplayImage;                 // The black-and-white image to detect over
     public Image BWImage;                 // The black-and-white image to detect over
@@ -12,6 +12,7 @@ public class JoystickCursorSelectable : MonoBehaviour
     public bool TriggersActuation = true;
     public string TooltipTitle;
     public string TooltipDescription;
+    public bool isSelectable = true; // Whether this image can be selected or not
 
     public Texture2D texture { get; private set; }          // Cached texture
     public Color32[] pixelData { get; private set; }      // Cached pixels
@@ -39,6 +40,7 @@ public class JoystickCursorSelectable : MonoBehaviour
 
     public void SetHover(bool hover)
     {
+        if (!isSelectable) return;
         DisplayImage.sprite = hover ? _hoverSprite : _normalSprite;
     }
 

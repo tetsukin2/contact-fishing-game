@@ -5,13 +5,13 @@ public class WaitingForBiteState : FishingState
 {
     public WaitingForBiteState(FishingManager fishingManager) : base(fishingManager) { }
 
-    private float _elapsedTime = 0f;
+    //private float _elapsedTime = 0f;
 
     public override void Enter()
     {
         fishingManager.StateLabelPanel.SetLabel(FishingStateName.WaitingForBite);
         fishingManager.Targeting.Selection.ReachedLureLocation.AddListener(OnFishReachLure);
-        _elapsedTime = 0f; //reset timer
+        //_elapsedTime = 0f; //reset timer
         Debug.Log("Entering Waiting For Bite State");
     }
 

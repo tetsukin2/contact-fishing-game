@@ -10,10 +10,11 @@ public class FishingRodMovement : MonoBehaviour
         Idle,
         Normal,
         Menu,
+        BaitLock,
         Free
     }
 
-    [SerializeField] private MovementMode _currentMovementMode = MovementMode.Normal;
+    public MovementMode CurrentMovementMode = MovementMode.Normal;
 
     public Transform FishingRodPivot;
     public float sensitivity = 1f;
@@ -22,6 +23,7 @@ public class FishingRodMovement : MonoBehaviour
     [Space]
 
     [SerializeField] private float _menuOffsetRotation = -30f;
+    [SerializeField] private float _baitLockAngle = 30f;
 
     private Vector3 rodRotation = Vector3.zero;
     private Vector3 velocity = Vector3.zero;
@@ -49,7 +51,7 @@ public class FishingRodMovement : MonoBehaviour
 
         //Debug.Log(imuData);
 
-        if (_currentMovementMode == MovementMode.Normal)
+        if (CurrentMovementMode == MovementMode.Normal)
         {
             //rodRotation.x = Mathf.SmoothDamp(rodRotation.x, -imuData.x * sensitivity, ref velocity.x, smoothFactor);
             rodRotation.y = Mathf.SmoothDamp(rodRotation.y, imuData.y * sensitivity, ref velocity.y, smoothFactor);
@@ -59,9 +61,13 @@ public class FishingRodMovement : MonoBehaviour
             rodRotation.y = Mathf.Clamp(rodRotation.y, -30f, 30f);
             //rodRotation.z = Mathf.Clamp(rodRotation.z, -30f, 30f);
 
-            FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y, 0, -rodRotation.x);
+            FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y, 0f, -rodRotation.x);
         }
-        else if (_currentMovementMode == MovementMode.Free)
+        else if (CurrentMovementMode == MovementMode.BaitLock)
+        {
+            FishingRodPivot.localRotation = Quaternion.Euler(_baitLockAngle, 0f, 0f);
+        }
+        else if (CurrentMovementMode == MovementMode.Free)
         {
             rodRotation.x = Mathf.SmoothDamp(rodRotation.x, -imuData.x * sensitivity, ref velocity.x, smoothFactor);
             rodRotation.y = Mathf.SmoothDamp(rodRotation.y, imuData.y * sensitivity, ref velocity.y, smoothFactor);
@@ -71,14 +77,14 @@ public class FishingRodMovement : MonoBehaviour
             rodRotation.z = Mathf.Clamp(rodRotation.z, -60f, 60f);
             FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y + _menuOffsetRotation, 0, -rodRotation.x);
         }
-        else if (_currentMovementMode == MovementMode.Menu)
+        else if (CurrentMovementMode == MovementMode.Menu)
         {
             rodRotation.y = Mathf.SmoothDamp(rodRotation.y, imuData.y * sensitivity, ref velocity.y, smoothFactor);
             rodRotation.y = Mathf.Clamp(rodRotation.y, -30f, 30f);
 
             FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y + _menuOffsetRotation, 0, -rodRotation.x);
         }
-        else if (_currentMovementMode == MovementMode.Idle)
+        else if (CurrentMovementMode == MovementMode.Idle)
         {
             rodRotation.x = Mathf.SmoothDamp(rodRotation.x, _defaultRotation.x * sensitivity, ref velocity.x, smoothFactor);
             rodRotation.y = Mathf.SmoothDamp(rodRotation.y, _defaultRotation.y * sensitivity, ref velocity.y, smoothFactor);
@@ -94,15 +100,15 @@ public class FishingRodMovement : MonoBehaviour
         Debug.Log("updating fishing rod movement mode");
         if (newState == GameManager.Instance.PlayingState)
         {
-            _currentMovementMode = MovementMode.Normal;
+            CurrentMovementMode = MovementMode.Normal;
         }
         else if (newState == GameManager.Instance.EncyclopediaState)
         {
-            _currentMovementMode = MovementMode.Idle;
+            CurrentMovementMode = MovementMode.Idle;
         }
         else //if (GameManager.Instance.CurrentGameState == GameStateName.GameStart)
         {
-            _currentMovementMode = MovementMode.Menu;
+            CurrentMovementMode = MovementMode.Menu;
         }
     }
 }

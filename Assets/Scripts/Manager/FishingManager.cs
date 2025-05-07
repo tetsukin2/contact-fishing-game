@@ -23,9 +23,11 @@ public class FishingManager : MonoBehaviour
     [Space]
     [Header("Fishing Rod")]
     public float RotationTriggerThreshold = 15f;  // Rotation threshold in degrees
-    [SerializeField] private FishingBobber _fishingBobber; // Reference to the FishingBobber script
+    public float BobberSensitivity = 1f;
+    [SerializeField] private FishingBobber _fishingBobber;
     [SerializeField] private Transform _bobberLandTransform;
     [SerializeField] private InputDeviceRotationHelper _inputHelper;
+    [SerializeField] private FishingRodMovement _rodMovement;
     public float RotateUpAngle = 30f;
     public float RotateDownAngle = -30f; // Y rod rotation thresholds
 
@@ -94,6 +96,7 @@ public class FishingManager : MonoBehaviour
     public FishTargeting Targeting => _fishTargeting;
     public FishingBobber FishingBobber => _fishingBobber;
     public InputDeviceRotationHelper InputHelper => _inputHelper;
+    public FishingRodMovement RodMovement => _rodMovement;
     public GameObject HookedFish => _hookedFish;
     public FishingStateLabelPanel StateLabelPanel => _stateLabelPanel;
     public UnityEvent BobberHitWater => _bobberHitWater;
@@ -115,15 +118,25 @@ public class FishingManager : MonoBehaviour
         ReelingState.Setup();
         _secondInputPromptPanel.Show(false);
 
+        _fishingBobber.Setup(this);
+
         StopReel(); // Hide the reel GUI at the start
         _hookedFish.SetActive(false);
 
-        TransitionToState(BaitPreparationState);
+        // Only start bait prep after gameplay actually starts
+        GameManager.Instance.GameStateUpdated.AddListener((state) =>
+        {
+            if (state == GameManager.Instance.PlayingState)
+            {
+                TransitionToState(BaitPreparationState);
+            }
+        });
+        
     }
 
     void Update()
     {
-        // Delegate update logic to the current state
+        if (GameManager.Instance.CurrentState != GameManager.Instance.PlayingState) return;
         _currentState?.Update();
     }
 

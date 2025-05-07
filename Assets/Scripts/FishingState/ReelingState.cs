@@ -71,7 +71,9 @@ public class ReelingState : FishingState
             Debug.Log("OnReel Progress Complete!");
             fishingManager.ReelIn(); // Call the reel in function
             fishingManager.Targeting.CatchSelected(); // Catch the fish and do resets
-            fishingManager.TransitionToState(fishingManager.FishInspectionState); // Transition back to casting state
+            // Transition back to bait prep only if not fully caught, so as not to mess camera
+            if (GameManager.Instance.FishCaught < GameManager.Instance.FishTotalToCatch)
+                fishingManager.TransitionToState(fishingManager.FishInspectionState); 
         }
         else
         {

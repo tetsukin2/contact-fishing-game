@@ -8,8 +8,11 @@ public class CameraController : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera _gameplayVCam;
     [SerializeField] CinemachineVirtualCamera _menuVCam;
     [SerializeField] CinemachineVirtualCamera _fishSelectVCam;
+    [SerializeField] CinemachineVirtualCamera _baitPrepVCam;
 
+    public CinemachineVirtualCamera GameplayVCam => _gameplayVCam;
     public CinemachineVirtualCamera FishSelectVCam => _fishSelectVCam;
+    public CinemachineVirtualCamera BaitPrepVCam => _baitPrepVCam;
 
     private void Awake()
     {

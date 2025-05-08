@@ -34,7 +34,7 @@ public class FishInspectionState : FishingState
             {
                 _reachedInitialRotation = false; // Reset for release rotation
                 fishingManager.InputHelper.ClearRotationHistory(); // Clean read for fish release
-                FishingManager.ShowFishInspection(FishLootTable.Instance.GetFishFromTable());
+                FishingManager.ShowFishInspection();
                 fishingManager.ShowInputPrompt(fishingManager.ReleaseReadyPromptName);
                 fishingManager.HookedFish.SetActive(false); // Hide the fish, we caught it
                 _fishInspected = true;

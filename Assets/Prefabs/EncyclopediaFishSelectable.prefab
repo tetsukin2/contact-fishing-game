@@ -84,7 +84,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4785456968122022887}
-  - component: {fileID: 151940042708115640}
+  - component: {fileID: 2276804103888161836}
   m_Layer: 5
   m_Name: EncyclopediaFishSelectable
   m_TagString: Untagged
@@ -112,7 +112,7 @@ RectTransform:
   m_AnchoredPosition: {x: -4, y: 42}
   m_SizeDelta: {x: 1524.4197, y: 850.51}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &151940042708115640
+--- !u!114 &2276804103888161836
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,7 +121,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7214424091660720961}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b64a05873f1580b40b01ed03a09da8c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d3382673374a36458c83214cb736b59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _content: {fileID: 8717141669801559378}
@@ -129,10 +129,16 @@ MonoBehaviour:
   BWImage: {fileID: 5693158990779871050}
   _normalSprite: {fileID: 21300000, guid: 0e7e815f0ca588a4da6b1e710b7d36d5, type: 3}
   _hoverSprite: {fileID: 21300000, guid: 0e7e815f0ca588a4da6b1e710b7d36d5, type: 3}
+  _disabledSprite: {fileID: 21300000, guid: ac8d17cfd83f0a84a808caa26a822dba, type: 3}
   TriggersActuation: 1
-  TooltipTitle: Milkfish
-  TooltipDescription: A fast, slippery catch common in Southeast Asian waters
-  isSelectable: 1
+  TooltipText:
+    Title: Milkfish
+    Message: A fast, slippery catch common in Southeast Asian waters.
+  _isSelectable: 1
+  FishID: milkfish
+  _fishSprite: {fileID: 21300000, guid: 0e7e815f0ca588a4da6b1e710b7d36d5, type: 3}
+  _fishNotDiscoveredSprite: {fileID: 21300000, guid: ac8d17cfd83f0a84a808caa26a822dba,
+    type: 3}
 --- !u!1 &7366128999008918348
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,8 +242,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3264076952677913716}
   - {fileID: 4279136874977709094}
+  - {fileID: 3264076952677913716}
   m_Father: {fileID: 4785456968122022887}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

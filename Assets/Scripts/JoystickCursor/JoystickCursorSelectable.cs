@@ -7,12 +7,12 @@ public class JoystickCursorSelectable : GUIPanel
 {
     public Image DisplayImage;                 // The black-and-white image to detect over
     public Image BWImage;                 // The black-and-white image to detect over
-    [SerializeField] private Sprite _normalSprite;
-    [SerializeField] private Sprite _hoverSprite;
-    public bool TriggersActuation = true;
-    public string TooltipTitle;
-    public string TooltipDescription;
-    public bool isSelectable = true; // Whether this image can be selected or not
+    [SerializeField] protected Sprite _normalSprite;
+    [SerializeField] protected Sprite _hoverSprite;
+    [SerializeField] private Sprite _disabledSprite;
+    [HideInInspector] public bool TriggersActuation = true;
+    public JoystickCursorTooltip.TooltipText TooltipText;
+    [SerializeField] private bool _isSelectable = true; // Whether this image can be selected or not
 
     public Texture2D texture { get; private set; }          // Cached texture
     public Color32[] pixelData { get; private set; }      // Cached pixels
@@ -20,11 +20,33 @@ public class JoystickCursorSelectable : GUIPanel
     public int height { get; private set; }        // Texture dimensions
     public RectTransform rectTransform { get; private set; }  // Cached rectTransform
 
+    // Whether this would be detected at all
+    public bool IsSelectable
+    {
+        get => _isSelectable;
+        set
+        {
+            _isSelectable = value;
+            TriggersActuation = value;
+            if (value)
+            {
+                DisplayImage.sprite = _normalSprite;
+            }
+            else
+            {
+                DisplayImage.sprite = _disabledSprite;
+            }
+        }
+    }
+
     private void Awake()
     {
         // Putting this in start causes errors when encyclopedia opens
         // I guess start happens much later
         texture = BWImage.sprite.texture;
+
+        // Initialize
+        IsSelectable = _isSelectable;
 
         if (!texture.isReadable)
         {
@@ -40,7 +62,7 @@ public class JoystickCursorSelectable : GUIPanel
 
     public void SetHover(bool hover)
     {
-        if (!isSelectable) return;
+        if (!IsSelectable) return;
         DisplayImage.sprite = hover ? _hoverSprite : _normalSprite;
     }
 

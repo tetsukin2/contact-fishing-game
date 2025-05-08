@@ -16,7 +16,7 @@ public class ImagePixelSampler : MonoBehaviour
     public JoystickCursorSelectable CurrentSelectable { get; private set; } = null; // Internally tracked most-hit image
 
     private List<CursorBraillePin> _braillePins; // Small UI images that represent points around the cursor
-    private bool _tooltipShowing = false;
+    //private bool _tooltipShowing = false;
 
     private void Start()
     {
@@ -45,7 +45,7 @@ public class ImagePixelSampler : MonoBehaviour
 
             foreach (var selectable in SelectablesToSample)
             {
-                if (!selectable.isSelectable) continue;
+                if (!selectable.IsSelectable) continue;
 
                 if (TryGetPixelFromImage(selectable, screenPoint, out Color32 candidatePixel))
                 {
@@ -123,9 +123,7 @@ public class ImagePixelSampler : MonoBehaviour
 
             if (CurrentSelectable != null)
             {
-                UIManager.Instance.JoystickCursor.Tooltip.Show(
-                    CurrentSelectable.TooltipTitle,
-                    CurrentSelectable.TooltipDescription);
+                UIManager.Instance.JoystickCursor.Tooltip.Show(CurrentSelectable.TooltipText);
             }
             else
             {
@@ -140,18 +138,18 @@ public class ImagePixelSampler : MonoBehaviour
         }
 
         // Handle tooltip visibility
-        if (!_tooltipShowing && CurrentSelectable != null && pinsThatWouldActivate > 0)
-        {
-            _tooltipShowing = true;
-            UIManager.Instance.JoystickCursor.Tooltip.Show(
-                CurrentSelectable.TooltipTitle,
-                CurrentSelectable.TooltipDescription);
-        }
-        else if (_tooltipShowing && pinsThatWouldActivate == 0)
-        {
-            _tooltipShowing = false;
-            UIManager.Instance.JoystickCursor.Tooltip.Hide();
-        }
+        //if (!_tooltipShowing && CurrentSelectable != null && pinsThatWouldActivate > 0)
+        //{
+        //    _tooltipShowing = true;
+        //    UIManager.Instance.JoystickCursor.Tooltip.Show(
+        //        CurrentSelectable.TooltipTitle,
+        //        CurrentSelectable.TooltipDescription);
+        //}
+        //else if (_tooltipShowing && pinsThatWouldActivate == 0)
+        //{
+        //    _tooltipShowing = false;
+        //    UIManager.Instance.JoystickCursor.Tooltip.Hide();
+        //}
     }
 
     private void OnJoystickPressed()

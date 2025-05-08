@@ -12771,7 +12771,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1557638058}
   - component: {fileID: 1557638059}
-  - component: {fileID: 1557638060}
   m_Layer: 0
   m_Name: BraillePatternPlayer
   m_TagString: Untagged
@@ -12801,25 +12800,9 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1557638056}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18ee2b0a5fdabf84ab04bc3ead88810b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PatternDelay: 0.2
-  _braillePatternSequences:
-  - {fileID: 11400000, guid: bfcd75d8e223cff48904057b29d7e3c6, type: 2}
-  - {fileID: 11400000, guid: 3e64a188bff7a3242ac6355559e49950, type: 2}
---- !u!114 &1557638060
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1557638056}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7da5a6a1c3cc4d44990a972c307b757, type: 3}
+  m_Script: {fileID: 11500000, guid: 18ee2b0a5fdabf84ab04bc3ead88810b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   PatternDelay: 0.2

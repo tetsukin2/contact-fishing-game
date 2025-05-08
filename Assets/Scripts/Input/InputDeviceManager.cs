@@ -302,8 +302,8 @@ public class InputDeviceManager : MonoBehaviour
         t0 = 255 - t0;
         t1 = 255 - t1;
 
-        //string message = $"<{t0:D3}{t1:D3}{i0:D3}{i1:D3}>"; // "<AAABBBCCCDDD>"
-        string message = $"<{t0:D3}{t1:D3}>"; // "<AAABBBCCCDDD>"
+        string message = $"<{t0:D3}{t1:D3}{i0:D3}{i1:D3}>"; // "<AAABBBCCCDDD>"
+        //string message = $"<{t0:D3}{t1:D3}>"; // "<AAABBBCCCDDD>"
         byte[] payload = Encoding.ASCII.GetBytes(message); // Should be exactly ? bytes
 
         BleApi.BLEData bleData = new()

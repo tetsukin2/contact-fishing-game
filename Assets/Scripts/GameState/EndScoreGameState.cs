@@ -7,14 +7,12 @@ public class EndScoreGameState : GameState
     public override void Enter()
     {
         Debug.Log("Entering End Score State");
-        bool newBest = false;
         if (gameManager.Timer < gameManager.CurrentGameData.BestTime)
         {
             gameManager.CurrentGameData.BestTime = gameManager.Timer;
             GameDataHandler.SaveGameData(gameManager.CurrentGameData, "data", $"{gameManager.FishTotalToCatch}");
-            newBest = true;
+            gameManager.NewBestScoreReached.Invoke();
         }
-        if (newBest) gameManager.NewBestScoreReached.Invoke();
     }
 
     public override void Update()

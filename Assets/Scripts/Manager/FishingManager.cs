@@ -84,6 +84,7 @@ public class FishingManager : MonoBehaviour
 
     private FishingState _currentState;
     private UnityEvent _bobberHitWater = new();
+    private FishData _caughtFish;
 
     // Phase Accessors
     public BaitPreparationState BaitPreparationState { get; private set; }
@@ -209,7 +210,7 @@ public class FishingManager : MonoBehaviour
     {
         _fishingBobber.OnReel(ReelForce);
 
-        FishData caughtFish = FishLootTable.Instance.GetFishFromTable();
+        _caughtFish = FishLootTable.Instance.GetFishFromTable();
 
         Debug.Log("Reeling In!");
     }
@@ -238,10 +239,10 @@ public class FishingManager : MonoBehaviour
         _reelProgressSlider.value = Mathf.Min(value, _reelProgressSlider.maxValue);
     }
 
-    public void ShowFishInspection(FishData fish)
+    public void ShowFishInspection()
     {
         _fishInspectionGUI.Show(true);
-        _fishInspectionGUI.ShowFish(fish);
+        _fishInspectionGUI.ShowFish(_caughtFish);
     }
 
     public void HideFishInspection()

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class EncyclopediaPanel : GUIPanel
 {
-    [SerializeField] private JoystickCursorSelectable[] _fishSelectables;
+    [SerializeField] private FishSelectable[] _fishSelectables;
     [SerializeField] private ButtonCursorSelectable _nextButton;
     [SerializeField] private ButtonCursorSelectable _previousButton;
 
@@ -16,6 +16,36 @@ public class EncyclopediaPanel : GUIPanel
         _nextButton.onSelect.AddListener(OnSetNextFish);
         _previousButton.onSelect.AddListener(OnSetPreviousFish);
         RefreshFishes();
+    }
+
+    public override void Show(bool show)
+    {
+        base.Show(show);
+        if (show)
+        {
+            UpdateFishData();
+        }
+    }
+
+    private void UpdateFishData()
+    {
+        foreach (FishSelectable fishSelectable in _fishSelectables)
+        {
+            GameData gameData = GameManager.Instance.CurrentGameData;
+            if (gameData != null) {
+
+                // DEBUG TEMP UNLOCK
+                if (!gameData.UnlockedFish.Contains(fishSelectable.FishID))
+                    gameData.UnlockedFish.Add(fishSelectable.FishID);
+
+                fishSelectable.SetDiscovered(gameData.UnlockedFish.Contains(fishSelectable.FishID));
+            }
+            else
+            {
+                fishSelectable.SetDiscovered(false);
+            }
+            
+        }
     }
 
     private void OnSetNextFish()
@@ -37,10 +67,10 @@ public class EncyclopediaPanel : GUIPanel
     {
         foreach (JoystickCursorSelectable fishSelectable in _fishSelectables)
         {
-            fishSelectable.isSelectable = false;
+            fishSelectable.IsSelectable = false;
             fishSelectable.Show(false);
         }
         _fishSelectables[_currentFishIndex].Show(true);
-        _fishSelectables[_currentFishIndex].isSelectable = true;
+        _fishSelectables[_currentFishIndex].IsSelectable = true;
     }
 }

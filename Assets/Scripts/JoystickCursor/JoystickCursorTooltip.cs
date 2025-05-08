@@ -1,8 +1,21 @@
 using TMPro;
 using UnityEngine;
 
+
 public class JoystickCursorTooltip : MonoBehaviour
 {
+    [System.Serializable]
+    public struct TooltipText
+    {
+        public string Title;
+        public string Message;
+        public TooltipText(string title, string message)
+        {
+            Title = title;
+            Message = message;
+        }
+    }
+
     public RectTransform Content;        // The root panel of the tooltip
     public TextMeshProUGUI Title;
     public TextMeshProUGUI Description;
@@ -18,10 +31,10 @@ public class JoystickCursorTooltip : MonoBehaviour
         Hide();
     }
 
-    public void Show(string title, string message)
+    public void Show(TooltipText text)
     {
-        Title.text = title;
-        Description.text = message;
+        Title.text = text.Title;
+        Description.text = text.Message;
         Content.gameObject.SetActive(true);
         isVisible = true;
         UpdatePosition();

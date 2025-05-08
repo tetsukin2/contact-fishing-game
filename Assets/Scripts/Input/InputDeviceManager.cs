@@ -330,11 +330,6 @@ public class InputDeviceManager : MonoBehaviour
         }
     }
 
-    //public static void SendBraille(BrailleData data)
-    //{
-    //    SendBrailleASCII(data.val1, data.val2);
-    //}
-
     /// <summary>
     /// Queues a connection status log and event to the main thread
     /// </summary>

@@ -64,4 +64,5 @@ public class GameDataHandler
 public class GameData
 {
     public float BestTime = float.MaxValue;
+    public List<string> UnlockedFish = new();
 }

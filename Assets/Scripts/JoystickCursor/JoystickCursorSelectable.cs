@@ -11,7 +11,7 @@ public class JoystickCursorSelectable : GUIPanel
     [SerializeField] protected Sprite _hoverSprite;
     [SerializeField] private Sprite _disabledSprite;
     [HideInInspector] public bool TriggersActuation = true;
-    public JoystickCursorTooltip.TooltipText TooltipText;
+    [SerializeField] private JoystickCursorTooltip.TooltipText _tooltipText;
     [SerializeField] private bool _isSelectable = true; // Whether this image can be selected or not
 
     public Texture2D texture { get; private set; }          // Cached texture
@@ -20,6 +20,8 @@ public class JoystickCursorSelectable : GUIPanel
     public int height { get; private set; }        // Texture dimensions
     public RectTransform rectTransform { get; private set; }  // Cached rectTransform
 
+    public virtual JoystickCursorTooltip.TooltipText TooltipText => _tooltipText;
+
     // Whether this would be detected at all
     public bool IsSelectable
     {
@@ -27,7 +29,6 @@ public class JoystickCursorSelectable : GUIPanel
         set
         {
             _isSelectable = value;
-            TriggersActuation = value;
             if (value)
             {
                 DisplayImage.sprite = _normalSprite;

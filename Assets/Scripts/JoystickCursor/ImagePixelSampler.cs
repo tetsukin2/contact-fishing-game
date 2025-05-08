@@ -78,6 +78,7 @@ public class ImagePixelSampler : MonoBehaviour
                                           bestPixel.b > 128 &&
                                           bestPixel.a >= AlphaThreshold;
 
+                //Debug.Log($"Triggers actuation: {bestSelectable.TriggersActuation}");
                 bool finalActuation = bestSelectable.TriggersActuation && pixelWouldActuate;
 
                 point.SetActuated(finalActuation);

@@ -11,7 +11,7 @@ public class GUIPanel : MonoBehaviour
 
     public virtual void Show(bool show)
     {
-        Debug.Log($"Showing {gameObject.name}: {show}");
+        //Debug.Log($"Showing {gameObject.name}: {show}");
         if (_content != null)
         {
             _content.SetActive(show);

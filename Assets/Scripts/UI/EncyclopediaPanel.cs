@@ -35,8 +35,8 @@ public class EncyclopediaPanel : GUIPanel
             if (gameData != null) {
 
                 // DEBUG TEMP UNLOCK
-                if (!gameData.UnlockedFish.Contains(fishSelectable.FishID))
-                    gameData.UnlockedFish.Add(fishSelectable.FishID);
+                //if (!gameData.UnlockedFish.Contains(fishSelectable.FishID))
+                //    gameData.UnlockedFish.Add(fishSelectable.FishID);
 
                 fishSelectable.SetDiscovered(gameData.UnlockedFish.Contains(fishSelectable.FishID));
             }

@@ -299,11 +299,11 @@ public class InputDeviceManager : MonoBehaviour
         }
 
         // TEMPORARY FLIPPING UNTIL INVERSION FIXED OR IDK
-        //val1 = 255 - val1;
-        //val2 = 255 - val2;
+        t0 = 255 - t0;
+        t1 = 255 - t1;
 
-        string message = $"<{t0:D3}{t1:D3}{i0:D3}{i1:D3}>"; // "<AAABBBCCCDDD>"
-        //string message = $"<{val1:D3}{val2:D3}>"; // "<AAABBBCCCDDD>"
+        //string message = $"<{t0:D3}{t1:D3}{i0:D3}{i1:D3}>"; // "<AAABBBCCCDDD>"
+        string message = $"<{t0:D3}{t1:D3}>"; // "<AAABBBCCCDDD>"
         byte[] payload = Encoding.ASCII.GetBytes(message); // Should be exactly ? bytes
 
         BleApi.BLEData bleData = new()

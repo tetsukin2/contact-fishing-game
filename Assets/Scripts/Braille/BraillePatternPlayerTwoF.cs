@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BraillePatternPlayer : MonoBehaviour
+public class BraillePatternPlayerTwoF : MonoBehaviour
 {
     public enum Finger
     {
@@ -11,7 +11,7 @@ public class BraillePatternPlayer : MonoBehaviour
         BOTH
     }
 
-    public static BraillePatternPlayer Instance { get; private set; }
+    public static BraillePatternPlayerTwoF Instance { get; private set; }
 
     public float PatternDelay = 0.2f; // Delay between patterns
 

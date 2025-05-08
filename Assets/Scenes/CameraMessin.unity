@@ -754,7 +754,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -201.01807, y: -99.98645}
+  m_AnchoredPosition: {x: -348.2, y: -424.7}
   m_SizeDelta: {x: 327.6503, y: 119.8289}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &112257049
@@ -2026,8 +2026,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.19536717, z: 0, w: 0.9807302}
-  m_LocalPosition: {x: 5.19094, y: -2.3212876, z: 0.29054976}
+  m_LocalRotation: {x: 0.20291524, y: 0.18054163, z: -0.03809541, w: 0.96165425}
+  m_LocalPosition: {x: 6.919, y: -2.775, z: 0.8529999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5357,7 +5357,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2569ba821730b8f479e844addc664ab7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _thumbPatternSequence: WaveIn
+  _thumbPatternSequence: ReelStruggleMock
   _indexPatternSequence: 
   _active: 0
 --- !u!1 &720780735
@@ -9261,7 +9261,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1117219585
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11714,7 +11714,7 @@ MonoBehaviour:
   - m_Script
   m_LockStageInInspector: 
   m_StreamingVersion: 20170927
-  m_Priority: 0
+  m_Priority: 10
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 0}
@@ -11745,14 +11745,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1444235155}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.20645995, y: -0, z: -0, w: 0.9784551}
-  m_LocalPosition: {x: 7.5369396, y: -1.1612878, z: -0.29345036}
+  m_LocalRotation: {x: 0.20291524, y: 0.18054163, z: -0.03809541, w: 0.96165425}
+  m_LocalPosition: {x: 6.919, y: -2.775, z: 0.853}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 904744679}
   m_Father: {fileID: 463657194}
-  m_LocalEulerAnglesHint: {x: 23.83, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 23.83, y: 21.266, z: 0}
 --- !u!1 &1453269520
 GameObject:
   m_ObjectHideFlags: 0
@@ -12723,10 +12723,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7da5a6a1c3cc4d44990a972c307b757, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PatternDelay: 0.2
+  PatternDelay: 0.1
   _braillePatternSequences:
   - {fileID: 11400000, guid: bfcd75d8e223cff48904057b29d7e3c6, type: 2}
   - {fileID: 11400000, guid: 3e64a188bff7a3242ac6355559e49950, type: 2}
+  - {fileID: 11400000, guid: 33867f9fc9abd2f4fb01e8457c4f58e8, type: 2}
 --- !u!1 &1565256410
 GameObject:
   m_ObjectHideFlags: 0

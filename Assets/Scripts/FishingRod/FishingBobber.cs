@@ -55,7 +55,7 @@ public class FishingBobber : MonoBehaviour
 
         Vector3 imuData = InputDeviceManager.IMURotation;
 
-        bobberRotation.y = Mathf.SmoothDamp(bobberRotation.y, -imuData.x * _fishingManager.BobberSensitivity, ref velocity.y, smoothFactor);
+        bobberRotation.y = Mathf.SmoothDamp(bobberRotation.y, -imuData.y * _fishingManager.BobberSensitivity, ref velocity.y, smoothFactor);
         bobberRotation.y = Mathf.Clamp(bobberRotation.y, -90f, 90f);
 
         BobberPivot.localRotation = Quaternion.Euler(-bobberRotation.y, 0, -bobberRotation.x);

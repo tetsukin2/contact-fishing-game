@@ -36,6 +36,7 @@ public class ReelingState : FishingState
         fishingManager.StateLabelPanel.SetLabel(FishingStateName.Reeling);
         Debug.Log("Entering Reeling State");
         fishingManager.StartReel();
+        BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", true); // Start the reel pattern
 
         // Set up reel progress and sequence
         _currentReelActionIndex = 0;
@@ -72,6 +73,7 @@ public class ReelingState : FishingState
             fishingManager.ReelIn(); // Call the reel in function
             fishingManager.Targeting.CatchSelected(); // Catch the fish and do resets
             // Transition back to bait prep only if not fully caught, so as not to mess camera
+            BraillePatternPlayer.Instance.PlayPatternSequence("Ripple", false);
             if (GameManager.Instance.FishCaught < GameManager.Instance.FishTotalToCatch)
                 fishingManager.TransitionToState(fishingManager.FishInspectionState); 
         }

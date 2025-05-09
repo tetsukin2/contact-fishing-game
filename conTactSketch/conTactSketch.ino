@@ -1,6 +1,7 @@
 #include <ArduinoBLE.h>
 #include <Arduino_LSM6DS3.h>
 
+// === BLE Setup ===
 BLEService imuService("19B10000-E8F2-537E-4F6C-D104768A1214");
 BLECharacteristic imuCharacteristic("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify, 12);
 
@@ -10,29 +11,37 @@ BLECharacteristic joystickCharacteristic("19B20001-E8F2-537E-4F6C-D104768A1214",
 BLEService brailleService("19B30000-E8F2-537E-4F6C-D104768A1214");
 BLECharacteristic brailleCharacteristic("19B30001-E8F2-537E-4F6C-D104768A1214", BLEWriteWithoutResponse, 20);
 
+// === Pin Setup ===
 const int VRX_PIN = A1;
 const int VRY_PIN = A2;
 const int SW_PIN  = 8;
 
-const int ON        = 2;
-const int LATCH_PIN = 4;
-const int CLOCK_PIN = 5;
-const int DATA_PIN_INDEX  = 6;
-const int DATA_PIN_THUMB  = 7;
+const int ON     = 2;
+const int STROBE = 4; // LATCH
+const int CLOCK  = 5; // CLOCK
+const int DATA_1 = 6; // P20-1 DATA
+const int DATA_2 = 7; // P20-2 DATA
 
-char receivedChars[15];
+const int bitOrder[8] = {6, 7, 2, 1, 0, 5, 4, 3};
+
+// === Globals ===
+float x_offset = 0, y_offset = 0, z_offset = 0;
+char receivedChars[15]; // "<AAABBBCCCDDD>"
 bool newData = false;
+
+byte cells1[2]; // P20-1
+byte cells2[2]; // P20-2
 
 void setup() {
   Serial.begin(115200);
   pinMode(SW_PIN, INPUT_PULLUP);
 
   pinMode(ON, OUTPUT);
-  pinMode(LATCH_PIN, OUTPUT);
-  pinMode(CLOCK_PIN, OUTPUT);
-  pinMode(DATA_PIN_INDEX, OUTPUT);
-  pinMode(DATA_PIN_THUMB, OUTPUT);
-  digitalWrite(ON, LOW); // Enable booster
+  pinMode(STROBE, OUTPUT);
+  pinMode(CLOCK, OUTPUT);
+  pinMode(DATA_1, OUTPUT);
+  pinMode(DATA_2, OUTPUT);
+  digitalWrite(ON, LOW); // Booster ON
 
   if (!BLE.begin()) {
     Serial.println("❌ BLE failed to start!");
@@ -54,10 +63,33 @@ void setup() {
     while (1);
   }
 
-  // Default state = unactuated
-  byte reset[4] = {0, 0, 0, 0};
-  writeBrailleToP20(reset);
-  Serial.println("🛑 Initial state: P20 reset (000000000000)");
+  // === IMU Calibration (Set current position as neutral) ===
+  float sum_x = 0, sum_y = 0, sum_z = 0;
+  int samples = 100;
+  for (int i = 0; i < samples; i++) {
+    float x, y, z;
+    if (IMU.accelerationAvailable()) {
+      IMU.readAcceleration(x, y, z);
+      sum_x += x;
+      sum_y += y;
+      sum_z += z;
+    }
+    delay(10);
+  }
+  x_offset = sum_x / samples;
+  y_offset = sum_y / samples;
+  z_offset = sum_z / samples;
+
+  Serial.print("📏 Calibrated Offset: ");
+  Serial.print(x_offset); Serial.print(", ");
+  Serial.print(y_offset); Serial.print(", ");
+  Serial.println(z_offset);
+
+  // Reset both braille cells
+  cells1[0] = cells1[1] = 0;
+  cells2[0] = cells2[1] = 0;
+  FlushDualP20();
+  Serial.println("🛑 Initial state: Dual P20 reset");
 
   BLE.advertise();
   Serial.println("✅ BLE is now advertising!");
@@ -69,10 +101,10 @@ void loop() {
   if (central) {
     Serial.println("🔗 Connected to Unity!");
 
-    // Reset to default state again on connection
-    byte reset[4] = {0, 0, 0, 0};
-    writeBrailleToP20(reset);
-    Serial.println("🛑 P20 reset on connection");
+    // Reset both P20s on connect
+    cells1[0] = cells1[1] = 0;
+    cells2[0] = cells2[1] = 0;
+    FlushDualP20();
 
     static unsigned long lastSendTime = 0;
     const int minSendInterval = 200;
@@ -89,6 +121,9 @@ void loop() {
         float x, y, z;
         if (IMU.accelerationAvailable()) {
           IMU.readAcceleration(x, y, z);
+          x -= x_offset;
+          y -= y_offset;
+          z -= z_offset;
         }
 
         int16_t ix = (int16_t)(x * 1000);
@@ -101,6 +136,16 @@ void loop() {
           last_x = ix;
           last_y = iy;
           last_z = iz;
+
+          // 🔍 Print calibrated values in raw units and Gs
+          Serial.print("📈 Δ IMU Calibrated: ");
+          Serial.print("ix: "); Serial.print(ix); Serial.print("\t");
+          Serial.print("iy: "); Serial.print(iy); Serial.print("\t");
+          Serial.print("iz: "); Serial.print(iz); Serial.print("\t → ");
+
+          Serial.print("x: "); Serial.print(ix / 1000.0, 3); Serial.print("g\t");
+          Serial.print("y: "); Serial.print(iy / 1000.0, 3); Serial.print("g\t");
+          Serial.print("z: "); Serial.print(iz / 1000.0, 3); Serial.println("g");
         }
 
         int vrx = analogRead(VRX_PIN);
@@ -134,55 +179,82 @@ void loop() {
       }
     }
 
-    // Reset again after disconnect
-    byte blank[4] = {0, 0, 0, 0};
-    writeBrailleToP20(blank);
-    Serial.println("🔌 BLE disconnected → P20 reset");
+    // Reset on disconnect
+    cells1[0] = cells1[1] = 0;
+    cells2[0] = cells2[1] = 0;
+    FlushDualP20();
+    Serial.println("🔌 BLE disconnected → Dual P20 reset");
   }
 }
 
+bool recvInProgress = false;
+byte ndx = 0;
+
 void recvWithStartEndMarkers(char rc) {
-  static boolean recvInProgress = false;
-  static byte ndx = 0;
-  char startMarker = '<';
-  char endMarker = '>';
+  const char startMarker = '<';
+  const char endMarker = '>';
 
   if (recvInProgress) {
     if (rc != endMarker) {
-      receivedChars[ndx] = rc;
-      ndx++;
-      if (ndx >= 13) ndx = 12;
+      if (ndx < 14) {
+        receivedChars[ndx++] = rc;
+      } else {
+        // Overflow: abort and wait for next '<'
+        recvInProgress = false;
+        ndx = 0;
+        Serial.println("⚠️ Overflow in BLE message. Waiting for new packet.");
+      }
     } else {
+      // End marker found, finalize message
       receivedChars[ndx] = '\0';
       recvInProgress = false;
       ndx = 0;
-      newData = true;
 
-      // Parse format: <AAABBBCCCDDD>
-      int t0 = String(receivedChars).substring(0, 3).toInt();
-      int t1 = String(receivedChars).substring(3, 6).toInt();
-      int i0 = String(receivedChars).substring(6, 9).toInt();
-      int i1 = String(receivedChars).substring(9, 12).toInt();
+      // Parse values safely
+      if (strlen(receivedChars) == 12) {
+        int c0 = atoi(&receivedChars[0]);  // 0–2
+        int c1 = atoi(&receivedChars[3]);  // 3–5
+        int c2 = atoi(&receivedChars[6]);  // 6–8
+        int c3 = atoi(&receivedChars[9]);  // 9–11
 
-      byte data[4] = { (byte)t0, (byte)t1, (byte)i0, (byte)i1 };
+        cells1[0] = (byte)c0;
+        cells1[1] = (byte)c1;
+        cells2[0] = (byte)c2;
+        cells2[1] = (byte)c3;
+        FlushDualP20();
 
-      writeBrailleToP20(data);
-
-      Serial.print("Thumb P20: ");
-      Serial.print(t0); Serial.print(" "); Serial.println(t1);
-      Serial.print("Index P20: ");
-      Serial.print(i0); Serial.print(" "); Serial.println(i1);
+        Serial.print("📩 Received: ");
+        Serial.print(c0); Serial.print(", ");
+        Serial.print(c1); Serial.print(", ");
+        Serial.print(c2); Serial.print(", ");
+        Serial.println(c3);
+      } else {
+        Serial.println("⚠️ Invalid message length. Ignored.");
+      }
     }
   } else if (rc == startMarker) {
     recvInProgress = true;
+    ndx = 0;
   }
 }
 
-void writeBrailleToP20(const uint8_t* data) {
-  digitalWrite(LATCH_PIN, LOW); // Thumb LATCH
-  shiftOut(DATA_PIN_THUMB, CLOCK_PIN, MSBFIRST, data[1]);
-  shiftOut(DATA_PIN_THUMB, CLOCK_PIN, MSBFIRST, data[0]);
-  shiftOut(DATA_PIN_INDEX, CLOCK_PIN, MSBFIRST, data[3]);
-  shiftOut(DATA_PIN_INDEX, CLOCK_PIN, MSBFIRST, data[2]);
-  digitalWrite(LATCH_PIN, HIGH);
+void FlushDualP20() {
+  digitalWrite(STROBE, LOW);
+
+  for (int byteIndex = 0; byteIndex < 2; byteIndex++) {
+    for (int bitIndex = 0; bitIndex < 8; bitIndex++) {
+      int bit = bitOrder[bitIndex];
+
+      digitalWrite(CLOCK, LOW);
+      digitalWrite(DATA_1, bitRead(cells1[byteIndex], bit) ? LOW : HIGH);
+      digitalWrite(DATA_2, bitRead(cells2[byteIndex], bit) ? LOW : HIGH);
+      digitalWrite(CLOCK, HIGH);
+        Serial.print("Cell2 Byte ");
+        Serial.print(byteIndex);
+        Serial.print(": ");
+        Serial.println(cells2[byteIndex], BIN);
+    }
+  }
+
+  digitalWrite(STROBE, HIGH);
 }

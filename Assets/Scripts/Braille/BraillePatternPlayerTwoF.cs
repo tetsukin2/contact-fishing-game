@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BraillePatternPlayer : MonoBehaviour
 {
@@ -31,6 +32,8 @@ public class BraillePatternPlayer : MonoBehaviour
     }
 
     [SerializeField] private List<BraillePinPatternSequence> _braillePatternSequences;
+
+    public UnityEvent<Finger> PatternEnded = new();
 
     private List<EncodedBraillePatternSequence> _encodedThumbBraillePatternSequences = new();
     private List<EncodedBraillePatternSequence> _encodedIndexBraillePatternSequences = new();
@@ -285,11 +288,13 @@ public class BraillePatternPlayer : MonoBehaviour
     {
         _currentThumbSequence = null;
         _currentThumbPatternIndex = 0;
+        PatternEnded.Invoke(Finger.THUMB);
     }
 
     private void ResetIndexSequence()
     {
         _currentIndexSequence = null;
         _currentIndexPatternIndex = 0;
+        PatternEnded.Invoke(Finger.INDEX);
     }
 }

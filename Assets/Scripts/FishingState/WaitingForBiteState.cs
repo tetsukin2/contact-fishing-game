@@ -28,8 +28,20 @@ public class WaitingForBiteState : FishingState
 
     private void OnFishReachLure()
     {
-        fishingManager.TransitionToState(fishingManager.ReelingState);
-        fishingManager.Targeting.Selection.ReachedLureLocation.RemoveListener(OnFishReachLure); 
+        // Don't immediately reel, have the fish bite
+        fishingManager.Targeting.Selection.ReachedLureLocation.RemoveListener(OnFishReachLure);
+        BraillePatternPlayer.Instance.PlayPatternSequence("HalfVerticalAlternation", false);
+        BraillePatternPlayer.Instance.PatternEnded.AddListener(OnBiteFinished);
+    }
+
+    private void OnBiteFinished(BraillePatternPlayer.Finger finger)
+    {
+        // More to ensure this only fires once
+        if (finger== BraillePatternPlayer.Finger.INDEX)
+        {
+            BraillePatternPlayer.Instance.PatternEnded.RemoveListener(OnBiteFinished);
+            fishingManager.TransitionToState(fishingManager.ReelingState);
+        }
     }
 
     public override void Exit()

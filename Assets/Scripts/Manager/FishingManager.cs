@@ -44,6 +44,8 @@ public class FishingManager : MonoBehaviour
     public int BaitPreparationSteps = 1;
     public string BaitPrepPromptRightName;
     public string BaitPrepPromptLeftName;
+    public float RollRightAngle = -0.8f;
+    public float RollLeftAngle = 0.8f;
 
     [Space]
     [Header("Casting")]
@@ -74,8 +76,8 @@ public class FishingManager : MonoBehaviour
 
     [Space]
     [Header("FishData Inspection")]
-    public float SideRotateUpAngle = 30f;
-    public float SideRotateDownAngle = -30f; // Y rod rotation thresholds
+    //public float SideRotateUpAngle = 30f;
+    //public float SideRotateDownAngle = -30f; // Y rod rotation thresholds
     public string InspectReadyPromptName;
     public string InspectPromptName;
     public string ReleaseReadyPromptName;

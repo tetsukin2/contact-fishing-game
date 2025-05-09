@@ -24,13 +24,17 @@ public class FishInspectionState : FishingState
         if (!_fishInspected)
         {
             if (!_reachedInitialRotation && // Start at side neutral
-                fishingManager.InputHelper.HasReachedRotationX(80f))
+                fishingManager.InputHelper.IsNearRotationX(0.75f)
+                && fishingManager.InputHelper.IsNearRotationY(1.15f)
+                && fishingManager.InputHelper.IsNearRotationZ(-0.75f))
             {
                 _reachedInitialRotation = true;
                 fishingManager.ShowInputPrompt(fishingManager.InspectPromptName);
             }
             else if (_reachedInitialRotation && // Now rotate up
-                fishingManager.InputHelper.HasReachedRotationY(fishingManager.SideRotateUpAngle))
+                fishingManager.InputHelper.IsNearRotationX(0.4f)
+                && fishingManager.InputHelper.IsNearRotationY(0.5f)
+                && fishingManager.InputHelper.HasReachedRotationZ(-1.5f))
             {
                 _reachedInitialRotation = false; // Reset for release rotation
                 fishingManager.InputHelper.ClearRotationHistory(); // Clean read for fish release
@@ -43,16 +47,21 @@ public class FishInspectionState : FishingState
         else if (_fishInspected)
         {
             if (!_reachedInitialRotation && // Return to neutral
-                fishingManager.InputHelper.HasReachedRotationX(80f))
+                fishingManager.InputHelper.IsNearRotationX(0.75f)
+                && fishingManager.InputHelper.IsNearRotationY(1.15f)
+                && fishingManager.InputHelper.IsNearRotationZ(-0.75f))
             {
                 _reachedInitialRotation = true;
                 fishingManager.ShowInputPrompt(fishingManager.ReleasePromptName);
             }
             else if (_reachedInitialRotation && // Now rotate down
-                fishingManager.InputHelper.HasReachedRotationY(fishingManager.SideRotateDownAngle))
+                fishingManager.InputHelper.IsNearRotationX(1.25f)
+                && fishingManager.InputHelper.IsNearRotationY(0.5f)
+                && fishingManager.InputHelper.HasReachedRotationZ(0f))
             {
                 Debug.Log("FishData caught");
                 GameManager.Instance.AddFish();
+                BraillePatternPlayer.Instance.PlayPatternSequence("BasicPulse", false);
                 fishingManager.TransitionToState(fishingManager.BaitPreparationState);
             }
         

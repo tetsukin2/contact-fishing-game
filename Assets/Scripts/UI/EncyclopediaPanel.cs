@@ -9,6 +9,7 @@ public class EncyclopediaPanel : GUIPanel
     [SerializeField] private FishSelectable[] _fishSelectables;
     [SerializeField] private ButtonCursorSelectable _nextButton;
     [SerializeField] private ButtonCursorSelectable _previousButton;
+    [SerializeField] private ButtonCursorSelectable _deleteDataButton;
 
     private int _currentFishIndex = 0;
 
@@ -16,6 +17,7 @@ public class EncyclopediaPanel : GUIPanel
     {
         _nextButton.onSelect.AddListener(OnSetNextFish);
         _previousButton.onSelect.AddListener(OnSetPreviousFish);
+        _deleteDataButton.onSelect.AddListener(OnDeleteData);
         RefreshFishes();
     }
 
@@ -47,6 +49,12 @@ public class EncyclopediaPanel : GUIPanel
             }
             
         }
+    }
+
+    private void OnDeleteData()
+    {
+        GameManager.Instance.DeleteData();
+        UpdateFishData();
     }
 
     private void OnSetNextFish()

@@ -7,11 +7,16 @@ public class EndScoreGameState : GameState
     public override void Enter()
     {
         Debug.Log("Entering End Score State");
+        // NewBestScore I think relies on logic from after saving data
         if (gameManager.Timer < gameManager.CurrentGameData.BestTime)
         {
             gameManager.CurrentGameData.BestTime = gameManager.Timer;
             GameDataHandler.SaveGameData(gameManager.CurrentGameData, "data", $"{gameManager.FishTotalToCatch}");
             gameManager.NewBestScoreReached.Invoke();
+        }
+        else // In order to save discovered fishes
+        {
+            GameDataHandler.SaveGameData(gameManager.CurrentGameData, "data", $"{gameManager.FishTotalToCatch}");
         }
     }
 

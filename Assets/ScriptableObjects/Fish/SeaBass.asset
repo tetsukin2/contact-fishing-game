@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: SeaBass
   m_EditorClassIdentifier: 
   FishName: Seabass
+  FishID: seabass
   Sprite: {fileID: 21300000, guid: c3b53553e98122344a0b33ff3636d19c, type: 3}
   Rarity: 0

@@ -8,6 +8,7 @@ public class FishInspectionPanel : GUIPanel
 {
     [SerializeField] private Image _fishImage;
     [SerializeField] private TextMeshProUGUI _fishNameText;
+    [SerializeField] private GUIPanel _discoveredPanel;
 
     public void Start()
     {
@@ -19,5 +20,10 @@ public class FishInspectionPanel : GUIPanel
     {
         _fishImage.sprite = fish.Sprite;
         _fishNameText.text = fish.FishName;
+    }
+
+    public void ShowDiscoveredBanner(bool discovered)
+    {
+        _discoveredPanel.Show(discovered);
     }
 }

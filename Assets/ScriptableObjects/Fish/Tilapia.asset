@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Tilapia
   m_EditorClassIdentifier: 
   FishName: Tilapia
+  FishID: tilapia
   Sprite: {fileID: 21300000, guid: e627f27377b6ea94789d048290701571, type: 3}
   Rarity: 0

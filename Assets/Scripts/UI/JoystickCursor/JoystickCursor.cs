@@ -111,19 +111,24 @@ public class JoystickCursor : MonoBehaviour
 
     private void UpdateBrailleValues()
     {
-        int temp_t1 = 128 * _t00.Value + 64 * _t01.Value 
-            + 32 * _t10.Value + 4 * _t11.Value
-            + 16 * _t20.Value + 2 * _t21.Value 
-            + 8 * _t30.Value + 1 * _t31.Value;
-        int temp_t0 = 128 * _t02.Value + 64 * _t03.Value 
-            + 32 * _t12.Value + 4 * _t13.Value
-            + 16 * _t22.Value + 2 * _t23.Value 
-            + 8 * _t32.Value + 1 * _t33.Value;
+        int temp_t0 = 1 * _t00.Value + 8 * _t01.Value
+            + 2 * _t10.Value + 16 * _t11.Value
+            + 4 * _t20.Value + 32 * _t21.Value
+            + 64 * _t30.Value + 128 * _t31.Value;
+        int temp_t1 = 1 * _t02.Value + 8 * _t03.Value
+            + 2 * _t12.Value + 16 * _t13.Value
+            + 4 * _t22.Value + 32 * _t23.Value
+            + 64 * _t32.Value + 128 * _t33.Value;
 
-        int temp_i1 = 64 * _i00.Value + 4 * _i01.Value + 2 * _i02.Value + _i03.Value
-            + 128 * _i10.Value + 32 * _i11.Value + 16 * _i12.Value + 8 * _i13.Value;
-        int temp_i0 = 64 * _i20.Value + 4 * _t21.Value + 2 * _i22.Value + _i23.Value
-            + 128 * _i30.Value + 32 * _i31.Value + 16 * _i32.Value + 8 * _i33.Value;
+        int temp_i0 = 8 * _i20.Value + 1 * _i30.Value
+          + 16 * _i21.Value + 2 * _i31.Value
+          + 32 * _i22.Value + 4 * _i32.Value
+          + 128 * _i23.Value + 64 * _i33.Value;
+
+        int temp_i1 = 8 * _i00.Value + 1 * _i10.Value
+            + 16 * _i01.Value + 2 * _i11.Value
+            + 32 * _i02.Value + 4 * _i12.Value
+            + 128 * _i03.Value + 64 * _i13.Value;
 
         if (temp_t0 != T0 || temp_t1 != T1 || temp_i0 != I0 || temp_i1 != I1)
         {

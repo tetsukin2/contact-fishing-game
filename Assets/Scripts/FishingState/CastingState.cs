@@ -18,7 +18,7 @@ public class CastingState : FishingState
             {
                 fishingManager.Targeting.LureFish(); // Lure the fish
                 fishingManager.TransitionToState(fishingManager.WaitingForBiteState);
-                BraillePatternPlayer.Instance.StopPatternSequence();
+                BraillePatternPlayer.Instance.PlayPatternSequence("Ripple", false);
                 _hasCast = false;
             }});
     }
@@ -49,13 +49,13 @@ public class CastingState : FishingState
             return;
 
         if (!_hasCastBack 
-            && fishingManager.InputHelper.HasReachedRotationY(fishingManager.RotateUpAngle))
+            && fishingManager.InputHelper.HasReachedRotationZ(Mathf.Lerp(fishingManager.RotateUpAngle, 0f, InputDeviceManager.IMURotation.y)))
         {
             OnCastBack();
         }
         // OnCast forward
         else if (_hasCastBack 
-            && fishingManager.InputHelper.HasReachedRotationY(fishingManager.RotateDownAngle))
+            && fishingManager.InputHelper.HasReachedRotationZ(Mathf.Lerp(fishingManager.RotateDownAngle, 0f, InputDeviceManager.IMURotation.y)))
         {
             OnCastForward();
         }
@@ -82,7 +82,6 @@ public class CastingState : FishingState
             fishingManager.ShowInputPrompt("");
             fishingManager.ShowSecondInputPrompt("");
             BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", true);
-            //BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", BraillePatternPlayer.Finger.INDEX, true);
         }
         else // Update prompt otherwise
         {

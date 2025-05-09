@@ -13,7 +13,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
 
     // Public for now, these may be configured?
     public float InputReadWindow = 0.5f;  // Time window to detect rotation (in seconds)
-    public float AbsoluteRotationAllowance = 10f; // Allowable rotation deviation for absolute rotation checks
+    public float AbsoluteRotationAllowance = 0.15f; // Allowable rotation deviation for absolute rotation checks
 
     private Queue<RotationData> rotationHistory = new();  // Stores rotation changes with timestamps
     private Vector3 previousRotation;  // Store the previous rotation of the IMU device
@@ -55,7 +55,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
         TrackJoystickRotations();
     }
 
-    [Obsolete("Recalibrated Controller causes this value to be unreliable")]
     void TrackRotation()
     {
         // Get the current rotation from the IMU device
@@ -87,7 +86,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// <param name="angle">Angle in degrees</param>
     /// <param name="axis">Axis to check</param>
     /// <returns></returns>
-    [Obsolete("Recalibrated Controller causes this value to be unreliable")]
     public bool HasRotatedByDegrees(float angle, InputDeviceManager.RotationAxis axis)
     {
         float cumulativeRotation = 0f;
@@ -120,7 +118,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// <summary>
     /// Checks if the device is currently in a specified rotation, with an allowance.
     /// </summary>
-    [Obsolete("Recalibrated Controller causes this value to be unreliable")]
     public bool IsNearRotation(float angle, InputDeviceManager.RotationAxis axis)
     {
         float deviceRotation = 0f;
@@ -144,7 +141,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// <summary>
     /// Checks if the device is currently in a specified X rotation, with an allowance.
     /// </summary>
-    [Obsolete("Recalibrated Controller causes this value to be unreliable")]
     public bool IsNearRotationX(float angle)
     {
         return IsNearRotation(angle, InputDeviceManager.RotationAxis.x);
@@ -153,7 +149,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// <summary>
     /// Checks if the device is currently in a specified X rotation, with an allowance.
     /// </summary>
-    [Obsolete("Recalibrated Controller causes this value to be unreliable")]
     public bool IsNearRotationY(float angle)
     {
         return IsNearRotation(angle, InputDeviceManager.RotationAxis.y);
@@ -162,7 +157,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// <summary>
     /// Checks if the device is currently in a specified X rotation, with an allowance.
     /// </summary>
-    [Obsolete("Recalibrated Controller causes this value to be unreliable")]
     public bool IsNearRotationZ(float angle)
     {
         return IsNearRotation(angle, InputDeviceManager.RotationAxis.z);
@@ -178,7 +172,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// 
     /// Negative values measure rotation in the negative direction.
     /// </summary> 
-    [Obsolete("Recalibrated Controller causes this value to be unreliable")]
     public bool HasReachedRotation(float angle, InputDeviceManager.RotationAxis axis)
     {
         float deviceRotation = 0f;
@@ -204,7 +197,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// 
     /// Negative values measure rotation in the negative direction.
     /// </summary>  
-    [Obsolete("Recalibrated Controller causes this value to be unreliable")]
     public bool HasReachedRotationX(float angle)
     {
         return HasReachedRotation(angle, InputDeviceManager.RotationAxis.x);
@@ -215,7 +207,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// 
     /// Negative values measure rotation in the negative direction.
     /// </summary>  
-    [Obsolete("Recalibrated Controller causes this value to be unreliable")]
     public bool HasReachedRotationY(float angle)
     {
         return HasReachedRotation(angle, InputDeviceManager.RotationAxis.y);
@@ -226,7 +217,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// 
     /// Negative values measure rotation in the negative direction.
     /// </summary>
-    [Obsolete("Recalibrated Controller causes this value to be unreliable")]
     public bool HasReachedRotationZ(float angle)
     {
         return HasReachedRotation(angle, InputDeviceManager.RotationAxis.z);

@@ -30,8 +30,8 @@ public class FishingRodMovement : MonoBehaviour
 
     private Vector3 _defaultRotation;
     
-    public float MenuRotationMax => 30f;
-    public float MenuRotationMin => -30f;
+    public float MenuRotationMax => 0.33f;
+    public float MenuRotationMin => -0.33f;
 
     private void Start()
     {
@@ -54,7 +54,7 @@ public class FishingRodMovement : MonoBehaviour
         if (CurrentMovementMode == MovementMode.Normal)
         {
             //rodRotation.x = Mathf.SmoothDamp(rodRotation.x, -imuData.x * sensitivity, ref velocity.x, smoothFactor);
-            rodRotation.y = Mathf.SmoothDamp(rodRotation.y, imuData.y * sensitivity, ref velocity.y, smoothFactor);
+            rodRotation.y = Mathf.SmoothDamp(rodRotation.y, Mathf.Lerp(-imuData.z, 0f, Mathf.Abs(imuData.y)) * sensitivity, ref velocity.y, smoothFactor);
             //rodRotation.z = Mathf.SmoothDamp(rodRotation.z, imuData.z * sensitivity, ref velocity.z, smoothFactor);
 
             //rodRotation.x = Mathf.Clamp(rodRotation.x, -30f, 30f);
@@ -67,31 +67,31 @@ public class FishingRodMovement : MonoBehaviour
         {
             FishingRodPivot.localRotation = Quaternion.Euler(_baitLockAngle, 0f, 0f);
         }
-        else if (CurrentMovementMode == MovementMode.Free)
-        {
-            rodRotation.x = Mathf.SmoothDamp(rodRotation.x, -imuData.x * sensitivity, ref velocity.x, smoothFactor);
-            rodRotation.y = Mathf.SmoothDamp(rodRotation.y, imuData.y * sensitivity, ref velocity.y, smoothFactor);
-            rodRotation.z = Mathf.SmoothDamp(rodRotation.z, imuData.z * sensitivity, ref velocity.z, smoothFactor);
-            rodRotation.x = Mathf.Clamp(rodRotation.x, -60f, 60f);
-            rodRotation.y = Mathf.Clamp(rodRotation.y, -60f, 60f);
-            rodRotation.z = Mathf.Clamp(rodRotation.z, -60f, 60f);
-            FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y + _menuOffsetRotation, 0, -rodRotation.x);
-        }
+        //else if (CurrentMovementMode == MovementMode.Free)
+        //{
+        //    rodRotation.x = Mathf.SmoothDamp(rodRotation.x, -imuData.x * sensitivity, ref velocity.x, smoothFactor);
+        //    rodRotation.y = Mathf.SmoothDamp(rodRotation.y, imuData.y * sensitivity, ref velocity.y, smoothFactor);
+        //    rodRotation.z = Mathf.SmoothDamp(rodRotation.z, imuData.z * sensitivity, ref velocity.z, smoothFactor);
+        //    rodRotation.x = Mathf.Clamp(rodRotation.x, -60f, 60f);
+        //    rodRotation.y = Mathf.Clamp(rodRotation.y, -60f, 60f);
+        //    rodRotation.z = Mathf.Clamp(rodRotation.z, -60f, 60f);
+        //    FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y + _menuOffsetRotation, 0, -rodRotation.x);
+        //}
         else if (CurrentMovementMode == MovementMode.Menu)
         {
-            rodRotation.y = Mathf.SmoothDamp(rodRotation.y, imuData.y * sensitivity, ref velocity.y, smoothFactor);
+            rodRotation.y = Mathf.SmoothDamp(rodRotation.y, Mathf.Lerp(-imuData.z, 0f, Mathf.Abs(imuData.y)) * sensitivity, ref velocity.y, smoothFactor);
             rodRotation.y = Mathf.Clamp(rodRotation.y, -30f, 30f);
 
             FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y + _menuOffsetRotation, 0, -rodRotation.x);
         }
-        else if (CurrentMovementMode == MovementMode.Idle)
-        {
-            rodRotation.x = Mathf.SmoothDamp(rodRotation.x, _defaultRotation.x * sensitivity, ref velocity.x, smoothFactor);
-            rodRotation.y = Mathf.SmoothDamp(rodRotation.y, _defaultRotation.y * sensitivity, ref velocity.y, smoothFactor);
-            rodRotation.z = Mathf.SmoothDamp(rodRotation.z, _defaultRotation.z * sensitivity, ref velocity.z, smoothFactor);
+        //else if (CurrentMovementMode == MovementMode.Idle)
+        //{
+        //    rodRotation.x = Mathf.SmoothDamp(rodRotation.x, _defaultRotation.x * sensitivity, ref velocity.x, smoothFactor);
+        //    rodRotation.y = Mathf.SmoothDamp(rodRotation.y, _defaultRotation.y * sensitivity, ref velocity.y, smoothFactor);
+        //    rodRotation.z = Mathf.SmoothDamp(rodRotation.z, _defaultRotation.z * sensitivity, ref velocity.z, smoothFactor);
 
-            FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y, 0f, -rodRotation.x);
-        }
+        //    FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y, 0f, -rodRotation.x);
+        //}
 
     }
 

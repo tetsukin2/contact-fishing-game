@@ -49,10 +49,10 @@ public class InputDeviceManager : MonoBehaviour
     public UnityEvent CharacteristicsLoaded => _characteristicsLoaded;
     public UnityEvent JoystickPressed => _joystickPressed;
 
-    /// <summary>
-    /// Returns IMU rotation in degrees
+    /// <summary>~
+    /// Returns IMU rotation in ~~degrees~~
     /// </summary>
-    public static Vector3 IMURotation => imuRotationRaw * 90f;
+    public static Vector3 IMURotation => imuRotationRaw;
 
     private void Awake()
     {
@@ -219,10 +219,7 @@ public class InputDeviceManager : MonoBehaviour
                     //Debug.Log($"Raw IMU Data: X={x}, Y={y}, Z={z}");
                     imuRotationRaw = new Vector3(x / 1000f, y / 1000f, z / 1000f);
 
-                    float pitch = Mathf.Atan2(-x, Mathf.Sqrt(y * y + z * z));  // tilt forward/backward
-                    float roll = Mathf.Atan2(y, z);                     // tilt left/right
-
-                    if (debugMode) Debug.Log($"Processed IMU Rotation: {imuRotationRaw} | Pitch: {pitch} | Roll: {roll}");
+                    if (debugMode) Debug.Log($"Processed IMU Rotation: {imuRotationRaw}");
                 }
             }
             yield return new WaitForSeconds(0.01f);
@@ -261,11 +258,12 @@ public class InputDeviceManager : MonoBehaviour
                     Vector2 adjustedInputRaw = rawInput - joystickCenter;
 
                     // Compute per-axis scaling, as center calibration may not be 0,0
-                    float scaledX = ( adjustedInputRaw.x >= 0 )
+                    // Some inversion here
+                    float scaledY = ( adjustedInputRaw.x >= 0 )
                         ? adjustedInputRaw.x / (1f - joystickCenter.x)
                         : adjustedInputRaw.x / (1f + joystickCenter.x);
 
-                    float scaledY = ( adjustedInputRaw.y >= 0 )
+                    float scaledX = ( adjustedInputRaw.y >= 0 )
                         ? adjustedInputRaw.y / (1f - joystickCenter.y)
                         : adjustedInputRaw.y / (1f + joystickCenter.y);
 
@@ -284,6 +282,7 @@ public class InputDeviceManager : MonoBehaviour
                         UnityMainThreadDispatcher.Instance().Enqueue(() => JoystickPressed.Invoke());
                         Debug.Log("Joystick Pressed!");
                     }
+                    Debug.Log(JoystickInput);
 
                     //Debug.Log(Input.GetKey(KeyCode.T));
 

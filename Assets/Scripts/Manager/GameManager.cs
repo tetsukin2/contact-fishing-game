@@ -101,6 +101,18 @@ public class GameManager : MonoBehaviour
         {
             InputDeviceManager.Instance.JoystickPressed.Invoke();
         }
+        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            CurrentGameData.AddFish("milkfish");
+        }
+        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            CurrentGameData.AddFish("seabass");
+        }
+        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            CurrentGameData.AddFish("tilapia");
+        }
     }
 
     public void TransitionToState(GameState newState)
@@ -134,40 +146,12 @@ public class GameManager : MonoBehaviour
         Timer = 0f;
     }
 
-    //public void CompleteLevel(string path, string fileName, bool endOfArea)
-    //{
-    //    gameWinMenu.SetActive(true);
-    //    nextLevelButton.gameObject.SetActive(!endOfArea);
-    //    endOfAreaText.SetActive(endOfArea);
-    //    if (timer < BestTime)
-    //    {
-    //        BestTime = timer;
-    //        TGData.SaveLevelData(BestTime, path, fileName);
-    //        newBestObject.SetActive(true);
-    //    }
-    //    gameClearTime.text = TGData.ConvertToTimeFormat(timer);
-    //    bestClearTime.text = TGData.ConvertToTimeFormat(BestTime);
-    //}
-
-    ////toggle pause
-    //public void TogglePause()
-    //{
-    //    if (gameState != GameStateName.PLAYING && gameState != GameStateName.PAUSED)
-    //        return;
-
-    //    if (!gameFrozen)
-    //    {
-    //        pause.Invoke();
-    //        GameFrozen = true;
-    //        gameState = GameStateName.PAUSED;
-    //    }
-    //    else
-    //    {
-    //        GameFrozen = false;
-    //        gameState = GameStateName.PLAYING;
-    //    }
-    //    UIManager.Instance.pauseMenu.SetActive(gameFrozen);
-    //}
+    public void DeleteData()
+    {
+        GameDataHandler.DeleteAllData();
+        CurrentGameData = GameDataHandler.GetGameData("data", $"{_fishTotalToCatch}");
+        Debug.Log("Debug: Deleting Data");
+    }
 
     public static void QuitGame()
     {

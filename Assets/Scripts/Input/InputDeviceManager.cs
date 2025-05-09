@@ -28,7 +28,9 @@ public class InputDeviceManager : MonoBehaviour
     private static string brailleCharUUID = null;
 
     [Tooltip("Whether to print IMU data in console")]
-    [SerializeField] private bool debugMode = false; // Set to true for debugging purposes
+    [Header("Debugging")]
+    [SerializeField] private bool showIMUData = false; // Set to true for debugging purposes
+    [SerializeField] private bool showJoystickData = false; // Set to true for debugging purposes
 
     private Thread scanThread;
     private bool isScanning = true;
@@ -219,7 +221,7 @@ public class InputDeviceManager : MonoBehaviour
                     //Debug.Log($"Raw IMU Data: X={x}, Y={y}, Z={z}");
                     imuRotationRaw = new Vector3(x / 1000f, y / 1000f, z / 1000f);
 
-                    if (debugMode) Debug.Log($"Processed IMU Rotation: {imuRotationRaw}");
+                    if (showIMUData) Debug.Log($"Processed IMU Rotation: {imuRotationRaw}");
                 }
             }
             yield return new WaitForSeconds(0.01f);
@@ -282,7 +284,7 @@ public class InputDeviceManager : MonoBehaviour
                         UnityMainThreadDispatcher.Instance().Enqueue(() => JoystickPressed.Invoke());
                         Debug.Log("Joystick Pressed!");
                     }
-                    Debug.Log(JoystickInput);
+                    if (showJoystickData) Debug.Log(JoystickInput);
 
                     //Debug.Log(Input.GetKey(KeyCode.T));
 

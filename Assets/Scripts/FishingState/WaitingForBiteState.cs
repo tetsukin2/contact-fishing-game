@@ -30,7 +30,7 @@ public class WaitingForBiteState : FishingState
     {
         // Don't immediately reel, have the fish bite
         fishingManager.Targeting.Selection.ReachedLureLocation.RemoveListener(OnFishReachLure);
-        BraillePatternPlayer.Instance.PlayPatternSequence("HalfVerticalAlternation", false);
+        BraillePatternPlayer.Instance.PlayPatternSequence("RipplePulse", false);
         BraillePatternPlayer.Instance.PatternEnded.AddListener(OnBiteFinished);
     }
 

@@ -32,7 +32,7 @@ public abstract class MenuSelect : GUIPanel
     {
         //Debug.Log($"{_fishingRodMovement.MenuRotationMin}/{InputDeviceManager.IMURotation.y}/{_fishingRodMovement.MenuRotationMax}");
         // Get the current IMU rotation on the Y-axis
-        float currentRotation = InputDeviceManager.IMURotation.y;
+        float currentRotation = Mathf.Lerp(-InputDeviceManager.IMURotation.z, 0f, Mathf.Abs(InputDeviceManager.IMURotation.y));
 
         int closestPointIndex = 0;
         float closestDistance = Mathf.Abs(currentRotation - _selectionPoints[0]);

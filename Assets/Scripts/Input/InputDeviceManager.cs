@@ -218,7 +218,11 @@ public class InputDeviceManager : MonoBehaviour
 
                     //Debug.Log($"Raw IMU Data: X={x}, Y={y}, Z={z}");
                     imuRotationRaw = new Vector3(x / 1000f, y / 1000f, z / 1000f);
-                    if (debugMode) Debug.Log($"Processed IMU Rotation: {imuRotationRaw}");
+
+                    float pitch = Mathf.Atan2(-x, Mathf.Sqrt(y * y + z * z));  // tilt forward/backward
+                    float roll = Mathf.Atan2(y, z);                     // tilt left/right
+
+                    if (debugMode) Debug.Log($"Processed IMU Rotation: {imuRotationRaw} | Pitch: {pitch} | Roll: {roll}");
                 }
             }
             yield return new WaitForSeconds(0.01f);
@@ -298,12 +302,7 @@ public class InputDeviceManager : MonoBehaviour
             return;
         }
 
-        // TEMPORARY FLIPPING UNTIL INVERSION FIXED OR IDK
-        t0 = 255 - t0;
-        t1 = 255 - t1;
-
         string message = $"<{t0:D3}{t1:D3}{i0:D3}{i1:D3}>"; // "<AAABBBCCCDDD>"
-        //string message = $"<{t0:D3}{t1:D3}>"; // "<AAABBBCCCDDD>"
         byte[] payload = Encoding.ASCII.GetBytes(message); // Should be exactly ? bytes
 
         BleApi.BLEData bleData = new()

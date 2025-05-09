@@ -32,7 +32,8 @@ public class BraillePatternPlayer : MonoBehaviour
 
     [SerializeField] private List<BraillePinPatternSequence> _braillePatternSequences;
 
-    private List<EncodedBraillePatternSequence> _encodedBraillePatternSequences = new();
+    private List<EncodedBraillePatternSequence> _encodedThumbBraillePatternSequences = new();
+    private List<EncodedBraillePatternSequence> _encodedIndexBraillePatternSequences = new();
 
     private EncodedBraillePatternSequence _currentIndexSequence;
     private int _currentIndexPatternIndex = 0;
@@ -58,10 +59,11 @@ public class BraillePatternPlayer : MonoBehaviour
         // Encode a list of sequences
         foreach (var sequence in _braillePatternSequences)
         {
-            _encodedBraillePatternSequences.Add(EncodePatternSequence(sequence));
+            _encodedThumbBraillePatternSequences.Add(EncodePatternSequence(sequence, Finger.THUMB));
+            _encodedIndexBraillePatternSequences.Add(EncodePatternSequence(sequence, Finger.INDEX));
         }
 
-        _patternCoroutine = StartCoroutine(RunSequence());
+        //_patternCoroutine = StartCoroutine(RunSequence());
     }
 
     public void PlayPatternSequence(string name, bool loop)
@@ -74,30 +76,59 @@ public class BraillePatternPlayer : MonoBehaviour
         PlayPatternSequence(name, side, false);
     }
 
+    /// <summary>
+    /// Start playing a sequence
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="side"></param>
+    /// <param name="loop"></param>
     public void PlayPatternSequence(string name, Finger side, bool loop)
     {
-        foreach (var sequence in _encodedBraillePatternSequences)
+        bool found = false;
+        if (side == Finger.THUMB || side == Finger.BOTH)
         {
-            if (sequence.SequenceName == name)
+            // Search via loop
+            foreach (var sequence in _encodedThumbBraillePatternSequences)
             {
-                // Setup thumb sequence
-                if (side == Finger.THUMB || side == Finger.BOTH)
+                if (sequence.SequenceName == name)
                 {
                     _currentThumbSequence = sequence;
                     _isThumbPatternLoop = loop;
                     _currentThumbPatternIndex = 0;
+                    found = true;
+                    break;
                 }
-                // Setup index sequence
-                if (side == Finger.INDEX || side == Finger.BOTH)
+            }
+        }
+        
+        // Not a second check cuz I think both should be identical
+        if (side == Finger.INDEX || side == Finger.BOTH)
+        {
+            // Search via loop
+            foreach (var sequence in _encodedIndexBraillePatternSequences)
+            {
+                if (sequence.SequenceName == name)
                 {
                     _currentIndexSequence = sequence;
                     _isIndexPatternLoop = loop;
                     _currentIndexPatternIndex = 0;
+                    found = true;
+                    break;
                 }
-                return;
             }
         }
-        Debug.LogError($"Pattern sequence {name} not found.");
+
+        // Nothing found
+        if (!found)
+        {
+            Debug.LogError($"Pattern sequence {name} not found.");
+            return;
+        }
+
+        if ((_currentIndexSequence != null || _currentThumbSequence != null) && _patternCoroutine == null)
+        {
+            _patternCoroutine = StartCoroutine(RunSequence());
+        }
     }
 
     public void StopPatternSequence()
@@ -115,6 +146,19 @@ public class BraillePatternPlayer : MonoBehaviour
         {
             ResetIndexSequence();
         }
+        SequenceStopCheck();
+    }
+
+    /// <summary>
+    /// Stop playing sequences if both are null
+    /// </summary>
+    private void SequenceStopCheck()
+    {
+        if (_currentIndexSequence == null && _currentThumbSequence == null && _patternCoroutine != null)
+        {
+            StopCoroutine(_patternCoroutine);
+            _patternCoroutine = null;
+        }
     }
 
     /// <summary>
@@ -122,13 +166,21 @@ public class BraillePatternPlayer : MonoBehaviour
     /// </summary>
     /// <param name="sequence"></param>
     /// <returns></returns>
-    private EncodedBraillePatternSequence EncodePatternSequence(BraillePinPatternSequence sequence)
+    private EncodedBraillePatternSequence EncodePatternSequence(BraillePinPatternSequence sequence, Finger finger)
     {
+        if (finger == Finger.BOTH)
+        {
+            Debug.LogError("EncodePattern must be called with either THUMB or INDEX");
+        }
+
         List<EncodedBraillePattern> encodedPatterns = new();
 
         foreach (var pattern in sequence.Sequence)
         {
-            encodedPatterns.Add(EncodePattern(pattern));
+            if (finger == Finger.THUMB)
+                encodedPatterns.Add(EncodePattern(pattern, Finger.THUMB));
+            else
+                encodedPatterns.Add(EncodePattern(pattern, Finger.INDEX));
         }
 
         return new EncodedBraillePatternSequence
@@ -139,15 +191,19 @@ public class BraillePatternPlayer : MonoBehaviour
     }
 
     /// <summary>
-    /// Convert a BraillePattern into a format that can be sent to the Braille pins
+    /// Convert a BraillePattern into a format that can be sent to the thumb Braille pins
     /// </summary>
     /// <param name="pattern"></param>
     /// <returns></returns>
-    private EncodedBraillePattern EncodePattern(BraillePinPatternSequence.BraillePattern pattern)
+    private EncodedBraillePattern EncodePattern(BraillePinPatternSequence.BraillePattern pattern, Finger finger)
     {
+        if (finger == Finger.BOTH)
+        {
+            Debug.LogError("EncodePattern must be called with either THUMB or INDEX");
+        }
+
         // Create arrays to hold the values
-        int[] v1 = new int[8];
-        int[] v2 = new int[8];
+        int[,] v = new int[4,4];
 
         // Ensure rows can only be of length 4
         if (pattern.Row1.Length != 4 || pattern.Row2.Length != 4 || pattern.Row3.Length != 4 || pattern.Row4.Length != 4)
@@ -159,17 +215,32 @@ public class BraillePatternPlayer : MonoBehaviour
         // Encode either 0 or 1
         for (int i = 0; i < 4; i++)
         {
-            v1[i] = (pattern.Row1[i] == '0') ? 0 : 1;
-            v1[i + 4] = (pattern.Row2[i] == '0') ? 0 : 1;
-            v2[i] = (pattern.Row3[i] == '0') ? 0 : 1;
-            v2[i + 4] = (pattern.Row4[i] == '0') ? 0 : 1;
+            v[0,i] = (pattern.Row1[i] == '0') ? 0 : 1;
+            v[1,i] = (pattern.Row2[i] == '0') ? 0 : 1;
+            v[2,i] = (pattern.Row3[i] == '0') ? 0 : 1;
+            v[3,i] = (pattern.Row4[i] == '0') ? 0 : 1;
         }
 
-        return new EncodedBraillePattern
-        {
-            Value1 = (64 * v1[0] + 4 * v1[1] + 2 * v1[2] + v1[3] + 128 * v1[4] + 32 * v1[5] + 16 * v1[6] + 8 * v1[7]),
-            Value2 = (64 * v2[0] + 4 * v2[1] + 2 * v2[2] + v2[3] + 128 * v2[4] + 32 * v2[5] + 16 * v2[6] + 8 * v2[7])
-        };
+        if (finger == Finger.THUMB)
+            return new EncodedBraillePattern
+            {
+                Value1 = 1 * v[0,0] + 8 * v[0,1] 
+                    + 2 * v[1,0] + 16 * v[1,1] 
+                    + 4 * v[2,0] + 32 * v[2,1] 
+                    + 64 * v[3,0] + 128 * v[3,1],
+                Value2 = 1 * v[0,2] + 8 * v[0,3] 
+                    + 2 * v[1,2] + 16 * v[1,3] 
+                    + 4 * v[2,2] + 32 * v[2,3] 
+                    + 64 * v[3,2] + 128 * v[3,3]
+            };
+        else 
+            return new EncodedBraillePattern
+            {
+                Value1 = 64 * v[0, 0] + 4 * v[0, 1] + 2 * v[0, 2] + v[0,3] 
+                    + 128 * v[1, 0] + 32 * v[1, 1] + 16 * v[1, 2] + 8 * v[1, 3],
+                Value2 = 64 * v[2, 0] + 4 * v[2, 1] + 2 * v[2, 2] + v[2, 3] 
+                    + 128 * v[3, 0] + 32 * v[3, 1] + 16 * v[3, 2] + 8 * v[3, 3]
+            };
     }
 
     private IEnumerator RunSequence()
@@ -206,6 +277,7 @@ public class BraillePatternPlayer : MonoBehaviour
             }
             InputDeviceManager.SendBrailleASCII(t1, t2, i1, i2);
             yield return interval; // buffer interval
+            SequenceStopCheck();
         }
     }
 

@@ -90,7 +90,7 @@ public class FishingRodMovement : MonoBehaviour
             rodRotation.y = Mathf.SmoothDamp(rodRotation.y, _defaultRotation.y * sensitivity, ref velocity.y, smoothFactor);
             rodRotation.z = Mathf.SmoothDamp(rodRotation.z, _defaultRotation.z * sensitivity, ref velocity.z, smoothFactor);
 
-            FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y, 0, -rodRotation.x);
+            FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y, 0f, -rodRotation.x);
         }
 
     }
@@ -104,7 +104,7 @@ public class FishingRodMovement : MonoBehaviour
         }
         else if (newState == GameManager.Instance.EncyclopediaState)
         {
-            CurrentMovementMode = MovementMode.Idle;
+            CurrentMovementMode = MovementMode.BaitLock; // setting to Idle causes rod to be wonky rest of the time idk
         }
         else //if (GameManager.Instance.CurrentGameState == GameStateName.GameStart)
         {

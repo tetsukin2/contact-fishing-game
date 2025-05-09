@@ -192,6 +192,32 @@ public class InputDeviceRotationHelper : MonoBehaviour
         return (angle >= 0 && deviceRotation >= angle) || (angle < 0 && deviceRotation < angle);
     }
 
+    /// <summary>
+    /// Helper version to take any two values
+    /// </summary>
+    /// <param name="angle"></param>
+    /// <param name="targetAngle"></param>
+    /// <returns></returns>
+    public static bool HasReachedRotation(float angle, float targetAngle)
+    {
+        // Return true if deviceRotation is greater than or equal to a positive or zero angle,  
+        // or less than a negative angle  
+        return (targetAngle >= 0 && angle >= targetAngle) || (targetAngle < 0 && angle < targetAngle);
+    }
+
+    /// <summary>
+    /// dunno anymore man
+    /// </summary>
+    /// <param name="angle"></param>
+    /// <param name="targetAngle"></param>
+    /// <returns></returns>
+    public static bool IsLessThanRotation(float angle, float targetAngle)
+    {
+        // Return true if deviceRotation is less than or equal to a positive or zero angle,  
+        // or greater than a negative angle  
+        return (targetAngle >= 0 && angle < targetAngle) || (targetAngle < 0 && angle > targetAngle);
+    }
+
     /// <summary>  
     /// Checks if the device has reached or exceeded a specified X rotation.  
     /// 

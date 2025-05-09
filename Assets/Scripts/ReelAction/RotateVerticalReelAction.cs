@@ -15,14 +15,14 @@ public class RotateVerticalReelAction : ReelAction
 
     public override void Update()
     {
-        if (!_hasRotatedForward && 
-            reelingState.FishingManager.InputHelper.HasReachedRotationZ(Mathf.Lerp(fishingManager.RotateDownAngle, 0f, InputDeviceManager.IMURotation.y)))
+        if (!_hasRotatedForward &&
+            InputDeviceRotationHelper.HasReachedRotation(Mathf.Lerp(InputDeviceManager.IMURotation.z, 0f, Mathf.Abs(InputDeviceManager.IMURotation.y)), fishingManager.RotateDownAngle))
         {
             fishingManager.ShowInputPrompt(fishingManager.ReelBackPromptName);
             _hasRotatedForward = true;
         }
         else if (_hasRotatedForward &&
-            reelingState.FishingManager.InputHelper.HasReachedRotationZ(Mathf.Lerp(fishingManager.RotateUpAngle, 0f, InputDeviceManager.IMURotation.y)))
+            InputDeviceRotationHelper.HasReachedRotation(Mathf.Lerp(InputDeviceManager.IMURotation.z, 0f, Mathf.Abs(InputDeviceManager.IMURotation.y)), fishingManager.RotateUpAngle))
         {
             reelingState.ProgressReel();
         }

@@ -4518,13 +4518,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fishTargeting: {fileID: 269142900}
   RotationTriggerThreshold: 15
-  BobberSensitivity: 50
+  BobberSensitivity: 60
   _fishingBobber: {fileID: 387807545}
   _bobberLandTransform: {fileID: 1114487055}
   _inputHelper: {fileID: 673116354}
   _rodMovement: {fileID: 673116355}
   RotateUpAngle: -0.5
-  RotateDownAngle: 0.2
+  RotateDownAngle: 0.15
   _inputPromptPanel: {fileID: 4331888718890880552}
   _secondInputPromptPanel: {fileID: 945813708}
   _stateLabelPanel: {fileID: 873962102}
@@ -4675,7 +4675,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &648257576
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5087,7 +5087,7 @@ MonoBehaviour:
   FishingRodPivot: {fileID: 1780299182}
   sensitivity: 90
   smoothFactor: 0.1
-  _menuOffsetRotation: 40
+  _menuOffsetRotation: 50
   _baitLockAngle: 30
 --- !u!1 &673998135
 GameObject:
@@ -13437,13 +13437,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18ee2b0a5fdabf84ab04bc3ead88810b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PatternDelay: 0.2
+  PatternDelay: 0.12
   _braillePatternSequences:
   - {fileID: 11400000, guid: bfcd75d8e223cff48904057b29d7e3c6, type: 2}
   - {fileID: 11400000, guid: 3e64a188bff7a3242ac6355559e49950, type: 2}
   - {fileID: 11400000, guid: 33867f9fc9abd2f4fb01e8457c4f58e8, type: 2}
   - {fileID: 11400000, guid: d8d05ea9d74bf014abecb3256b47e696, type: 2}
   - {fileID: 11400000, guid: aa3c1fd5a43b9754997b131aa699e3dd, type: 2}
+  - {fileID: 11400000, guid: b71661cac5234b24891dd53cac18369c, type: 2}
   PatternEnded:
     m_PersistentCalls:
       m_Calls: []
@@ -14516,7 +14517,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01d15850227cca94cabafb3a14796084, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugMode: 0
+  showIMUData: 1
+  showJoystickData: 0
 --- !u!4 &1673678348
 Transform:
   m_ObjectHideFlags: 0

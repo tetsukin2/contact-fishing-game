@@ -24,17 +24,15 @@ public class FishInspectionState : FishingState
         if (!_fishInspected)
         {
             if (!_reachedInitialRotation && // Start at side neutral
-                fishingManager.InputHelper.IsNearRotationX(0.75f)
-                && fishingManager.InputHelper.IsNearRotationY(1.15f)
-                && fishingManager.InputHelper.IsNearRotationZ(-0.75f))
+                fishingManager.InputHelper.HasReachedRotationY(fishingManager.RollLeftAngle))
             {
                 _reachedInitialRotation = true;
                 fishingManager.ShowInputPrompt(fishingManager.InspectPromptName);
             }
             else if (_reachedInitialRotation && // Now rotate up
-                fishingManager.InputHelper.IsNearRotationX(0.4f)
-                && fishingManager.InputHelper.IsNearRotationY(0.5f)
-                && fishingManager.InputHelper.HasReachedRotationZ(-1.5f))
+                InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.IMURotation.x, 0.4f)
+                && InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.IMURotation.y, 0.5f)
+                && fishingManager.InputHelper.HasReachedRotationZ(-1.25f))
             {
                 _reachedInitialRotation = false; // Reset for release rotation
                 fishingManager.InputHelper.ClearRotationHistory(); // Clean read for fish release
@@ -47,16 +45,14 @@ public class FishInspectionState : FishingState
         else if (_fishInspected)
         {
             if (!_reachedInitialRotation && // Return to neutral
-                fishingManager.InputHelper.IsNearRotationX(0.75f)
-                && fishingManager.InputHelper.IsNearRotationY(1.15f)
-                && fishingManager.InputHelper.IsNearRotationZ(-0.75f))
+                fishingManager.InputHelper.HasReachedRotationY(fishingManager.RollLeftAngle))
             {
                 _reachedInitialRotation = true;
                 fishingManager.ShowInputPrompt(fishingManager.ReleasePromptName);
             }
             else if (_reachedInitialRotation && // Now rotate down
-                fishingManager.InputHelper.IsNearRotationX(1.25f)
-                && fishingManager.InputHelper.IsNearRotationY(0.5f)
+                fishingManager.InputHelper.HasReachedRotationX(1f)
+                && InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.IMURotation.y, 0.75f)
                 && fishingManager.InputHelper.HasReachedRotationZ(0f))
             {
                 Debug.Log("FishData caught");

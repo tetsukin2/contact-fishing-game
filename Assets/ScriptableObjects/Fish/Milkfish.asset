@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Milkfish
   m_EditorClassIdentifier: 
   FishName: Milkfish
+  FishID: milkfish
   Sprite: {fileID: 21300000, guid: 0e7e815f0ca588a4da6b1e710b7d36d5, type: 3}
   Rarity: 0

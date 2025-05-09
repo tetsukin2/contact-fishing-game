@@ -13,6 +13,7 @@ public enum FishRarity
 public class FishData : ScriptableObject
 {
     public string FishName;
+    public string FishID;
     public Sprite Sprite;
     public FishRarity Rarity;
 }

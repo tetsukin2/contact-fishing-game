@@ -59,10 +59,3 @@ public class GameDataHandler
         return Mathf.FloorToInt(timer / 60).ToString() + ":" + Mathf.FloorToInt(timer % 60).ToString("D2");
     }
 }
-
-[Serializable]
-public class GameData
-{
-    public float BestTime = float.MaxValue;
-    public List<string> UnlockedFish = new();
-}

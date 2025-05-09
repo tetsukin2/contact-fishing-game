@@ -1,3 +1,4 @@
+using DG.Tweening.Core.Easing;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -239,10 +240,20 @@ public class FishingManager : MonoBehaviour
         _reelProgressSlider.value = Mathf.Min(value, _reelProgressSlider.maxValue);
     }
 
+    public void OnFishInspection()
+    {
+        GameManager.Instance.CurrentGameData.AddFish(_caughtFish.FishID);
+        ShowFishInspection();
+        Debug.Log($"Has {_caughtFish.FishID} been discovered: {GameManager.Instance.CurrentGameData.HasDiscoveredFish(_caughtFish.FishID)}");
+        HookedFish.SetActive(false);
+    }
+
     public void ShowFishInspection()
     {
+        GameManager gameManager = GameManager.Instance;
         _fishInspectionGUI.Show(true);
         _fishInspectionGUI.ShowFish(_caughtFish);
+        _fishInspectionGUI.ShowDiscoveredBanner(gameManager.CurrentGameData.HasDiscoveredFish(_caughtFish.FishID));
     }
 
     public void HideFishInspection()

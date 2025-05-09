@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.UI;
 
 public class EncyclopediaPanel : GUIPanel
@@ -61,14 +62,15 @@ public class EncyclopediaPanel : GUIPanel
     }
 
     /// <summary>
-    /// Refreshes the fish selectables, hiding all but the current one.
+    /// Refreshes the fish selectables, hiding all but the current one and updating discovered status.
     /// </summary>
     private void RefreshFishes()
     {
-        foreach (JoystickCursorSelectable fishSelectable in _fishSelectables)
+        foreach (FishSelectable fishSelectable in _fishSelectables)
         {
             fishSelectable.IsSelectable = false;
             fishSelectable.Show(false);
+            fishSelectable.SetDiscovered(GameManager.Instance.CurrentGameData.HasDiscoveredFish(fishSelectable.FishID));
         }
         _fishSelectables[_currentFishIndex].Show(true);
         _fishSelectables[_currentFishIndex].IsSelectable = true;

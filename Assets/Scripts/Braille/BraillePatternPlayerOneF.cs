@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BraillePatternPlayer : MonoBehaviour
+public class BraillePatternPlayerOneF : MonoBehaviour
 {
-    public static BraillePatternPlayer Instance { get; private set; }
+    public static BraillePatternPlayerOneF Instance { get; private set; }
     public float PatternDelay = 0.2f; // Delay between patterns
 
     private class EncodedBraillePatternSequence

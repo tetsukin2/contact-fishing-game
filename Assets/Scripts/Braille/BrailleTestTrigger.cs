@@ -18,15 +18,15 @@ public class BrailleTestTrigger : MonoBehaviour
         if (_active && !patternActive)
         {
             patternActive = true;
-            BraillePatternPlayer.Instance.PlayPatternSequence(_thumbPatternSequence, true);
-            //BraillePatternPlayer.Instance.PlayPatternSequence(_thumbPatternSequence, BraillePatternPlayer.Finger.THUMB, true);
-            //BraillePatternPlayer.Instance.PlayPatternSequence(_indexPatternSequence, BraillePatternPlayer.Finger.INDEX, true);
+            //BraillePatternPlayer.Instance.PlayPatternSequence(_thumbPatternSequence, true);
+            BraillePatternPlayer.Instance.PlayPatternSequence(_thumbPatternSequence, BraillePatternPlayer.Finger.THUMB, true);
+            BraillePatternPlayer.Instance.PlayPatternSequence(_indexPatternSequence, BraillePatternPlayer.Finger.INDEX, true);
         }
         else if (!_active && patternActive)
         {
             patternActive = false;
-            //BraillePatternPlayer.Instance.StopPatternSequence(BraillePatternPlayer.Finger.BOTH);
-            BraillePatternPlayer.Instance.StopPatternSequence();
+            BraillePatternPlayer.Instance.StopPatternSequence(BraillePatternPlayer.Finger.BOTH);
+            //BraillePatternPlayer.Instance.StopPatternSequence();
         }
 
         // Only send when state changes

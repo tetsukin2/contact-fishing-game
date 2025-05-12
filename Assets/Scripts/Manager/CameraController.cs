@@ -45,5 +45,10 @@ public class CameraController : MonoBehaviour
             _gameplayVCam.Priority = 5;
             _menuVCam.Priority = 0;
         }
+        if (newState == GameManager.Instance.GameEndState)
+        {
+            _baitPrepVCam.Priority = 0;
+            _fishSelectVCam.Priority = 0;
+        }
     }
 }

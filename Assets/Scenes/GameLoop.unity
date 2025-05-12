@@ -4524,7 +4524,7 @@ MonoBehaviour:
   _inputHelper: {fileID: 673116354}
   _rodMovement: {fileID: 673116355}
   RotateUpAngle: -0.5
-  RotateDownAngle: 0.15
+  RotateDownAngle: 0.2
   _inputPromptPanel: {fileID: 4331888718890880552}
   _secondInputPromptPanel: {fileID: 945813708}
   _stateLabelPanel: {fileID: 873962102}
@@ -5087,7 +5087,7 @@ MonoBehaviour:
   FishingRodPivot: {fileID: 1780299182}
   sensitivity: 90
   smoothFactor: 0.1
-  _menuOffsetRotation: 50
+  _menuOffsetRotation: 40
   _baitLockAngle: 30
 --- !u!1 &673998135
 GameObject:

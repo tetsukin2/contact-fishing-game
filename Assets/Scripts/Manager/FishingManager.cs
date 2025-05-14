@@ -65,7 +65,7 @@ public class FishingManager : MonoBehaviour
     public string ReelClockwisePromptName;
     public float ReelForce = 1f; // Force applied to the bobber upward
     public float ReelDecayRate = 0.3f;
-    [SerializeField] private GUIPanel _reelGUI;
+    [SerializeField] private GUIContainer _reelGUI;
     [SerializeField] private Slider _reelProgressSlider;
     public List<ReelingState.ReelActionName> ReelActionSequence; //Sequence of actions to follow
 

@@ -6,7 +6,7 @@ using UnityEngine;
 ///     by separating the content into its own gameobject, then shown or hidden rather than
 ///     this gameobject itself.
 /// </summary>
-public class GUIPanel : MonoBehaviour
+public class GUIContainer : MonoBehaviour
 {
     [SerializeField] protected GameObject _content;
 

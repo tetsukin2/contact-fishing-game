@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class JoystickCursorSelectable : GUIPanel
+public class JoystickCursorSelectable : GUIContainer
 {
     public Image DisplayImage;                 // The black-and-white image to detect over
     public Image BWImage;                 // The black-and-white image to detect over
@@ -22,7 +22,10 @@ public class JoystickCursorSelectable : GUIPanel
 
     public virtual JoystickCursorTooltip.TooltipText TooltipText => _tooltipText;
 
-    // Whether this would be detected at all
+    /// <summary>
+    /// Whether this can be selected at all 
+    /// (Note: Even an invisible image may still be detected, which is why the flag exists)
+    /// </summary>
     public bool IsSelectable
     {
         get => _isSelectable;

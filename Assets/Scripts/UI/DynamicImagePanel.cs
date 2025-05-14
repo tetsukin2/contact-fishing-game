@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DynamicImagePanel : GUIPanel
+public class DynamicImagePanel : GUIContainer
 {
     [SerializeField] private Image _image;
 

@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Playables;
-using UnityEngine.UI;
 
-public class EncyclopediaPanel : GUIPanel
+/// <summary>
+/// 
+/// </summary>
+public class EncyclopediaGUI : GUIContainer
 {
     [SerializeField] private FishSelectable[] _fishSelectables;
     [SerializeField] private ButtonCursorSelectable _nextButton;
@@ -15,54 +14,71 @@ public class EncyclopediaPanel : GUIPanel
 
     private void Start()
     {
+        GameManager.Instance.GameStateEntered.AddListener(OnGameStateEntered);
+
+        // Button setup
         _nextButton.onSelect.AddListener(OnSetNextFish);
         _previousButton.onSelect.AddListener(OnSetPreviousFish);
         _deleteDataButton.onSelect.AddListener(OnDeleteData);
-        RefreshFishes();
     }
 
-    public override void Show(bool show)
+    // Encyclopedia UI Setup
+    private void OnGameStateEntered(GameState newState)
     {
-        base.Show(show);
-        if (show)
-        {
-            UpdateFishData();
-        }
+        bool isEncyclopediaState = (newState == GameManager.Instance.EncyclopediaState);
+        Show(isEncyclopediaState);
+
+        // Only setup when encyclopedia is shown
+        if (!isEncyclopediaState) return; 
+
+        UpdateFishData();
+        RefreshFishes();
+        UIManager.Instance.ShowMainInputPrompt(UIManager.Instance.EncyclopediaInput);
+        UIManager.Instance.ShowSecondInputPrompt(UIManager.Instance.EncyclopediaSecondInput);
     }
 
+    /// <summary>
+    /// Updates the discovered status of each fish selectable based on the current game data.
+    /// </summary>
     private void UpdateFishData()
     {
         foreach (FishSelectable fishSelectable in _fishSelectables)
         {
             GameData gameData = GameManager.Instance.CurrentGameData;
-            if (gameData != null) {
-
-                // DEBUG TEMP UNLOCK
-                //if (!gameData.UnlockedFish.Contains(fishSelectable.FishID))
-                //    gameData.UnlockedFish.Add(fishSelectable.FishID);
-
-                fishSelectable.SetDiscovered(gameData.UnlockedFish.Contains(fishSelectable.FishID));
+            if (gameData != null)
+            {
+                fishSelectable.SetDiscovered(gameData.HasDiscoveredFish(fishSelectable.FishID));
             }
             else
             {
                 fishSelectable.SetDiscovered(false);
             }
-            
+
         }
     }
 
+    /// <summary>
+    /// Handles the deletion of game data when the delete data button is pressed.
+    /// </summary>
     private void OnDeleteData()
     {
         GameManager.Instance.DeleteData();
         UpdateFishData();
+        RefreshFishes();
     }
 
+    /// <summary>
+    /// Sets the next fish as visible and selectable.
+    /// </summary>
     private void OnSetNextFish()
     {
         _currentFishIndex = (_currentFishIndex + 1) % _fishSelectables.Length;
         RefreshFishes();
     }
 
+    /// <summary>
+    /// Sets the previous fish as visible and selectable.
+    /// </summary>
     private void OnSetPreviousFish()
     {
         _currentFishIndex = (_currentFishIndex - 1 + _fishSelectables.Length) % _fishSelectables.Length;
@@ -70,7 +86,7 @@ public class EncyclopediaPanel : GUIPanel
     }
 
     /// <summary>
-    /// Refreshes the fish selectables, hiding all but the current one and updating discovered status.
+    /// Refreshes the fish selectables, hiding all from selection but the current one.
     /// </summary>
     private void RefreshFishes()
     {
@@ -78,7 +94,6 @@ public class EncyclopediaPanel : GUIPanel
         {
             fishSelectable.IsSelectable = false;
             fishSelectable.Show(false);
-            fishSelectable.SetDiscovered(GameManager.Instance.CurrentGameData.HasDiscoveredFish(fishSelectable.FishID));
         }
         _fishSelectables[_currentFishIndex].Show(true);
         _fishSelectables[_currentFishIndex].IsSelectable = true;

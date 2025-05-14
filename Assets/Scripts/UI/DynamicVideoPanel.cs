@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
 
-public class DynamicVideoPanel : GUIPanel
+public class DynamicVideoPanel : GUIContainer
 {
     [SerializeField] private VideoPlayer _videoPlayer;
 

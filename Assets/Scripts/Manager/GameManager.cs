@@ -1,3 +1,4 @@
+using DG.Tweening.Core.Easing;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,6 +19,7 @@ public class GameManager : MonoBehaviour
     public EndScoreGameState EndScoreState { get; private set; }
     public GameState CurrentState { get; private set; }
 
+    [Header("Fish Scoring")]
     [SerializeField] private int _fishCaught = 0;
     [Min(1)]
     [SerializeField] private int _fishTotalToCatch = 10;
@@ -28,12 +30,17 @@ public class GameManager : MonoBehaviour
     public float GameEndDuration = 1f;
     [HideInInspector] public float Timer;
 
+    public bool NewBestAchieved { get; private set; } = false; // Flag to check if a new best score was achieved
+
     /// <summary>
     /// Current game data being worked on by the game.
     /// </summary>
     public GameData CurrentGameData { get; private set; }
 
-    public UnityEvent NewBestScoreReached { get; private set; } = new();
+    /// <summary>
+    /// Invoked when the score is processed and game saved
+    /// </summary>
+    public UnityEvent ScoreProcessed { get; private set; } = new();
     public UnityEvent<GameState> GameStateExited { get; private set; } = new();
     public UnityEvent<GameState> GameStateEntered { get; private set; } = new();
     /// <summary>
@@ -41,12 +48,13 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public UnityEvent<int> FishCaughtUpdated { get; private set; } = new(); // (fishCaught, totalFish)
 
+    // Other Accessors
     public int FishCaught => _fishCaught;
     public int FishTotalToCatch => _fishTotalToCatch;
 
     private void Awake()
     {
-        // Ensure only one instance of the GameManager exists
+        // Singleton pattern
         if (Instance == null)
         {
             Instance = this;
@@ -69,7 +77,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // Reset ahead just in case, remove when inversion is fixed
+        // Reset ahead just in case
         InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() =>
         {
             InputDeviceManager.SendBrailleASCII(0, 0, 0, 0);
@@ -117,9 +125,26 @@ public class GameManager : MonoBehaviour
         CurrentState?.Exit();
         GameStateExited.Invoke(CurrentState);
         CurrentState = newState;
-        //GameStateUpdated.Invoke(CurrentState); // score kinda needs to be initialized later in enter
         CurrentState?.Enter();
         GameStateEntered.Invoke(CurrentState);
+    }
+
+    /// <summary>
+    /// Saves game data and checks if a new best score was achieved. Also invokes the ScoreProcessed event.
+    /// </summary>
+    public void ProcessScore()
+    {
+        if (Timer < CurrentGameData.BestTime)
+        {
+            CurrentGameData.BestTime = Timer;
+            NewBestAchieved = true;
+        }
+        else
+        {
+            NewBestAchieved = false;
+        }
+        GameDataHandler.SaveGameData(CurrentGameData, "data", $"{FishTotalToCatch}");
+        ScoreProcessed.Invoke();
     }
 
     public void AddFish()

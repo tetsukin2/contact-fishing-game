@@ -332,7 +332,7 @@ public class InputDeviceManager : MonoBehaviour
 
         Array.Copy(payload, bleData.buf, payload.Length);
 
-        //if (showBrailleData) Debug.Log($"Sending ASCII Braille payload: {message} (Raw Hex: {BitConverter.ToString(payload)})");
+        if (Instance.showBrailleData) Debug.Log($"Sending ASCII Braille payload: {message} (Raw Hex: {BitConverter.ToString(payload)})");
 
         bool success = BleApi.SendData(in bleData, false);
         if (success)

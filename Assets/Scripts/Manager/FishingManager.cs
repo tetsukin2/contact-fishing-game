@@ -1,10 +1,8 @@
-using DG.Tweening.Core.Easing;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using UnityEngine.Video;
 
 // FishingManager with class-based state machine
 public class FishingManager : MonoBehaviour
@@ -34,10 +32,7 @@ public class FishingManager : MonoBehaviour
 
     [Space]
     [Header("UI")]
-    [SerializeField] private InputPromptPanel _inputPromptPanel; // Reference to the input prompt panel
-    [SerializeField] private InputPromptPanel _secondInputPromptPanel; // Reference to the input prompt panel
     [SerializeField] private FishingStateLabelPanel _stateLabelPanel; // Reference to the state label panel
-    [SerializeField] private List<InputPrompt> _inputPrompts; // List of sprites for input prompts
 
     [Space]
     [Header("Bait Preparation")]
@@ -120,7 +115,6 @@ public class FishingManager : MonoBehaviour
         //CastLine();
         CastingState.Setup();
         ReelingState.Setup();
-        _secondInputPromptPanel.Show(false);
 
         _fishingBobber.Setup(this);
 
@@ -128,7 +122,7 @@ public class FishingManager : MonoBehaviour
         _hookedFish.SetActive(false);
 
         // Only start bait prep after gameplay actually starts
-        GameManager.Instance.GameStateUpdated.AddListener((state) =>
+        GameManager.Instance.GameStateEntered.AddListener((state) =>
         {
             if (state == GameManager.Instance.PlayingState)
             {
@@ -151,14 +145,6 @@ public class FishingManager : MonoBehaviour
         _currentState = newState; // Set the new state
         _currentState?.Enter(); // Enter the new state
     }
-
-    //public void CastLine()
-    //{
-    //    InputHelper.ClearRotationHistory();
-    //    // Apply velocity to the hook based on the rod tip's forward direction
-    //    _fishingBobber.OnCast(CastForce * Mathf.Abs(InputHelper.LastMeasuredAngle), 0.1f);
-    //    Debug.Log("Casting Fishing Line!");
-    //}
 
     public void CastLine()
     {
@@ -263,40 +249,5 @@ public class FishingManager : MonoBehaviour
         _fishInspectionGUI.Show(false);
     }
 
-    /// <summary>
-    /// Show primary input prompt
-    /// </summary>
-    /// <param name="name"></param>
-    public void ShowInputPrompt(string name)
-    {
-        foreach (var prompt in _inputPrompts)
-        {
-            if (prompt.PromptName == name)
-            {
-                _inputPromptPanel.SetInputPrompt(prompt);
-                return;
-            }
-        }
-        _inputPromptPanel.SetInputPrompt(null);
-        return;
-    }
-
-    /// <summary>
-    /// Show secondary input prompt
-    /// </summary>
-    /// <param name="name"></param>
-    public void ShowSecondInputPrompt(string name)
-    {
-        Debug.Log($"2nd prompt {name}");
-        foreach (var prompt in _inputPrompts)
-        {
-            if (prompt.PromptName == name)
-            {
-                _secondInputPromptPanel.SetInputPrompt(prompt);
-                return;
-            }
-        }
-        _secondInputPromptPanel.SetInputPrompt(null);
-        return;
-    }
+    
 }

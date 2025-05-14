@@ -27,10 +27,10 @@ public class InputDeviceManager : MonoBehaviour
     //private string joyCharUUID = null;
     private static string brailleCharUUID = null;
 
-    [Tooltip("Whether to print IMU data in console")]
     [Header("Debugging")]
-    [SerializeField] private bool showIMUData = false; // Set to true for debugging purposes
-    [SerializeField] private bool showJoystickData = false; // Set to true for debugging purposes
+    [SerializeField] private bool showIMUData = false;
+    [SerializeField] private bool showBrailleData = false;
+    [SerializeField] private bool showJoystickData = false;
 
     private Thread scanThread;
     private bool isScanning = true;
@@ -294,7 +294,22 @@ public class InputDeviceManager : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
     }
-    
+
+    /// <summary>
+    /// Resets the Braille display to a blank state (all cells off).
+    /// </summary>
+    public static void ResetBraille()
+    {
+        SendBrailleASCII(0, 0, 0, 0);
+    }
+
+    /// <summary>
+    /// Sends a Braille ASCII message to the target controller.
+    /// </summary>
+    /// <param name="t0">Thumb Cell 0</param>
+    /// <param name="t1">Thumb Cell 1</param>
+    /// <param name="i0">Index Cell 0</param>
+    /// <param name="i1">Index Cell 1</param>
     public static void SendBrailleASCII(int t0, int t1, int i0, int i1)
     {
         if (!IsConnected)
@@ -317,16 +332,15 @@ public class InputDeviceManager : MonoBehaviour
 
         Array.Copy(payload, bleData.buf, payload.Length);
 
-        Debug.Log($"📤 Sending ASCII Braille payload: {message}");
-        //Debug.Log($"📦 Raw Payload (hex): {BitConverter.ToString(payload)}");
+        //if (showBrailleData) Debug.Log($"Sending ASCII Braille payload: {message} (Raw Hex: {BitConverter.ToString(payload)})");
 
         bool success = BleApi.SendData(in bleData, false);
         if (success)
-            Debug.Log("✅ Braille ASCII data sent successfully.");
+            Debug.Log("Braille ASCII data sent successfully.");
         else
         {
                 BleApi.GetError(out BleApi.ErrorMessage error);
-                //Debug.LogError("❌ Failed to send Braille data: " + error.msg);
+                //Debug.LogError("Failed to send Braille data: " + error.msg);
         }
     }
 

@@ -1,17 +1,49 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.Video;
 
+/// <summary>
+/// Dynamic Video Panel for Input prompts.
+/// Can be main or secondary input prompt, and subscribes to UIManager prompt events.
+/// </summary>
 public class InputPromptPanel : DynamicVideoPanel
 {
-    [SerializeField] private TextMeshProUGUI _message;
+    public enum InputPromptType
+    {
+        Main,
+        Secondary
+    }
 
+    [SerializeField] private TextMeshProUGUI _message;
+    [SerializeField] private InputPromptType _inputPromptType = InputPromptType.Main;
+
+    private void Start()
+    {
+        // Checks for input prompt type
+        UIManager.Instance.MainInputPromptShown.AddListener(OnMainInputPromptShown);
+        UIManager.Instance.SecondInputPromptShown.AddListener(OnSecondInputPromptShown);
+    }
+
+    private void OnMainInputPromptShown(InputPrompt inputPrompt)
+    {
+        if (_inputPromptType == InputPromptType.Main)
+        SetInputPrompt(inputPrompt);
+    }
+
+    private void OnSecondInputPromptShown(InputPrompt inputPrompt)
+    {
+        if (_inputPromptType == InputPromptType.Secondary)
+        SetInputPrompt(inputPrompt);
+    }
+
+    /// <summary>
+    /// Sets the video and message for the input prompt. Hides the panel if inputPrompt is null.
+    /// </summary>
+    /// <param name="inputPrompt"></param>
     public void SetInputPrompt(InputPrompt inputPrompt)
     {
-        Show(inputPrompt != null);
-        if (inputPrompt == null)
+        if (!ContentActive || inputPrompt == null)
         {
-            _message.text = string.Empty;
+            Show(false);
             return;
         }
         SetVideo(inputPrompt.Video);

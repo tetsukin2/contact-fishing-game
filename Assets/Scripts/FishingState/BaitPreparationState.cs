@@ -11,11 +11,11 @@ public class BaitPreparationState : FishingState
     {
         // Only go back to start if need more fish, otherwise cam may mess up
         if (GameManager.Instance.FishCaught < GameManager.Instance.FishTotalToCatch)
-            CameraController.Instance.BaitPrepVCam.Priority = 5; // Set camera priority for bait preparation
+            CameraController.Instance.SetCameraView(CameraController.CameraView.BaitPrep); // Set camera priority for bait preparation
 
         fishingManager.StateLabelPanel.SetLabel(FishingStateName.BaitPreparation);
         _currentStep = 0; // Reset step counter
-        fishingManager.ShowInputPrompt(fishingManager.BaitPrepPromptRightName);
+        UIManager.Instance.ShowMainInputPrompt(fishingManager.BaitPrepPromptRightName);
         fishingManager.FishingBobber.SetControllable(true);
         fishingManager.FishingBobber.SetupLureAttach();
         
@@ -32,13 +32,13 @@ public class BaitPreparationState : FishingState
         if (_currentStep % 2 == 0 
             && fishingManager.InputHelper.HasReachedRotationY(fishingManager.RollRightAngle))
         {
-            fishingManager.ShowInputPrompt(fishingManager.BaitPrepPromptLeftName);
+            UIManager.Instance.ShowMainInputPrompt(fishingManager.BaitPrepPromptLeftName);
             //Debug.Log(_currentStep);
             _currentStep++;
         }
         else if (_currentStep % 2 != 0 && fishingManager.InputHelper.HasReachedRotationY(fishingManager.RollLeftAngle))
         {
-            fishingManager.ShowInputPrompt(fishingManager.BaitPrepPromptRightName);
+            UIManager.Instance.ShowMainInputPrompt(fishingManager.BaitPrepPromptRightName);
             //Debug.Log(_currentStep);
             _currentStep++;
         }
@@ -59,7 +59,6 @@ public class BaitPreparationState : FishingState
     {
         fishingManager.RodMovement.CurrentMovementMode = FishingRodMovement.MovementMode.Normal;
         fishingManager.FishingBobber.SetControllable(false);
-        CameraController.Instance.BaitPrepVCam.Priority = 0; // Set camera priority for bait preparation
         Debug.Log("Exiting Bait Preparation State");
     }
 }

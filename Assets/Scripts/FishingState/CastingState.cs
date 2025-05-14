@@ -36,8 +36,8 @@ public class CastingState : FishingState
 
         // Cast labels
         fishingManager.StateLabelPanel.SetLabel(FishingStateName.Casting);
-        fishingManager.ShowInputPrompt(fishingManager.CastBackPromptName);
-        fishingManager.ShowSecondInputPrompt(fishingManager.CastSelectPromptName);
+        UIManager.Instance.ShowMainInputPrompt(fishingManager.CastBackPromptName);
+        UIManager.Instance.ShowSecondInputPrompt(fishingManager.CastSelectPromptName);
 
         fishingManager.InputHelper.ClearRotationHistory(); // Clean read for casting
         Debug.Log("Entering Casting State");
@@ -66,7 +66,7 @@ public class CastingState : FishingState
     private void OnCastBack()
     {
         _hasCastBack = true;
-        fishingManager.ShowInputPrompt(fishingManager.CastForwardPromptName);
+        UIManager.Instance.ShowMainInputPrompt(fishingManager.CastForwardPromptName);
     }
 
     private void OnCastForward()
@@ -81,13 +81,13 @@ public class CastingState : FishingState
             _hasCast = true;
             _currentCastSteps = 0;
             fishingManager.CastLine();
-            fishingManager.ShowInputPrompt("");
-            fishingManager.ShowSecondInputPrompt("");
+            UIManager.Instance.ShowMainInputPrompt(null as InputPrompt);
+            UIManager.Instance.ShowSecondInputPrompt(null as InputPrompt);
             BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", true);
         }
         else // Update prompt otherwise
         {
-            fishingManager.ShowInputPrompt(fishingManager.CastBackPromptName);
+            UIManager.Instance.ShowMainInputPrompt(fishingManager.CastBackPromptName);
         }
     }
 

@@ -1,7 +1,9 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// Handles global game data and game state transitions
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     // Singleton instance of the game manager
@@ -26,23 +28,21 @@ public class GameManager : MonoBehaviour
     public float GameEndDuration = 1f;
     [HideInInspector] public float Timer;
 
+    /// <summary>
+    /// Current game data being worked on by the game.
+    /// </summary>
     public GameData CurrentGameData { get; private set; }
 
-    private readonly UnityEvent<int> _gameStarting = new(); // (start state)
-    //private readonly UnityEvent _endScoreShowed = new();
-    private readonly UnityEvent _newBestScoreReached = new();
-    private readonly UnityEvent<GameState> _gameStateUpdated = new();
-    private readonly UnityEvent<int, int> _fishCaughtUpdated = new(); // (fishCaught, totalFish)
+    public UnityEvent NewBestScoreReached { get; private set; } = new();
+    public UnityEvent<GameState> GameStateExited { get; private set; } = new();
+    public UnityEvent<GameState> GameStateEntered { get; private set; } = new();
+    /// <summary>
+    /// Invoked when amount of fish caught is updated. Passes new fish caught as parameter.
+    /// </summary>
+    public UnityEvent<int> FishCaughtUpdated { get; private set; } = new(); // (fishCaught, totalFish)
 
     public int FishCaught => _fishCaught;
     public int FishTotalToCatch => _fishTotalToCatch;
-
-    // Can see references (on VS at least) if doing it this way
-    public UnityEvent<int> GameStarting => _gameStarting;
-    //public UnityEvent EndScoreShowed => _endScoreShowed;
-    public UnityEvent NewBestScoreReached => _newBestScoreReached;
-    public UnityEvent<GameState> GameStateUpdated => _gameStateUpdated;
-    public UnityEvent<int, int> FishCaughtUpdated => _fishCaughtUpdated; // (fishCaught, totalFish)
 
     private void Awake()
     {
@@ -78,12 +78,9 @@ public class GameManager : MonoBehaviour
         // TODO: Load new data every time total fish to catch is updated
         CurrentGameData = GameDataHandler.GetGameData("data", $"{_fishTotalToCatch}");
         InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => Time.timeScale = 1f);
-        //Time.timeScale = 0f;
 
         // Start in the main menu state
         TransitionToState(MainMenuState);
-
-        //TransitionToState(PlayingState);
     }
 
     private void Update()
@@ -118,32 +115,23 @@ public class GameManager : MonoBehaviour
     public void TransitionToState(GameState newState)
     {
         CurrentState?.Exit();
+        GameStateExited.Invoke(CurrentState);
         CurrentState = newState;
-        GameStateUpdated.Invoke(CurrentState); // score kinda needs to be initialized later in enter
+        //GameStateUpdated.Invoke(CurrentState); // score kinda needs to be initialized later in enter
         CurrentState?.Enter();
+        GameStateEntered.Invoke(CurrentState);
     }
 
     public void AddFish()
     {
-        // Only add fish if the game if we playing
-        if (CurrentState != PlayingState) return;
         _fishCaught++;
-        FishCaughtUpdated.Invoke(FishCaught, FishTotalToCatch);
-        if (_fishCaught >= _fishTotalToCatch)
-        {
-            TransitionToState(GameEndState);
-        }
+        FishCaughtUpdated.Invoke(FishCaught);
     }
 
     public void ResetFish()
     {
         _fishCaught = 0;
-        FishCaughtUpdated.Invoke(FishCaught, FishTotalToCatch);
-    }
-
-    public void ResetTimer()
-    {
-        Timer = 0f;
+        FishCaughtUpdated.Invoke(FishCaught);
     }
 
     public void DeleteData()

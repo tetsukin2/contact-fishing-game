@@ -9,7 +9,7 @@ public class RotateVerticalReelAction : ReelAction
     public override void Enter()
     {
         _hasRotatedForward = false; // Reset for new action
-        fishingManager.ShowInputPrompt(fishingManager.ReelForwardPromptName);
+        UIManager.Instance.ShowMainInputPrompt(fishingManager.ReelForwardPromptName);
         Debug.Log("RotateVerticalReelAction: Enter");
     }
 
@@ -18,7 +18,7 @@ public class RotateVerticalReelAction : ReelAction
         if (!_hasRotatedForward &&
             InputDeviceRotationHelper.HasReachedRotation(Mathf.Lerp(InputDeviceManager.IMURotation.z, 0f, Mathf.Abs(InputDeviceManager.IMURotation.y)), fishingManager.RotateDownAngle))
         {
-            fishingManager.ShowInputPrompt(fishingManager.ReelBackPromptName);
+            UIManager.Instance.ShowMainInputPrompt(fishingManager.ReelBackPromptName);
             _hasRotatedForward = true;
         }
         else if (_hasRotatedForward &&

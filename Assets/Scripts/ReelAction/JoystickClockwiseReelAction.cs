@@ -8,7 +8,7 @@ public class JoystickClockwiseReelAction : ReelAction
 
     public override void Enter()
     {
-        fishingManager.ShowInputPrompt(fishingManager.ReelClockwisePromptName);
+        UIManager.Instance.ShowMainInputPrompt(fishingManager.ReelClockwisePromptName);
         Debug.Log("JoystickClockwiseReelAction: Enter");
 
         // Input helper setup

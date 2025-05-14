@@ -36,7 +36,7 @@ public class FishingBobber : MonoBehaviour
     {
         
         // Always hide lures outside of main gameplay
-        GameManager.Instance.GameStateUpdated.AddListener((state) =>
+        GameManager.Instance.GameStateEntered.AddListener((state) =>
         {
             if (state != GameManager.Instance.PlayingState) HideLures();            
         });

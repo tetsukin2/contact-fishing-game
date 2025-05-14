@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class GameStartGameState : GameState
@@ -9,11 +8,17 @@ public class GameStartGameState : GameState
 
     public override void Enter()
     {
-        Debug.Log("Entering Game Start State");
+        //Debug.Log("Entering Game Start State");
+
         _gameStartTimer = 0;
         gameManager.ResetFish();
-        gameManager.ResetTimer();
-        gameManager.GameStarting.Invoke(0);
+        gameManager.Timer = 0f;
+
+        // Reset input prompts
+        UIManager.Instance.ShowMainInputPrompt(null as InputPrompt);
+        UIManager.Instance.ShowSecondInputPrompt(null as InputPrompt);
+
+        //gameManager.GameStarting.Invoke(0);
     }
 
     public override void Update()
@@ -21,18 +26,18 @@ public class GameStartGameState : GameState
         _gameStartTimer += Time.deltaTime;
         //Debug.Log(_gameStartTimer);
         // Must be in this order or lowest always triggers
-        if (_gameStartTimer >= gameManager.GameStartDuration)
-        {
-            gameManager.TransitionToState(gameManager.PlayingState);
-        }
-        else if (_gameStartTimer >= gameManager.GameStartDuration * 2 / 3)
-        {
-            gameManager.GameStarting.Invoke(2);
-        }
-        else if (_gameStartTimer >= gameManager.GameStartDuration / 3)
-        {
-            gameManager.GameStarting.Invoke(1);
-        }
+        //if (_gameStartTimer >= gameManager.GameStartDuration)
+        //{
+        //    gameManager.TransitionToState(gameManager.PlayingState);
+        //}
+        //else if (_gameStartTimer >= gameManager.GameStartDuration * 2 / 3)
+        //{
+        //    gameManager.GameStarting.Invoke(2);
+        //}
+        //else if (_gameStartTimer >= gameManager.GameStartDuration / 3)
+        //{
+        //    gameManager.GameStarting.Invoke(1);
+        //}
     }
 
     public override void Exit()

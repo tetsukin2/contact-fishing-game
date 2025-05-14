@@ -1,8 +1,19 @@
 using Cinemachine;
 using UnityEngine;
 
+/// <summary>
+/// Handles camera views
+/// </summary>
 public class CameraController : MonoBehaviour
 {
+    public enum CameraView
+    {
+        Gameplay,
+        Menu,
+        FishSelect,
+        BaitPrep
+    }
+
     public static CameraController Instance { get; private set; }
 
     [SerializeField] CinemachineVirtualCamera _gameplayVCam;
@@ -10,9 +21,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera _fishSelectVCam;
     [SerializeField] CinemachineVirtualCamera _baitPrepVCam;
 
-    public CinemachineVirtualCamera GameplayVCam => _gameplayVCam;
     public CinemachineVirtualCamera FishSelectVCam => _fishSelectVCam;
-    public CinemachineVirtualCamera BaitPrepVCam => _baitPrepVCam;
 
     private void Awake()
     {
@@ -26,29 +35,31 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    private void Start()
+    /// <summary>
+    /// Set the highest priority cinemachine
+    /// </summary>
+    /// <param name="view"></param>
+    public void SetCameraView(CameraView view)
     {
-        GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
-    }
+        _gameplayVCam.Priority = 0;
+        _menuVCam.Priority = 0;
+        _fishSelectVCam.Priority = 0;
+        _baitPrepVCam.Priority = 0;
 
-    private void OnGameStateUpdated(GameState newState)
-    {
-        if (newState == GameManager.Instance.MainMenuState
-            || newState == GameManager.Instance.EndScoreState
-            || newState == GameManager.Instance.EncyclopediaState)
+        switch (view)
         {
-            _gameplayVCam.Priority = 0;
-            _menuVCam.Priority = 5;
-        }
-        else
-        {
-            _gameplayVCam.Priority = 5;
-            _menuVCam.Priority = 0;
-        }
-        if (newState == GameManager.Instance.GameEndState)
-        {
-            _baitPrepVCam.Priority = 0;
-            _fishSelectVCam.Priority = 0;
+            case CameraView.Gameplay:
+                _gameplayVCam.Priority = 5;
+                break;
+            case CameraView.Menu:
+                _menuVCam.Priority = 5;
+                break;
+            case CameraView.FishSelect:
+                _fishSelectVCam.Priority = 5;
+                break;
+            case CameraView.BaitPrep:
+                _baitPrepVCam.Priority = 5;
+                break;
         }
     }
 }

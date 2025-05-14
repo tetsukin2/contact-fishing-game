@@ -9,7 +9,7 @@ public class MainMenuSelect : MenuSelect
     protected override void Start()
     {
         base.Start();
-        GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
+        GameManager.Instance.GameStateEntered.AddListener(OnGameStateUpdated);
 
         //initially listen for now at least to guarantee since we start in main menu
         InputDeviceManager.Instance.JoystickPressed.AddListener(OnOptionSelected);

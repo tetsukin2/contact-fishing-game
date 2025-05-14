@@ -12,7 +12,7 @@ public class FishInspectionState : FishingState
     {
         fishingManager.StateLabelPanel.SetLabel(FishingStateName.FishInspection);
         fishingManager.InputHelper.ClearRotationHistory();
-        fishingManager.ShowInputPrompt(fishingManager.InspectReadyPromptName);
+        UIManager.Instance.ShowMainInputPrompt(fishingManager.InspectReadyPromptName);
         fishingManager.HookedFish.SetActive(true); // Show the fish in the inspection panel
         _reachedInitialRotation = false;
         _fishInspected = false;
@@ -27,7 +27,7 @@ public class FishInspectionState : FishingState
                 fishingManager.InputHelper.HasReachedRotationY(fishingManager.RollLeftAngle))
             {
                 _reachedInitialRotation = true;
-                fishingManager.ShowInputPrompt(fishingManager.InspectPromptName);
+                UIManager.Instance.ShowMainInputPrompt(fishingManager.InspectPromptName);
             }
             else if (_reachedInitialRotation && // Now rotate up
                 InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.IMURotation.x, 0.4f)
@@ -37,7 +37,7 @@ public class FishInspectionState : FishingState
                 _reachedInitialRotation = false; // Reset for release rotation
                 fishingManager.InputHelper.ClearRotationHistory(); // Clean read for fish release
                 FishingManager.OnFishInspection();
-                fishingManager.ShowInputPrompt(fishingManager.ReleaseReadyPromptName);
+                UIManager.Instance.ShowMainInputPrompt(fishingManager.ReleaseReadyPromptName);
                 _fishInspected = true;
                 Debug.Log("FishData inspected");
             }
@@ -48,7 +48,7 @@ public class FishInspectionState : FishingState
                 fishingManager.InputHelper.HasReachedRotationY(fishingManager.RollLeftAngle))
             {
                 _reachedInitialRotation = true;
-                fishingManager.ShowInputPrompt(fishingManager.ReleasePromptName);
+                UIManager.Instance.ShowMainInputPrompt(fishingManager.ReleasePromptName);
             }
             else if (_reachedInitialRotation && // Now rotate down
                 fishingManager.InputHelper.HasReachedRotationX(1f)

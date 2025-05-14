@@ -65,7 +65,7 @@ public class JoystickCursor : MonoBehaviour
     void Start()
     {
         CurrentCursorPos = CursorRect.anchoredPosition;
-        GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
+        GameManager.Instance.GameStateEntered.AddListener(OnGameStateUpdated);
     }
 
     void Update()

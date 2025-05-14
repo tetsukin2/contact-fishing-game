@@ -1,10 +1,17 @@
+using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
+    [Header("Input Prompts")]
+    [SerializeField] private List<InputPrompt> _inputPrompts; // Input prompts to use
+
+    [Space]
     [Header("Loading Screen")]
     [SerializeField] private GUIPanel _loadingScreen;
     [SerializeField] private TextMeshProUGUI _loadingText;
@@ -13,8 +20,6 @@ public class UIManager : MonoBehaviour
     [Header("Main Menu")]
     [SerializeField] private GUIPanel _mainMenuSelectGUI;
     [SerializeField] private GUIPanel _mainMenuGUI;
-    [SerializeField] private InputPromptPanel _mainMenuPrompt; // Reference to the input prompt panel
-    [SerializeField] private InputPromptPanel _mainMenuSecondPrompt; // Reference to the input prompt panel
     [SerializeField] private InputPrompt _mainMenuInput; // List of sprites for input prompts
     [SerializeField] private InputPrompt _mainMenuSecondInput; // List of sprites for input prompts
 
@@ -22,8 +27,6 @@ public class UIManager : MonoBehaviour
     [Header("Encyclopedia")]
     [SerializeField] private GUIPanel _encyclopediaGUI;
     [SerializeField] private JoystickCursor _joystickCursor;
-    [SerializeField] private InputPromptPanel _encyclopediaPrompt; // Reference to the input prompt panel
-    [SerializeField] private InputPromptPanel _encyclopediaSecondPrompt; // Reference to the input prompt panel
     [SerializeField] private InputPrompt _encyclopediaInput; // List of sprites for input prompts
     [SerializeField] private InputPrompt _encyclopediaSecondInput; // List of sprites for input prompts
 
@@ -52,6 +55,10 @@ public class UIManager : MonoBehaviour
 
     public JoystickCursor JoystickCursor => _joystickCursor;
 
+    // There are separate explicit input prompts because of how the video render textures work
+    public UnityEvent<InputPrompt> MainInputPromptShown { get; private set; } = new();
+    public UnityEvent<InputPrompt> SecondInputPromptShown { get; private set; } = new();
+
     private void Awake()
     {
         // Singleton pattern
@@ -77,8 +84,8 @@ public class UIManager : MonoBehaviour
 
         // Listen to GameManager's Ramblings
         GameManager.Instance.FishCaughtUpdated.AddListener(OnFishCaughtUpdated);
-        GameManager.Instance.GameStarting.AddListener(OnGameStarting);
-        GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
+        //GameManager.Instance.GameStarting.AddListener(OnGameStarting);
+        GameManager.Instance.GameStateEntered.AddListener(OnGameStateUpdated);
         GameManager.Instance.NewBestScoreReached.AddListener(OnNewBestScoreReached);
         GameManager.Instance.NewBestScoreReached.AddListener(OnNewBestScoreReached);
 
@@ -93,9 +100,9 @@ public class UIManager : MonoBehaviour
             _timerText.text = GameDataHandler.ConvertToTimeFormat(GameManager.Instance.Timer);
     }
 
-    private void OnFishCaughtUpdated(int caught, int total)
+    private void OnFishCaughtUpdated(int caught)
     {
-        _fishCaughtNumberText.text = $"{caught}/{total}";
+        _fishCaughtNumberText.text = $"{caught}/{GameManager.Instance.FishTotalToCatch}";
     }
 
     private void OnGameStateUpdated(GameState newState)
@@ -103,13 +110,13 @@ public class UIManager : MonoBehaviour
         // Set visibility of main menu
         _mainMenuSelectGUI.Show(newState == GameManager.Instance.MainMenuState);
         _mainMenuGUI.Show(newState == GameManager.Instance.MainMenuState);
-        _mainMenuPrompt.SetInputPrompt(_mainMenuInput);
-        _mainMenuSecondPrompt.SetInputPrompt(_mainMenuSecondInput);
+        ShowMainInputPrompt(_mainMenuInput);
+        ShowSecondInputPrompt(_mainMenuSecondInput);
 
         // Set visibility of encyclopedia
         _encyclopediaGUI.Show(newState == GameManager.Instance.EncyclopediaState);
-        _encyclopediaPrompt.SetInputPrompt(_encyclopediaInput);
-        _encyclopediaSecondPrompt.SetInputPrompt(_encyclopediaSecondInput);
+        ShowMainInputPrompt(_encyclopediaInput);
+        ShowSecondInputPrompt(_encyclopediaSecondInput);
 
         // Set visibility of game start menu
         _gameStartGUI.Show(newState == GameManager.Instance.GameStartState);
@@ -127,6 +134,65 @@ public class UIManager : MonoBehaviour
         _gameEndSelectGUI.Show(isEndScoreState);
         if (isEndScoreState) OnShowEndScore(); // Setup
     }
+
+    #region Input Prompts
+    //Ideally, only handle prompt showing or hiding at the start or end of each game or fishing state.
+    
+    /// <summary>
+    /// Show primary input prompt
+    /// </summary>
+    /// <param name="name"></param>
+    public void ShowMainInputPrompt(string name)
+    {
+        foreach (var prompt in _inputPrompts)
+        {
+            if (prompt.PromptName == name)
+            {
+                MainInputPromptShown.Invoke(prompt);
+                return;
+            }
+        }
+        MainInputPromptShown.Invoke(null);
+        return;
+    }
+
+    /// <summary>
+    /// Show primary input prompt
+    /// </summary>
+    /// <param name="prompt"></param>
+    public void ShowMainInputPrompt(InputPrompt prompt)
+    {
+        MainInputPromptShown.Invoke(prompt);
+    }
+
+    /// <summary>
+    /// Show secondary input prompt
+    /// </summary>
+    /// <param name="name"></param>
+    public void ShowSecondInputPrompt(string name)
+    {
+        Debug.Log($"2nd prompt {name}");
+        foreach (var prompt in _inputPrompts)
+        {
+            if (prompt.PromptName == name)
+            {
+                SecondInputPromptShown.Invoke(prompt);
+                return;
+            }
+        }
+        SecondInputPromptShown.Invoke(null);
+        return;
+    }
+
+    /// <summary>
+    /// Show secondary input prompt
+    /// </summary>
+    /// <param name="prompt"></param>
+    public void ShowSecondInputPrompt(InputPrompt prompt)
+    {
+        SecondInputPromptShown.Invoke(prompt);
+    }
+    #endregion
 
     private void OnGameStarting(int phase)
     {

@@ -7,6 +7,8 @@ using UnityEngine.UI;
 // FishingManager with class-based state machine
 public class FishingManager : MonoBehaviour
 {
+    public static FishingManager Instance { get; private set; } // Singleton instance
+
     public enum FishingStateName
     {
         Idle,
@@ -53,10 +55,6 @@ public class FishingManager : MonoBehaviour
     public string CastSelectPromptName;
 
     [Space]
-    [Header("WaitingForBite")]
-    //public float FishBiteWaitDuration = 2f;
-
-    [Space]
     [Header("Reeling")]
     public float ReelTotalProgress = 20;
     public float ReelProgressAmount = 5;
@@ -84,7 +82,11 @@ public class FishingManager : MonoBehaviour
     private UnityEvent _bobberHitWater = new();
     private FishData _caughtFish;
 
-    // Phase Accessors
+    // State change events
+    public UnityEvent<FishingState> FishingStateExited { get; private set; } = new();
+    public UnityEvent<FishingState> FishingStateEntered { get; private set; } = new();
+
+    // State Accessors
     public BaitPreparationState BaitPreparationState { get; private set; }
     public CastingState CastingState { get; private set; }
     public WaitingForBiteState WaitingForBiteState { get; private set; }
@@ -102,7 +104,18 @@ public class FishingManager : MonoBehaviour
 
     private void Awake()
     {
-        // Setup states
+        // Singleton pattern
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        // Initialize states
         BaitPreparationState = new(this);
         CastingState = new(this);
         WaitingForBiteState = new(this);
@@ -112,9 +125,12 @@ public class FishingManager : MonoBehaviour
 
     void Start()
     {
-        //CastLine();
+        // Setup states, these are in start to ensure all references are set
+        BaitPreparationState.Setup();
         CastingState.Setup();
+        WaitingForBiteState.Setup();
         ReelingState.Setup();
+        FishInspectionState.Setup();
 
         _fishingBobber.Setup(this);
 
@@ -134,16 +150,22 @@ public class FishingManager : MonoBehaviour
 
     void Update()
     {
+        // Only update if the game is in the playing state
         if (GameManager.Instance.CurrentState != GameManager.Instance.PlayingState) return;
         _currentState?.Update();
     }
 
-    // Transition to a new state
+    /// <summary>
+    /// Handles fishing state transition
+    /// </summary>
+    /// <param name="newState">New fishing state to transition to</param>
     public void TransitionToState(FishingState newState)
     {
         _currentState?.Exit(); // Exit the current state
+        FishingStateExited.Invoke(_currentState); // Notify listeners of the state exit
         _currentState = newState; // Set the new state
         _currentState?.Enter(); // Enter the new state
+        FishingStateEntered.Invoke(_currentState); // Notify listeners of the state entry
     }
 
     public void CastLine()
@@ -157,6 +179,7 @@ public class FishingManager : MonoBehaviour
         Debug.Log("Casting Fishing Line!");
     }
 
+    // Programatically move the bobber from current bobber position to the target position
     private IEnumerator MoveBobberToLanding(Vector3 landingPosition)
     {
         // Get the starting position of the bobber

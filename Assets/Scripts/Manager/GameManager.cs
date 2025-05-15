@@ -30,7 +30,9 @@ public class GameManager : MonoBehaviour
     public float GameEndDuration = 1f;
     [HideInInspector] public float Timer;
 
-    public bool NewBestAchieved { get; private set; } = false; // Flag to check if a new best score was achieved
+    // Flag to check if a new best score was achieved
+    // Prevents race condition at the start of the end score state
+    public bool NewBestAchieved { get; private set; } = false; 
 
     /// <summary>
     /// Current game data being worked on by the game.
@@ -41,8 +43,11 @@ public class GameManager : MonoBehaviour
     /// Invoked when the score is processed and game saved
     /// </summary>
     public UnityEvent ScoreProcessed { get; private set; } = new();
+
+    // State change events
     public UnityEvent<GameState> GameStateExited { get; private set; } = new();
     public UnityEvent<GameState> GameStateEntered { get; private set; } = new();
+
     /// <summary>
     /// Invoked when amount of fish caught is updated. Passes new fish caught as parameter.
     /// </summary>
@@ -120,6 +125,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles game state transitions
+    /// </summary>
+    /// <param name="newState">New game state to transition to</param>
     public void TransitionToState(GameState newState)
     {
         CurrentState?.Exit();

@@ -32,7 +32,6 @@ public class FishBucket : MonoBehaviour
     private void UpdateFishes(int caught)
     {
         // Progress as percentage, multiplied by length
-        // Dunno why float cast is grayed out but it's important for the calc to work
         float fishCaughtProgress = ( (float)caught / (float)GameManager.Instance.FishTotalToCatch);
 
         // Determine how many fish objects should be visible based on the progress

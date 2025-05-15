@@ -11,16 +11,8 @@ public class GameStartGUI : GUIContainer
 
     private void Start()
     {
-        GameManager.Instance.GameStateEntered.AddListener(OnGameStateEntered);
-
         // Listening to a specific state's events here
         GameManager.Instance.GameStartState.GameStartStageReached.AddListener(OnGameStartStageReached);
-    }
-
-    // Game Start UI Setup
-    private void OnGameStateEntered(GameState newState)
-    {
-        Show(newState == GameManager.Instance.GameStartState);
     }
 
     // For each game start stage being reached, show a bit more of the ready text

@@ -14,27 +14,25 @@ public class EncyclopediaGUI : GUIContainer
 
     private void Start()
     {
-        GameManager.Instance.GameStateEntered.AddListener(OnGameStateEntered);
-
         // Button setup
         _nextButton.onSelect.AddListener(OnSetNextFish);
         _previousButton.onSelect.AddListener(OnSetPreviousFish);
         _deleteDataButton.onSelect.AddListener(OnDeleteData);
     }
 
-    // Encyclopedia UI Setup
-    private void OnGameStateEntered(GameState newState)
+    public override void Show(bool show)
     {
-        bool isEncyclopediaState = (newState == GameManager.Instance.EncyclopediaState);
-        Show(isEncyclopediaState);
+        base.Show(show);
+        if (show)
+        {
+            // Update & refresh fishes in case data is different the next time this is shown
+            UpdateFishData();
+            RefreshFishes();
 
-        // Only setup when encyclopedia is shown
-        if (!isEncyclopediaState) return; 
-
-        UpdateFishData();
-        RefreshFishes();
-        UIManager.Instance.ShowMainInputPrompt(UIManager.Instance.EncyclopediaInput);
-        UIManager.Instance.ShowSecondInputPrompt(UIManager.Instance.EncyclopediaSecondInput);
+            // Show navigation instructions
+            UIManager.Instance.ShowMainInputPrompt(UIManager.Instance.EncyclopediaInput);
+            UIManager.Instance.ShowSecondInputPrompt(UIManager.Instance.EncyclopediaSecondInput);
+        }
     }
 
     /// <summary>

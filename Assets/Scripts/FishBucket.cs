@@ -1,16 +1,21 @@
+using TMPro;
 using UnityEngine;
 
 public class FishBucket : MonoBehaviour
 {
     [SerializeField] private GameObject _bucketUI;
+    [SerializeField] private TextMeshProUGUI _fishCaughtNumberText;
     [SerializeField] private GameObject[] _fishes;
 
-    // Start is called before the first frame update
     void Start()
     {
-        _bucketUI.SetActive(false); // Hide the fish bucket UI at the start
+        // Hide the fish bucket UI at the start
+        _bucketUI.SetActive(false); 
+
         GameManager.Instance.FishCaughtUpdated.AddListener(UpdateFishes);
         GameManager.Instance.GameStateEntered.AddListener(OnGameStateEntered);
+
+        // Initialize fish related display
         UpdateFishes(GameManager.Instance.FishCaught);
     }
 
@@ -19,8 +24,9 @@ public class FishBucket : MonoBehaviour
         if (newState == GameManager.Instance.PlayingState
             || newState == GameManager.Instance.GameEndState)
         {
-            // Show the fish bucket when the game is playing
+            // Show the fish bucket when the game is playing, and update fishes in case
             _bucketUI.SetActive(true);
+            UpdateFishes(GameManager.Instance.FishCaught);
         }
         else
         {
@@ -42,5 +48,8 @@ public class FishBucket : MonoBehaviour
         {
             _fishes[i].SetActive(i < visibleFishCount);
         }
+
+        // Update the text to show the number of fish caught
+        _fishCaughtNumberText.text = $"{caught}/{GameManager.Instance.FishTotalToCatch}";
     }
 }

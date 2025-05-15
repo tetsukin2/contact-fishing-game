@@ -3,14 +3,5 @@
 /// </summary>
 public class GameEndGUI : GUIContainer
 {
-    private void Start()
-    {
-        GameManager.Instance.GameStateEntered.AddListener(OnGameStateEntered);
-    }
-
-    // Game Start UI Setup
-    private void OnGameStateEntered(GameState newState)
-    {
-        Show(newState == GameManager.Instance.GameEndState);
-    }
+    
 }

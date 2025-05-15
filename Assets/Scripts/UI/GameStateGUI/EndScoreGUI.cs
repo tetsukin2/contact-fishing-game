@@ -15,14 +15,6 @@ public class EndScoreGUI : GUIContainer
     private void Start()
     {
         GameManager.Instance.ScoreProcessed.AddListener(OnScoreProcessed);
-        GameManager.Instance.GameStateEntered.AddListener(OnGameStateEntered);
-    }
-
-    // Show End UI
-    private void OnGameStateEntered(GameState gameState)
-    {
-        Show(gameState == GameManager.Instance.EndScoreState);
-        _gameEndSelectGUI.Show(gameState == GameManager.Instance.EndScoreState);
     }
 
     // Setup New Best details

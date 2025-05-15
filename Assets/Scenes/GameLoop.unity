@@ -1518,6 +1518,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bucketUI: {fileID: 1117219584}
+  _fishCaughtNumberText: {fileID: 1009786702}
   _fishes:
   - {fileID: 1018393809}
   - {fileID: 829002123}
@@ -1644,10 +1645,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 225949942}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf69d5da16fefbb4a9b9c4bd099c55b5, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d1159a608cedb44ebcd2a6b4ef8a917, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _content: {fileID: 2089802110}
+  _mainMenuSelectGUI: {fileID: 1850806788}
 --- !u!1 &250071166
 GameObject:
   m_ObjectHideFlags: 0
@@ -3150,6 +3152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16dbcd399325c7a4f81c346d10b4695b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _loadingScreen: {fileID: 1455504134}
+  _loadingText: {fileID: 1050979082}
   _inputPrompts: []
   _mainMenuInput: {fileID: 11400000, guid: 9cf021e3da369854ca76dc497c9ddeb9, type: 2}
   _mainMenuSecondInput: {fileID: 11400000, guid: fcce164bb056b584887a7cfd356487ab,
@@ -3157,8 +3161,12 @@ MonoBehaviour:
   _encyclopediaInput: {fileID: 11400000, guid: b0dbd622dfaca84449718a74e8e61a9b, type: 2}
   _encyclopediaSecondInput: {fileID: 11400000, guid: 943a1f8ee679f0340a8f5addb27f2cc9,
     type: 2}
-  _loadingScreen: {fileID: 1455504134}
-  _loadingText: {fileID: 1050979082}
+  _mainMenuGUI: {fileID: 0}
+  _encyclopediaGUI: {fileID: 0}
+  _gameStartGUI: {fileID: 0}
+  _gameplayGUI: {fileID: 0}
+  _gameEndGUI: {fileID: 0}
+  _endScoreGUI: {fileID: 0}
   _joystickCursor: {fileID: 345619192}
 --- !u!1 &383321393
 GameObject:
@@ -17337,10 +17345,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1994158350}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf69d5da16fefbb4a9b9c4bd099c55b5, type: 3}
+  m_Script: {fileID: 11500000, guid: d0b72db1e81c431429d4ef4d4762cb97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _content: {fileID: 1924706909}
+  _timerText: {fileID: 989435510}
 --- !u!1 &2030747063
 GameObject:
   m_ObjectHideFlags: 0
@@ -17849,6 +17858,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Prompt
+      objectReference: {fileID: 0}
+    - target: {fileID: 2451745518763156258, guid: ae6192366780bf145af9bac527d1dc40,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3974036314425831049, guid: ae6192366780bf145af9bac527d1dc40,
         type: 3}

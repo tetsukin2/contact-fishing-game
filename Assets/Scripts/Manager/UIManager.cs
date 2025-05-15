@@ -22,6 +22,16 @@ public class UIManager : MonoBehaviour
     [SerializeField] private InputPrompt _encyclopediaSecondInput;
 
     [Space]
+    [Header("Game State GUI")]
+    // Major game "views" that are state dependent
+    [SerializeField] private MainMenuGUI _mainMenuGUI;
+    [SerializeField] private EncyclopediaGUI _encyclopediaGUI;
+    [SerializeField] private GameStartGUI _gameStartGUI;
+    [SerializeField] private GameplayGUI _gameplayGUI;
+    [SerializeField] private GameEndGUI _gameEndGUI;
+    [SerializeField] private EndScoreGUI _endScoreGUI;
+
+    [Space]
     [SerializeField] private JoystickCursor _joystickCursor;
 
     // There are separate explicit input prompts because of how the video render textures work
@@ -56,6 +66,8 @@ public class UIManager : MonoBehaviour
         InputDeviceManager.Instance.ConnectionStatusLog.AddListener((string message) => _loadingText.SetText(message));
         InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => _loadingScreen.Show(false));
 
+        GameManager.Instance.GameStateEntered.AddListener(HandleGameStateGUI);
+
         SetupFishingStateInputPromptListeners();
     }
 
@@ -65,6 +77,17 @@ public class UIManager : MonoBehaviour
 
         // Bait Preparation
         fishingManager.FishInspectionState.FishInspected.AddListener(() => ShowMainInputPrompt(fishingManager.BaitPrepPromptLeftName));
+    }
+
+    private void HandleGameStateGUI(GameState gameState)
+    {
+        // Show the appropriate GUI based on the game state
+        _mainMenuGUI.Show(gameState == GameManager.Instance.MainMenuState);
+        _encyclopediaGUI.Show(gameState == GameManager.Instance.EncyclopediaState);
+        _gameStartGUI.Show(gameState == GameManager.Instance.GameStartState);
+        _gameplayGUI.Show(gameState == GameManager.Instance.PlayingState);
+        _gameEndGUI.Show(gameState == GameManager.Instance.GameEndState);
+        _endScoreGUI.Show(gameState == GameManager.Instance.EndScoreState);
     }
 
     #region Input Prompts

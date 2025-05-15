@@ -9,21 +9,14 @@ public class MainMenuGUI : GUIContainer
 {
     [SerializeField] private GUIContainer _mainMenuSelectGUI;
 
-    private void Start()
+    public override void Show(bool show)
     {
-        GameManager.Instance.GameStateEntered.AddListener(OnGameStateEntered);
-    }
+        base.Show(show);
+        _mainMenuSelectGUI?.Show(show);
 
-    // Main Menu UI Setup
-    private void OnGameStateEntered(GameState newState)
-    {
-        bool isMainMenuState = (newState == GameManager.Instance.MainMenuState);
-        Show(isMainMenuState);
-        _mainMenuSelectGUI.Show(isMainMenuState);
+        if (!show) return;
 
-        // Only setup when main menu is shown
-        if (!isMainMenuState) return;
-
+        // Show navigation instructions on show
         UIManager.Instance.ShowMainInputPrompt(UIManager.Instance.MainMenuInput);
         UIManager.Instance.ShowSecondInputPrompt(UIManager.Instance.MainMenuSecondInput);
     }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using static FishingManager;
 
 public class BaitPreparationState : FishingState
@@ -7,15 +8,30 @@ public class BaitPreparationState : FishingState
 
     private int _currentStep = 0;
 
+    // Events for each bobber action
+    // Nomenclature could be improved?
+    /// <summary>
+    /// Representation of even and starting rotations (such as the initial lure hooking)
+    /// </summary>
+    public UnityEvent CompletedEvenRotation { get; private set; } = new();
+    /// <summary>
+    /// Representation of odd rotations (bobber turning away)
+    /// </summary>
+    public UnityEvent CompletedOddRotation { get; private set; } = new();
+
     public override void Enter()
     {
         // Only go back to start if need more fish, otherwise cam may mess up
         if (GameManager.Instance.FishCaught < GameManager.Instance.FishTotalToCatch)
             CameraController.Instance.SetCameraView(CameraController.CameraView.BaitPrep); // Set camera priority for bait preparation
 
+        // UI
         fishingManager.StateLabelPanel.SetLabel(FishingStateName.BaitPreparation);
-        _currentStep = 0; // Reset step counter
         UIManager.Instance.ShowMainInputPrompt(fishingManager.BaitPrepPromptRightName);
+
+        _currentStep = 0; // Reset step counter
+        
+        // Fishing bobber setup
         fishingManager.FishingBobber.SetControllable(true);
         fishingManager.FishingBobber.SetupLureAttach();
         
@@ -32,14 +48,12 @@ public class BaitPreparationState : FishingState
         if (_currentStep % 2 == 0 
             && fishingManager.InputHelper.HasReachedRotationY(fishingManager.RollRightAngle))
         {
-            UIManager.Instance.ShowMainInputPrompt(fishingManager.BaitPrepPromptLeftName);
-            //Debug.Log(_currentStep);
+            UIManager.Instance?.ShowMainInputPrompt(fishingManager.BaitPrepPromptLeftName);
             _currentStep++;
         }
         else if (_currentStep % 2 != 0 && fishingManager.InputHelper.HasReachedRotationY(fishingManager.RollLeftAngle))
         {
             UIManager.Instance.ShowMainInputPrompt(fishingManager.BaitPrepPromptRightName);
-            //Debug.Log(_currentStep);
             _currentStep++;
         }
 

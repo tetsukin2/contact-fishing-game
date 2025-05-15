@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles rendering of the fishing line between the fishing rod tip and the bobber
+/// </summary>
 public class FishingLineRenderer : MonoBehaviour
 {
     [SerializeField] private Transform rodTip;  // Starting point

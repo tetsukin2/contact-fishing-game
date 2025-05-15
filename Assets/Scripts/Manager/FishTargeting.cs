@@ -178,27 +178,4 @@ public class FishTargeting : MonoBehaviour
         }
         return bestMatch;
     }
-
-    //IEnumerator CastBobberToFish(FishEntity fish)
-    //{
-    //    Transform bobberTransform = /* your bobber transform reference here */;
-    //    bobberTransform.position = fish.transform.position;
-
-    //    yield return new WaitForSeconds(1.5f); // delay before attach
-
-    //    // Optional: visual effect for attaching
-    //    fish.gameObject.SetActive(false); // hide caught fish
-
-    //    SpawnNewFish();
-    //    hasSelected = false; // allow selection again if needed
-    //}
-
-    //void SpawnNewFish()
-    //{
-    //    // Instantiate new fish elsewhere
-    //    Vector3 newCenter = /* some logic for new location */;
-    //    Instantiate(_fishPrefab, newCenter, Quaternion.identity).GetComponent<FishEntity>().centerPoint = newCenter;
-    //}
-
-    
 }

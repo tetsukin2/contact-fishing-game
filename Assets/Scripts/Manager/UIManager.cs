@@ -7,6 +7,11 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
+    [Header("Loading Screen")]
+    [SerializeField] private GUIContainer _loadingScreen;
+    [SerializeField] private TextMeshProUGUI _loadingText;
+
+    [Space]
     // Prompt list is out here for centralized access
     // idk if this is final
     [Header("Input Prompts")]
@@ -15,11 +20,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private InputPrompt _mainMenuSecondInput; // List of sprites for input prompts
     [SerializeField] private InputPrompt _encyclopediaInput;
     [SerializeField] private InputPrompt _encyclopediaSecondInput;
-
-    [Space]
-    [Header("Loading Screen")]
-    [SerializeField] private GUIContainer _loadingScreen;
-    [SerializeField] private TextMeshProUGUI _loadingText;
 
     [Space]
     [SerializeField] private JoystickCursor _joystickCursor;
@@ -54,7 +54,17 @@ public class UIManager : MonoBehaviour
         // Loading screen things
         _loadingScreen.Show(true);
         InputDeviceManager.Instance.ConnectionStatusLog.AddListener((string message) => _loadingText.SetText(message));
-        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => _loadingScreen.Show(false));  
+        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => _loadingScreen.Show(false));
+
+        SetupFishingStateInputPromptListeners();
+    }
+
+    private void SetupFishingStateInputPromptListeners()
+    {
+        FishingManager fishingManager = FishingManager.Instance;
+
+        // Bait Preparation
+        fishingManager.FishInspectionState.FishInspected.AddListener(() => ShowMainInputPrompt(fishingManager.BaitPrepPromptLeftName));
     }
 
     #region Input Prompts

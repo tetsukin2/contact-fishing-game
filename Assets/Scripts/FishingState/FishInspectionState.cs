@@ -1,21 +1,30 @@
 using UnityEngine;
-using static FishingManager;
+using UnityEngine.Events;
 
 public class FishInspectionState : FishingState
 {
     public FishInspectionState(FishingManager fishingManager) : base(fishingManager) { }
 
-    private bool _reachedInitialRotation = false; // Rotation is weird on this axis
+    private bool _reachedInitialRotation = false; // Rotation is weird on this axis, so we track an initial position first
     private bool _fishInspected = false; // FishData needs to be picked up first
+
+    public UnityEvent FishInspected { get; private set; } = new();
 
     public override void Enter()
     {
-        fishingManager.StateLabelPanel.SetLabel(FishingStateName.FishInspection);
-        fishingManager.InputHelper.ClearRotationHistory();
-        UIManager.Instance.ShowMainInputPrompt(fishingManager.InspectReadyPromptName);
-        fishingManager.HookedFish.SetActive(true); // Show the fish in the inspection panel
+        // Reset flags
         _reachedInitialRotation = false;
         _fishInspected = false;
+
+        // Set UI
+        fishingManager.StateLabelPanel.SetLabel(FishingManager.FishingStateName.FishInspection);
+        UIManager.Instance.ShowMainInputPrompt(fishingManager.InspectReadyPromptName);
+
+        // Fish visibility
+        fishingManager.HookedFish.SetActive(true); // Show the fish in the inspection panel
+
+        // Input reset
+        fishingManager.InputHelper.ClearRotationHistory();
         Debug.Log("Entering FishData Inspection State");
     }
 

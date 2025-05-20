@@ -7,8 +7,11 @@ public class GameEndGameState : GameState
 
     public override void Enter()
     {
-        CameraController.Instance.SetCameraView(CameraController.CameraView.Menu);
-        Debug.Log("Entering Game End State");
+        _gameEndTimer = 0f; // Reset timer
+        CameraController.Instance.SetCameraView(CameraController.CameraView.Gameplay);
+
+        // Allow player to skip
+        InputDeviceManager.Instance.JoystickPressed.AddListener(EndState);
     }
 
     public override void Update()
@@ -16,14 +19,19 @@ public class GameEndGameState : GameState
         _gameEndTimer += Time.deltaTime;
         if (_gameEndTimer >= gameManager.GameEndDuration)
         {
-            gameManager.TransitionToState(gameManager.EndScoreState);
+            EndState();
         }
+    }
+
+    // Ending the state either after the timer or when player skips
+    private void EndState()
+    {
+        gameManager.TransitionToState(gameManager.EndScoreState);
     }
 
     public override void Exit()
     {
+        InputDeviceManager.Instance.JoystickPressed.RemoveListener(EndState);
         Debug.Log("Exiting Game End State");
     }
-
-    
 }

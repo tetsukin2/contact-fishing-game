@@ -10253,8 +10253,8 @@ MonoBehaviour:
   _gameEndSelectGUI: {fileID: 1109180124}
   _gameEndSessionText: {fileID: 1656469366}
   _gameEndBestText: {fileID: 720780737}
-  _gameEndBestTextColorNormal: {r: 1, g: 1, b: 1, a: 0}
-  _gameEndBestTextColorNew: {r: 1, g: 0.6940384, b: 0, a: 0}
+  _gameEndBestTextColorNormal: {r: 1, g: 1, b: 1, a: 1}
+  _gameEndBestTextColorNew: {r: 1, g: 0.6940384, b: 0, a: 1}
 --- !u!1001 &1289632000
 PrefabInstance:
   m_ObjectHideFlags: 0

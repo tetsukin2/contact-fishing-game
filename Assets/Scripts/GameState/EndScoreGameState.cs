@@ -6,6 +6,7 @@ public class EndScoreGameState : GameState
 
     public override void Enter()
     {
+        CameraController.Instance.SetCameraView(CameraController.CameraView.Menu);
         Debug.Log("Entering End Score State");
         gameManager.ProcessScore();
     }

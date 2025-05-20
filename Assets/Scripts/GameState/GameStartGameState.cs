@@ -17,6 +17,7 @@ public class GameStartGameState : GameState
     public override void Enter()
     {
         //Debug.Log("Entering Game Start State");
+        CameraController.Instance.SetCameraView(CameraController.CameraView.Gameplay);
 
         // Game Manager resets
         gameManager.ResetFish();
@@ -38,14 +39,17 @@ public class GameStartGameState : GameState
         //Must be in this order or lowest always triggers
         if (_gameStage >= 2 && _gameStartTimer >= gameManager.GameStartDuration)
         {
+            _gameStage = 3; // is this part even needed
             gameManager.TransitionToState(gameManager.PlayingState);
         }
         else if (_gameStage < 2 && _gameStartTimer >= gameManager.GameStartDuration * 2 / 3)
         {
+            _gameStage = 2;
             GameStartStageReached.Invoke(2);
         }
         else if (_gameStage < 1 && _gameStartTimer >= gameManager.GameStartDuration / 3)
         {
+            _gameStage = 1;
             GameStartStageReached.Invoke(1);
         }
     }

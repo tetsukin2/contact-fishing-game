@@ -61,6 +61,8 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        HideAllGUI();
+
         // Loading screen things
         _loadingScreen.Show(true);
         InputDeviceManager.Instance.ConnectionStatusLog.AddListener((string message) => _loadingText.SetText(message));
@@ -77,6 +79,17 @@ public class UIManager : MonoBehaviour
 
         // Bait Preparation
         fishingManager.FishInspectionState.FishInspected.AddListener(() => ShowMainInputPrompt(fishingManager.BaitPrepPromptLeftName));
+    }
+
+    private void HideAllGUI()
+    {
+        // Hide all GUI elements
+        _mainMenuGUI.Show(false);
+        _encyclopediaGUI.Show(false);
+        _gameStartGUI.Show(false);
+        _gameplayGUI.Show(false);
+        _gameEndGUI.Show(false);
+        _endScoreGUI.Show(false);
     }
 
     private void HandleGameStateGUI(GameState gameState)
@@ -99,10 +112,12 @@ public class UIManager : MonoBehaviour
     /// <param name="name">Input prompt to show. Pass null to hide the input prompt panel</param>
     public void ShowMainInputPrompt(string name)
     {
+        Debug.Log($"Showing prompt {name}");
         foreach (var prompt in _inputPrompts)
         {
             if (prompt.PromptName == name)
             {
+                Debug.Log($"Prompt {name} found");
                 MainInputPromptShown.Invoke(prompt);
                 return;
             }

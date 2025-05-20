@@ -190,31 +190,83 @@ public class ImagePixelSampler : MonoBehaviour
             return false;
         }
 
+        Rect rect = img.rectTransform.rect;
+        Sprite sprite = img.BWImage.sprite;
+        if (sprite == null) return false;
+
+        Texture2D tex = sprite.texture;
+        if (tex == null) return false;
+
         // Convert to UV coordinates [0,1]
         Vector2 pivot = img.rectTransform.pivot;
-        float uvX = (localPoint.x + img.rectTransform.rect.width * pivot.x) / img.rectTransform.rect.width;
-        float uvY = (localPoint.y + img.rectTransform.rect.height * pivot.y) / img.rectTransform.rect.height;
+        //float uvX = (localPoint.x + img.rectTransform.rect.width * pivot.x) / img.rectTransform.rect.width;
+        //float uvY = (localPoint.y + img.rectTransform.rect.height * pivot.y) / img.rectTransform.rect.height;
+        float rectW = rect.width;
+        float rectH = rect.height;
+        float texW = sprite.rect.width;
+        float texH = sprite.rect.height;
+
+        // Calculate aspect-correct bounds (when Preserve Aspect is ON)
+        float imageAspect = texW / texH;
+        float rectAspect = rectW / rectH;
+
+        float drawWidth, drawHeight;
+        if (imageAspect > rectAspect)
+        {
+            // Image is wider than container
+            drawWidth = rectW;
+            drawHeight = rectW / imageAspect;
+        }
+        else
+        {
+            // Image is taller than container
+            drawHeight = rectH;
+            drawWidth = rectH * imageAspect;
+        }
+
+        // Get bottom-left corner of the drawn image area inside the RectTransform
+        Vector2 imageOrigin = new Vector2(
+            -rectW * pivot.x + (rectW - drawWidth) / 2,
+            -rectH * pivot.y + (rectH - drawHeight) / 2
+        );
+
+        // Convert localPoint to UV in drawn area
+        Vector2 uv = new Vector2(
+            (localPoint.x - imageOrigin.x) / drawWidth,
+            (localPoint.y - imageOrigin.y) / drawHeight
+        );
 
         // Out of bounds check
-        if (uvX < 0f || uvX > 1f || uvY < 0f || uvY > 1f)
+        if (uv.x < 0f || uv.x > 1f || uv.y < 0f || uv.y > 1f)
         {
             pixel = default;
             return false;
         }
 
         // Convert to texture pixel index
-        int px = Mathf.FloorToInt(uvX * img.width);
-        int py = Mathf.FloorToInt(uvY * img.height);
+        int px = Mathf.FloorToInt(uv.x * img.width);
+        int py = Mathf.FloorToInt(uv.y * img.height);
         int index = py * img.width + px;
 
-        // Guard against bad index
-        if (index < 0 || index >= img.pixelData.Length)
-        {
-            pixel = default;
-            return false;
-        }
+        // Convert sprite-relative UV to pixel coordinates in the texture
+        Rect spriteRect = sprite.rect;
+        int texX = Mathf.FloorToInt(uv.x * spriteRect.width + spriteRect.x);
+        int texY = Mathf.FloorToInt(uv.y * spriteRect.height + spriteRect.y);
 
-        pixel = img.pixelData[index];
+        //// Guard against bad index
+        //if (index < 0 || index >= img.pixelData.Length)
+        //{
+        //    pixel = default;
+        //    return false;
+        //}
+
+        //pixel = img.pixelData[index];
+        //return true;
+
+        if (texX < 0 || texX >= tex.width || texY < 0 || texY >= tex.height)
+            return false;
+
+        pixel = tex.GetPixel(texX, texY);
         return true;
     }
 }

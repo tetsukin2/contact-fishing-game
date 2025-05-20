@@ -10,7 +10,7 @@ public class RotateVerticalReelAction : ReelAction
     {
         _hasRotatedForward = false; // Reset for new action
         UIManager.Instance.ShowMainInputPrompt(fishingManager.ReelForwardPromptName);
-        Debug.Log("RotateVerticalReelAction: Enter");
+        //Debug.Log("RotateVerticalReelAction: Enter");
     }
 
     public override void Update()
@@ -24,12 +24,12 @@ public class RotateVerticalReelAction : ReelAction
         else if (_hasRotatedForward &&
             InputDeviceRotationHelper.HasReachedRotation(Mathf.Lerp(InputDeviceManager.IMURotation.z, 0f, Mathf.Abs(InputDeviceManager.IMURotation.y)), fishingManager.RotateUpAngle))
         {
-            reelingState.ProgressReel();
+            FishingManager.Instance.ReelProgressBar.ProgressReel(); // Progress the reel
         }
     }
 
     public override void Exit()
     {
-        Debug.Log("RotateVerticalReelAction: Exit");
+        //Debug.Log("RotateVerticalReelAction: Exit");
     }
 }

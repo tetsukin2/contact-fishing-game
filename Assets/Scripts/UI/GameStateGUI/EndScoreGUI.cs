@@ -8,9 +8,9 @@ public class EndScoreGUI : GUIContainer
 {
     [SerializeField] private GUIContainer _gameEndSelectGUI;
     [SerializeField] private TextMeshProUGUI _gameEndSessionText;
+    [SerializeField] private TextMeshProUGUI _gameEndBestText;
     [SerializeField] private Color _gameEndBestTextColorNormal;
     [SerializeField] private Color _gameEndBestTextColorNew;
-    [SerializeField] private TextMeshProUGUI _gameEndBestText;
 
     private void Start()
     {

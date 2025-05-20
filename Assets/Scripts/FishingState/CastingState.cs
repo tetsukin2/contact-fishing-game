@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using static FishingManager;
 
 public class CastingState : FishingState
@@ -9,24 +10,22 @@ public class CastingState : FishingState
     private bool _hasCastBack = false; // Flag to check if the cast back has been completed
     private bool _hasCast;
 
+    /// <summary>
+    /// Invoked when the line is cast
+    /// </summary>
+    public UnityEvent LineCast { get; private set; } = new(); 
+
     // Hook listener for bobber hitting water only once
     public override void Setup()
     {
         _hasCast = false;
-        fishingManager.BobberHitWater.AddListener(() => {
-            if (_hasCast) // Flag as this object exists even when in another state
-            {
-                fishingManager.Targeting.LureFish(); // Lure the fish
-                fishingManager.TransitionToState(fishingManager.WaitingForBiteState);
-                BraillePatternPlayer.Instance.PlayPatternSequence("Ripple", false);
-                _hasCast = false;
-            }});
+        fishingManager.BobberHitWater.AddListener(OnBobberHitWater);
     }
 
     public override void Enter()
     {
         // Fish selection setup
-        CameraController.Instance.FishSelectVCam.Priority = 10;
+        CameraController.Instance.SetCameraView(CameraController.CameraView.FishSelect);
         fishingManager.Targeting.CanChangeSelection = true;
         fishingManager.Targeting.SetRandomFishAsSelected();
 
@@ -80,7 +79,7 @@ public class CastingState : FishingState
         {
             _hasCast = true;
             _currentCastSteps = 0;
-            fishingManager.CastLine();
+            LineCast.Invoke();
             UIManager.Instance.ShowMainInputPrompt(null as InputPrompt);
             UIManager.Instance.ShowSecondInputPrompt(null as InputPrompt);
             BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", true);
@@ -89,6 +88,16 @@ public class CastingState : FishingState
         {
             UIManager.Instance.ShowMainInputPrompt(fishingManager.CastBackPromptName);
         }
+    }
+
+    private void OnBobberHitWater()
+    {
+        if (!_hasCast) return; // Flag as this object exists even when in another state
+
+        fishingManager.Targeting.LureFish(); // Lure the fish
+        fishingManager.TransitionToState(fishingManager.WaitingForBiteState);
+        BraillePatternPlayer.Instance.PlayPatternSequence("Ripple", false);
+        _hasCast = false;
     }
 
     public override void Exit()

@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class JoystickClockwiseReelAction : ReelAction
 {
     public JoystickClockwiseReelAction(ReelingState reelingState) : base(reelingState) { }
@@ -9,7 +5,7 @@ public class JoystickClockwiseReelAction : ReelAction
     public override void Enter()
     {
         UIManager.Instance.ShowMainInputPrompt(fishingManager.ReelClockwisePromptName);
-        Debug.Log("JoystickClockwiseReelAction: Enter");
+        //Debug.Log("JoystickClockwiseReelAction: Enter");
 
         // Input helper setup
         fishingManager.InputHelper.TrackJoystickClockwise = true;
@@ -21,12 +17,12 @@ public class JoystickClockwiseReelAction : ReelAction
         if (fishingManager.InputHelper.GetJoystickRotationCount(true) > 0)
         {
             fishingManager.InputHelper.ResetJoystickRotationCount();
-            reelingState.ProgressReel();
+            FishingManager.Instance.ReelProgressBar.ProgressReel(); // Progress the reel
         }
     }
 
     public override void Exit()
     {
-        Debug.Log("JoystickClockwiseReelAction: Exit");
+        //Debug.Log("JoystickClockwiseReelAction: Exit");
     }
 }

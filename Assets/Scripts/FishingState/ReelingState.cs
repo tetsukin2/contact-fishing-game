@@ -15,74 +15,68 @@ public class ReelingState : FishingState
 
     public ReelingState(FishingManager fishingManager) : base(fishingManager) { }
 
-    private int _currentReelActionIndex; // Current Action in sequence array
-    
-    // Defining all the reel actions
+    // Reel Actions
     private RotateVerticalReelAction _rotateUpReelAction;
     private JoystickClockwiseReelAction _joystickClockwiseReelAction;
 
+    // Reel Action State
+    private int _currentReelActionIndex; // Current Action in sequence array
     private ReelAction _currentReelActionState;
-    private float _currentReelProgress;
+    
+    // References
+    private ReelProgressBar _progressBar;
 
     public override void Setup()
     {
+        // References
+        _progressBar = FishingManager.Instance.ReelProgressBar;
+
         // Initialize reel actions
         _rotateUpReelAction = new(this);
         _joystickClockwiseReelAction = new(this);
+
+        _progressBar.ReelProgressed.AddListener(OnReelProgressed);
+        _progressBar.ReelCompleted.AddListener(OnReelCompleted);
     }
 
     public override void Enter()
     {
+        //Debug.Log("Entering Reeling State");
         fishingManager.StateLabelPanel.SetLabel(FishingStateName.Reeling);
-        Debug.Log("Entering Reeling State");
-        fishingManager.StartReel();
-        BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", true); // Start the reel pattern
+        _progressBar.StartReel();
+        BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", true);
 
         // Set up reel progress and sequence
         _currentReelActionIndex = 0;
         SetReelAction(fishingManager.ReelActionSequence[_currentReelActionIndex]);
-
-        _currentReelProgress = 0f;
     }
 
     public override void Update()
     {
+        // Update the current reel acction
         _currentReelActionState?.Update();
-        _currentReelProgress -= Mathf.Max(0f, Time.deltaTime * fishingManager.ReelDecayRate); // Decay progress over time
-        fishingManager.SetReelProgress(_currentReelProgress);
     }
 
     public override void Exit()
     {
-        CameraController.Instance.FishSelectVCam.Priority = 0; // Reset camera priority
         Debug.Log("Exiting Reeling State");
-        fishingManager.StopReel();
     }
 
-    public void ProgressReel()
+    private void OnReelCompleted()
     {
-        // Update reel progress
-        _currentReelProgress += fishingManager.ReelProgressAmount;
-        Debug.Log(_currentReelProgress);
-        //fishingManager.SetReelProgress(_currentReelProgress);
+        fishingManager.ReelIn(); // Call the reel in function
+        fishingManager.Targeting.CatchSelected(); // Catch the fish and do resets
+        BraillePatternPlayer.Instance.PlayPatternSequence("Ripple", false);
 
-        // Check if the reel progress is complete
-        if (_currentReelProgress >= fishingManager.ReelTotalProgress)
-        {
-            Debug.Log("OnReel Progress Complete!");
-            fishingManager.ReelIn(); // Call the reel in function
-            fishingManager.Targeting.CatchSelected(); // Catch the fish and do resets
-            // Transition back to bait prep only if not fully caught, so as not to mess camera
-            BraillePatternPlayer.Instance.PlayPatternSequence("Ripple", false);
-            if (GameManager.Instance.FishCaught < GameManager.Instance.FishTotalToCatch)
-                fishingManager.TransitionToState(fishingManager.FishInspectionState); 
-        }
-        else
-        {
-            // Set the next reel action state
-            _currentReelActionIndex = (_currentReelActionIndex + 1) % fishingManager.ReelActionSequence.Count;
-            SetReelAction(fishingManager.ReelActionSequence[_currentReelActionIndex]);
-        }
+        // why?
+        //if (GameManager.Instance.FishCaught < GameManager.Instance.FishTotalToCatch)
+        //    fishingManager.TransitionToState(fishingManager.FishInspectionState);
+    }
+
+    private void OnReelProgressed()
+    {
+        _currentReelActionIndex = (_currentReelActionIndex + 1) % fishingManager.ReelActionSequence.Count;
+        SetReelAction(fishingManager.ReelActionSequence[_currentReelActionIndex]);
     }
 
     // OnReel state maching switching

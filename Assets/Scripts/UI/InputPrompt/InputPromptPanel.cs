@@ -41,11 +41,12 @@ public class InputPromptPanel : DynamicVideoPanel
     /// <param name="inputPrompt"></param>
     public void SetInputPrompt(InputPrompt inputPrompt)
     {
-        if (!ContentActive || inputPrompt == null)
+        if (inputPrompt == null)
         {
             Show(false);
             return;
         }
+        Show(true);
         SetVideo(inputPrompt.Video);
         _message.text = inputPrompt.Message;
     }

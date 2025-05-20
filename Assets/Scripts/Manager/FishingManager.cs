@@ -5,10 +5,8 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 
 // FishingManager with class-based state machine
-public class FishingManager : MonoBehaviour
+public class FishingManager : StaticInstance<FishingManager>
 {
-    public static FishingManager Instance { get; private set; } // Singleton instance
-
     public enum FishingStateName
     {
         Idle,
@@ -63,8 +61,7 @@ public class FishingManager : MonoBehaviour
     public string ReelClockwisePromptName;
     public float ReelForce = 1f; // Force applied to the bobber upward
     public float ReelDecayRate = 0.3f;
-    [SerializeField] private GUIContainer _reelGUI;
-    [SerializeField] private Slider _reelProgressSlider;
+    [SerializeField] private ReelProgressBar _reelProgressBar;
     public List<ReelingState.ReelActionName> ReelActionSequence; //Sequence of actions to follow
 
     [Space]
@@ -93,7 +90,8 @@ public class FishingManager : MonoBehaviour
     public ReelingState ReelingState { get; private set; }
     public FishInspectionState FishInspectionState { get; private set; }
 
-    // Some properties, mostly for fish states to access
+    // Some exposed properties
+    public ReelProgressBar ReelProgressBar => _reelProgressBar;
     public FishTargeting Targeting => _fishTargeting;
     public FishingBobber FishingBobber => _fishingBobber;
     public InputDeviceRotationHelper InputHelper => _inputHelper;
@@ -102,19 +100,8 @@ public class FishingManager : MonoBehaviour
     public FishingStateLabelPanel StateLabelPanel => _stateLabelPanel;
     public UnityEvent BobberHitWater => _bobberHitWater;
 
-    private void Awake()
+    protected override void OnAwake()
     {
-        // Singleton pattern
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-
         // Initialize states
         BaitPreparationState = new(this);
         CastingState = new(this);
@@ -123,7 +110,7 @@ public class FishingManager : MonoBehaviour
         FishInspectionState = new(this);
     }
 
-    void Start()
+    protected override void OnRegister()
     {
         // Setup states, these are in start to ensure all references are set
         BaitPreparationState.Setup();
@@ -132,11 +119,6 @@ public class FishingManager : MonoBehaviour
         ReelingState.Setup();
         FishInspectionState.Setup();
 
-        _fishingBobber.Setup(this);
-
-        StopReel(); // Hide the reel GUI at the start
-        _hookedFish.SetActive(false);
-
         // Only start bait prep after gameplay actually starts
         GameManager.Instance.GameStateEntered.AddListener((state) =>
         {
@@ -144,8 +126,13 @@ public class FishingManager : MonoBehaviour
             {
                 TransitionToState(BaitPreparationState);
             }
-        });
-        
+        });        
+    }
+
+    protected override void OnSetup()
+    {
+        _reelProgressBar.StopReel(); // Hide the reel GUI at the start
+        _hookedFish.SetActive(false);
     }
 
     void Update()
@@ -168,56 +155,6 @@ public class FishingManager : MonoBehaviour
         FishingStateEntered.Invoke(_currentState); // Notify listeners of the state entry
     }
 
-    public void CastLine()
-    {
-        InputHelper.ClearRotationHistory();
-        _fishingBobber.OnCast();
-
-        // Start the parabolic trajectory coroutine
-        StartCoroutine(MoveBobberToLanding(_fishTargeting.Selection.transform.position));
-
-        Debug.Log("Casting Fishing Line!");
-    }
-
-    // Programatically move the bobber from current bobber position to the target position
-    private IEnumerator MoveBobberToLanding(Vector3 landingPosition)
-    {
-        // Get the starting position of the bobber
-        Vector3 startPosition = _fishingBobber.transform.position;
-
-        // Calculate the peak height of the trajectory
-        float peakHeight = Mathf.Max(startPosition.y, landingPosition.y) + CastHeight;
-        //float duration = Mathf.Clamp(castForce / 10f, 1f, 3f); // Adjust scal
-
-        float elapsedTime = 0f;
-
-        while (elapsedTime < CastDuration)
-        {
-            // Calculate the normalized time (0 to 1)
-            float t = elapsedTime / CastDuration;
-
-            // Interpolate the horizontal position (x and z)
-            Vector3 horizontalPosition = Vector3.Lerp(startPosition, landingPosition, t);
-
-            // Calculate the vertical position (y) using a parabolic equation
-            float verticalPosition = Mathf.Lerp(startPosition.y, peakHeight, t) * (1 - t) + Mathf.Lerp(peakHeight, landingPosition.y, t) * t;
-
-            // Update the bobber's position
-            _fishingBobber.transform.position = new Vector3(horizontalPosition.x, verticalPosition, horizontalPosition.z);
-
-            // Increment the elapsed time
-            elapsedTime += Time.deltaTime;
-
-            yield return null;
-        }
-
-        // Ensure the bobber ends exactly at the landing position
-        _fishingBobber.transform.position = landingPosition;
-        _bobberHitWater.Invoke();
-
-        Debug.Log("Bobber has landed!");
-    }
-
     public void ReelIn()
     {
         _fishingBobber.OnReel(ReelForce);
@@ -225,30 +162,6 @@ public class FishingManager : MonoBehaviour
         _caughtFish = FishLootTable.Instance.GetFishFromTable();
 
         Debug.Log("Reeling In!");
-    }
-
-    public void StartReel()
-    {
-        _reelGUI.Show(true); // Show the reel GUI
-        SetupReelBar(); // Setup the reel progress bar
-    }
-
-    public void StopReel()
-    {
-        _reelGUI.Show(false); // Hide the reel GUI
-        _reelProgressSlider.value = 0f; // Reset the slider value
-    }
-
-    private void SetupReelBar()
-    {
-        _reelProgressSlider.maxValue = ReelTotalProgress;
-        _reelProgressSlider.value = 0f; // Initialize the slider value
-    }
-
-    // Set the progress of the reel in slider
-    public void SetReelProgress(float value)
-    {
-        _reelProgressSlider.value = Mathf.Min(value, _reelProgressSlider.maxValue);
     }
 
     public void OnFishInspection()
@@ -271,6 +184,4 @@ public class FishingManager : MonoBehaviour
     {
         _fishInspectionGUI.Show(false);
     }
-
-    
 }

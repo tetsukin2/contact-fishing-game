@@ -12,6 +12,8 @@ public class FishInspectionState : FishingState
 
     public override void Enter()
     {
+        CameraController.Instance.SetCameraView(CameraController.CameraView.Gameplay);
+
         // Reset flags
         _reachedInitialRotation = false;
         _fishInspected = false;

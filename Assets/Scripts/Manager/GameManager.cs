@@ -83,17 +83,11 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         // Reset ahead just in case
-        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() =>
-        {
-            InputDeviceManager.SendBrailleASCII(0, 0, 0, 0);
-        });
+        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(OnStartupLoad);
 
         // TODO: Load new data every time total fish to catch is updated
         CurrentGameData = GameDataHandler.GetGameData("data", $"{_fishTotalToCatch}");
         InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => Time.timeScale = 1f);
-
-        // Start in the main menu state
-        TransitionToState(MainMenuState);
     }
 
     private void Update()
@@ -123,6 +117,18 @@ public class GameManager : MonoBehaviour
         {
             CurrentGameData.AddFish("tilapia");
         }
+    }
+
+    /// <summary>
+    /// When the starts for the first time, technically depends on first connection established
+    /// </summary>
+    private void OnStartupLoad()
+    {
+        // Reset for safety
+        InputDeviceManager.SendBrailleASCII(0, 0, 0, 0);
+
+        // Start in the main menu state
+        TransitionToState(MainMenuState);
     }
 
     /// <summary>
@@ -160,6 +166,10 @@ public class GameManager : MonoBehaviour
     {
         _fishCaught++;
         FishCaughtUpdated.Invoke(FishCaught);
+        if (_fishCaught >= _fishTotalToCatch)
+        {
+            TransitionToState(GameEndState);
+        }
     }
 
     public void ResetFish()

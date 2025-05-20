@@ -10,7 +10,7 @@ public class ReelProgressBar : GUIContainer
     [SerializeField] private Slider _progressSlider;
 
     private float _currentReelProgress;
-    private bool _isReeling = false;
+    private bool _isReeling = false; // Flag for reel updates
 
     /// <summary>
     /// Event triggered when the reel progress is updated but not completed.
@@ -41,10 +41,13 @@ public class ReelProgressBar : GUIContainer
             Debug.LogWarning("Reel progress slider is not assigned in the inspector.");
             return;
         }
-
-        Show(true);
+        
         _isReeling = true;
         _currentReelProgress = 0f;
+
+        // Slider Setup
+        Show(true);
+        _progressSlider.maxValue = FishingManager.Instance.ReelTotalProgress;
         _progressSlider.value = 0f;
     }
 
@@ -59,6 +62,7 @@ public class ReelProgressBar : GUIContainer
         // Check if the reel progress is complete
         if (_currentReelProgress >= FishingManager.Instance.ReelTotalProgress)
         {
+            StopReel();
             ReelCompleted.Invoke();
         }
         else

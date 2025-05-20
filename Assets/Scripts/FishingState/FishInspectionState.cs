@@ -27,7 +27,6 @@ public class FishInspectionState : FishingState
 
         // Input reset
         fishingManager.InputHelper.ClearRotationHistory();
-        Debug.Log("Entering FishData Inspection State");
     }
 
     public override void Update()
@@ -50,7 +49,6 @@ public class FishInspectionState : FishingState
                 FishingManager.OnFishInspection();
                 UIManager.Instance.ShowMainInputPrompt(fishingManager.ReleaseReadyPromptName);
                 _fishInspected = true;
-                Debug.Log("FishData inspected");
             }
         }
         else if (_fishInspected)
@@ -66,7 +64,6 @@ public class FishInspectionState : FishingState
                 && InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.IMURotation.y, 0.75f)
                 && fishingManager.InputHelper.HasReachedRotationZ(0f))
             {
-                Debug.Log("FishData caught");
                 GameManager.Instance.AddFish();
                 BraillePatternPlayer.Instance.PlayPatternSequence("BasicPulse", false);
                 fishingManager.TransitionToState(fishingManager.BaitPreparationState);

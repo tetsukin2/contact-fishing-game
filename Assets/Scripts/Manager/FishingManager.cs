@@ -76,7 +76,6 @@ public class FishingManager : StaticInstance<FishingManager>
     [SerializeField] private GameObject _hookedFish; // show and hide in inspection
 
     private FishingState _currentState;
-    private UnityEvent _bobberHitWater = new();
     private FishData _caughtFish;
 
     // State change events
@@ -98,7 +97,6 @@ public class FishingManager : StaticInstance<FishingManager>
     public FishingRodMovement RodMovement => _rodMovement;
     public GameObject HookedFish => _hookedFish;
     public FishingStateLabelPanel StateLabelPanel => _stateLabelPanel;
-    public UnityEvent BobberHitWater => _bobberHitWater;
 
     protected override void OnAwake()
     {

@@ -17,9 +17,16 @@ public class EndScoreGUI : GUIContainer
         GameManager.Instance.ScoreProcessed.AddListener(OnScoreProcessed);
     }
 
+    public override void Show(bool show)
+    {
+        base.Show(show);
+        _gameEndSelectGUI.Show(show);
+    }
+
     // Setup New Best details
     private void OnScoreProcessed()
     {
+        Debug.Log("attempting to show score");
         _gameEndSessionText.text = $"Nice Haul! {GameManager.Instance.FishTotalToCatch} fish in {GameDataHandler.ConvertToTimeFormat(GameManager.Instance.Timer)}";
         if (GameManager.Instance.NewBestAchieved)
         {

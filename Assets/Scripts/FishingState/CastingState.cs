@@ -19,7 +19,7 @@ public class CastingState : FishingState
     public override void Setup()
     {
         _hasCast = false;
-        fishingManager.BobberHitWater.AddListener(OnBobberHitWater);
+        fishingManager.FishingBobber.BobberHitWater.AddListener(OnBobberHitWater);
     }
 
     public override void Enter()

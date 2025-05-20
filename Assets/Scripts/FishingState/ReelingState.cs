@@ -31,6 +31,12 @@ public class ReelingState : FishingState
         // References
         _progressBar = FishingManager.Instance.ReelProgressBar;
 
+        if (_progressBar == null)
+        {
+            Debug.LogError("ReelProgressBar is not set in the FishingManager.");
+            return;
+        }
+
         // Initialize reel actions
         _rotateUpReelAction = new(this);
         _joystickClockwiseReelAction = new(this);
@@ -67,6 +73,7 @@ public class ReelingState : FishingState
         fishingManager.ReelIn(); // Call the reel in function
         fishingManager.Targeting.CatchSelected(); // Catch the fish and do resets
         BraillePatternPlayer.Instance.PlayPatternSequence("Ripple", false);
+        fishingManager.TransitionToState(fishingManager.FishInspectionState);
 
         // why?
         //if (GameManager.Instance.FishCaught < GameManager.Instance.FishTotalToCatch)

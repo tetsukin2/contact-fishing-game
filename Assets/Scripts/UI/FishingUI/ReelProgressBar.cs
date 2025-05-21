@@ -26,7 +26,7 @@ public class ReelProgressBar : GUIContainer
         // Update progress values
         if (_isReeling)
         {
-            _currentReelProgress -= Mathf.Max(0f, Time.deltaTime * FishingManager.Instance.ReelDecayRate); // Decay progress over time
+            _currentReelProgress = Mathf.Max(0f, _currentReelProgress - Time.deltaTime * FishingManager.Instance.ReelDecayRate); // Decay progress over time
             _progressSlider.value = Mathf.Min(_currentReelProgress, _progressSlider.maxValue);
         }
     }

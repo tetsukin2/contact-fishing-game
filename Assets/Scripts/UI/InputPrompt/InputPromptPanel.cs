@@ -3,7 +3,7 @@ using UnityEngine;
 
 /// <summary>
 /// Dynamic Video Panel for Input prompts.
-/// Can be main or secondary input prompt, and subscribes to UIManager prompt events.
+/// Can be main or secondary input prompt, and depends on UIManager prompt events.
 /// </summary>
 public class InputPromptPanel : DynamicVideoPanel
 {

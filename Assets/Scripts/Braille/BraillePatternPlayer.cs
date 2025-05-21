@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class BraillePatternPlayer : MonoBehaviour
+public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
 {
     public enum Finger
     {
@@ -11,8 +12,6 @@ public class BraillePatternPlayer : MonoBehaviour
         INDEX = 1,
         BOTH
     }
-
-    public static BraillePatternPlayer Instance { get; private set; }
 
     public float PatternDelay = 0.2f; // Delay between patterns
 
@@ -31,8 +30,6 @@ public class BraillePatternPlayer : MonoBehaviour
         public int Value2;
     }
 
-    [SerializeField] private List<BraillePinPatternSequence> _braillePatternSequences;
-
     public UnityEvent<Finger> PatternEnded = new();
 
     private List<EncodedBraillePatternSequence> _encodedThumbBraillePatternSequences = new();
@@ -48,25 +45,18 @@ public class BraillePatternPlayer : MonoBehaviour
 
     private Coroutine _patternCoroutine;
 
-    private void Awake()
+    protected override void OnAwake()
     {
-        // Singleton pattern to ensure only one instance of BraillePatternPlayer exists
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-    }
+        // Register all braille pattern sequences from resources
+        List<BraillePinPatternSequence> rawBraillePatternSequences =
+            Resources.LoadAll<BraillePinPatternSequence>("BraillePatternSequences").ToList();
 
-    void Start()
-    {
-        // Encode a list of sequences
-        foreach (var sequence in _braillePatternSequences)
+        // Encode to readable format
+        foreach (var sequence in rawBraillePatternSequences)
         {
             _encodedThumbBraillePatternSequences.Add(EncodePatternSequence(sequence, Finger.THUMB));
             _encodedIndexBraillePatternSequences.Add(EncodePatternSequence(sequence, Finger.INDEX));
         }
-
-        //_patternCoroutine = StartCoroutine(RunSequence());
     }
 
     public void PlayPatternSequence(string name, bool loop)
@@ -224,6 +214,7 @@ public class BraillePatternPlayer : MonoBehaviour
             v[3,i] = (pattern.Row4[i] == '0') ? 0 : 1;
         }
 
+        // Mappings
         if (finger == Finger.THUMB)
             return new EncodedBraillePattern
             {

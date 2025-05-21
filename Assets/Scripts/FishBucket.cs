@@ -1,26 +1,32 @@
+using TMPro;
 using UnityEngine;
 
 public class FishBucket : MonoBehaviour
 {
     [SerializeField] private GameObject _bucketUI;
+    [SerializeField] private TextMeshProUGUI _fishCaughtNumberText;
     [SerializeField] private GameObject[] _fishes;
 
-    // Start is called before the first frame update
     void Start()
     {
-        _bucketUI.SetActive(false); // Hide the fish bucket UI at the start
+        // Hide the fish bucket UI at the start
+        _bucketUI.SetActive(false); 
+
         GameManager.Instance.FishCaughtUpdated.AddListener(UpdateFishes);
-        GameManager.Instance.GameStateUpdated.AddListener(OnGameStateUpdated);
-        UpdateFishes(GameManager.Instance.FishCaught, GameManager.Instance.FishTotalToCatch);
+        GameManager.Instance.GameStateEntered.AddListener(OnGameStateEntered);
+
+        // Initialize fish related display
+        UpdateFishes(GameManager.Instance.FishCaught);
     }
 
-    private void OnGameStateUpdated(GameState newState)
+    private void OnGameStateEntered(GameState newState)
     {
         if (newState == GameManager.Instance.PlayingState
             || newState == GameManager.Instance.GameEndState)
         {
-            // Show the fish bucket when the game is playing
+            // Show the fish bucket when the game is playing, and update fishes in case
             _bucketUI.SetActive(true);
+            UpdateFishes(GameManager.Instance.FishCaught);
         }
         else
         {
@@ -29,11 +35,10 @@ public class FishBucket : MonoBehaviour
         }
     }
 
-    private void UpdateFishes(int caught, int total)
+    private void UpdateFishes(int caught)
     {
         // Progress as percentage, multiplied by length
-        // Dunno why float cast is grayed out but it's important for the calc to work
-        float fishCaughtProgress = ( (float)caught / (float)total);
+        float fishCaughtProgress = ( (float)caught / (float)GameManager.Instance.FishTotalToCatch);
 
         // Determine how many fish objects should be visible based on the progress
         int visibleFishCount = Mathf.CeilToInt(fishCaughtProgress * _fishes.Length);
@@ -43,5 +48,8 @@ public class FishBucket : MonoBehaviour
         {
             _fishes[i].SetActive(i < visibleFishCount);
         }
+
+        // Update the text to show the number of fish caught
+        _fishCaughtNumberText.text = $"{caught}/{GameManager.Instance.FishTotalToCatch}";
     }
 }

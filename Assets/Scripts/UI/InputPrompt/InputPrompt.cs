@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.Video;
 
+/// <summary>
+/// Scriptable object for input prompts.
+/// </summary>
 [CreateAssetMenu(menuName = "Scriptable Object/Input Prompt")]
 public class InputPrompt : ScriptableObject
 {

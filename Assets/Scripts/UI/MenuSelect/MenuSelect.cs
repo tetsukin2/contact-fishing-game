@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class MenuSelect : GUIPanel
+public abstract class MenuSelect : GUIContainer
 {
     [SerializeField] protected MenuSelectOption[] _menuSelectOptions;
     [SerializeField] protected FishingRodMovement _fishingRodMovement;

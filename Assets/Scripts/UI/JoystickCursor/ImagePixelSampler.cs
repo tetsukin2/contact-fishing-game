@@ -27,7 +27,7 @@ public class ImagePixelSampler : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance.CurrentState != GameManager.Instance.EncyclopediaState) return;
+        if (MainMenuUIController.Instance.CurrentView != MainMenuUIController.MainMenuView.Encyclopedia) return;
         //Debug.Log(CurrentSelectable);
 
         Dictionary<JoystickCursorSelectable, int> hitCounts = new();
@@ -155,7 +155,7 @@ public class ImagePixelSampler : MonoBehaviour
 
     private void OnJoystickPressed()
     {
-        if (GameManager.Instance.CurrentState != GameManager.Instance.EncyclopediaState) return;
+        if (MainMenuUIController.Instance.CurrentView != MainMenuUIController.MainMenuView.Encyclopedia) return;
 
         CurrentSelectable?.OnSelect(); // Call OnSelect on the currently selected image
     }

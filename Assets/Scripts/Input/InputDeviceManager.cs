@@ -38,7 +38,7 @@ public class InputDeviceManager : MonoBehaviour
     private static Vector3 imuRotationRaw = Vector3.zero; 
     public static Vector2 JoystickInput { get; private set; } = Vector2.zero;
     public static bool JoystickHeld = false;
-    public static bool IsConnected = false;
+    public static bool IsConnected { get; private set; } = false;
 
     private static Vector2 joystickCenter = Vector2.zero;
     private static bool calibrated = false;
@@ -126,7 +126,6 @@ public class InputDeviceManager : MonoBehaviour
     {
         QueueConnectionStatusLog($"Connecting to {TARGET_DEVICE_NAME}...");
         BleApi.ScanServices(deviceId);
-        IsConnected = true;
 
         BleApi.Service service;
         int characteristicsLoaded = 0;
@@ -161,6 +160,7 @@ public class InputDeviceManager : MonoBehaviour
                 {
                     UnityMainThreadDispatcher.Instance().Enqueue(() => CharacteristicsLoaded.Invoke());
                     Debug.Log("All Characteristics Loaded!");
+                    IsConnected = true;
                     return;
                 }
             }

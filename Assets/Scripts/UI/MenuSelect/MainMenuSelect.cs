@@ -9,15 +9,16 @@ public class MainMenuSelect : MenuSelect
     protected override void Start()
     {
         base.Start();
-        GameManager.Instance.GameStateEntered.AddListener(OnGameStateUpdated);
+        MainMenuUIController.Instance.ViewChanged.AddListener(HandleInputSubscription);
 
-        //initially listen for now at least to guarantee since we start in main menu
-        InputDeviceManager.Instance.JoystickPressed.AddListener(OnOptionSelected);
+        ////initially listen for now at least to guarantee since we start in main menu
+        //InputDeviceManager.Instance.JoystickPressed.AddListener(OnOptionSelected);
     }
 
-    private void OnGameStateUpdated(GameState newState)
+    // We only want to hear input when in the main menu state
+    private void HandleInputSubscription(MainMenuUIController.MainMenuView newView)
     {
-        if (newState == GameManager.Instance.MainMenuState)
+        if (newView == MainMenuUIController.MainMenuView.MainMenu)
         {
             InputDeviceManager.Instance.JoystickPressed.AddListener(OnOptionSelected);
         }
@@ -34,10 +35,10 @@ public class MainMenuSelect : MenuSelect
         switch (_menuSelectOptions[_currentSelectionIndex].Action)
         {
             case PLAY_ACTION:
-                GameManager.Instance.TransitionToState(GameManager.Instance.GameStartState);
+                //GameManager.Instance.TransitionToState(GameManager.Instance.GameStartState);
                 break;
             case ENCYCLOPEDIA_ACTION:
-                GameManager.Instance.TransitionToState(GameManager.Instance.EncyclopediaState);
+                MainMenuUIController.Instance.ChangeView(MainMenuUIController.MainMenuView.Encyclopedia);
                 break;
             case EXIT_ACTION:
                 GameManager.QuitGame();

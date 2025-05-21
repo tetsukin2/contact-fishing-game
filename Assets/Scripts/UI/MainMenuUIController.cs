@@ -13,6 +13,7 @@ public class MainMenuUIController : Singleton<MainMenuUIController>
         MainMenu,
         Encyclopedia,
         LevelSelect,
+        Settings,
     }
 
     [Header("Input Prompts")]

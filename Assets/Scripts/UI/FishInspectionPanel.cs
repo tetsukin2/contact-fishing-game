@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FishInspectionPanel : GUIPanel
+public class FishInspectionPanel : GUIContainer
 {
     [SerializeField] private Image _fishImage;
     [SerializeField] private TextMeshProUGUI _fishNameText;
-    [SerializeField] private GUIPanel _discoveredPanel;
+    [SerializeField] private GUIContainer _discoveredPanel;
 
     public void Start()
     {

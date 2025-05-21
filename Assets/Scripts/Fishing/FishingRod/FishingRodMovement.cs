@@ -102,10 +102,10 @@ public class FishingRodMovement : MonoBehaviour
         {
             CurrentMovementMode = MovementMode.Normal;
         }
-        else if (newState == GameManager.Instance.EncyclopediaState)
-        {
-            CurrentMovementMode = MovementMode.BaitLock; // setting to Idle causes rod to be wonky rest of the time idk
-        }
+        //else if (newState == GameManager.Instance.EncyclopediaState)
+        //{
+        //    CurrentMovementMode = MovementMode.BaitLock; // setting to Idle causes rod to be wonky rest of the time idk
+        //}
         else //if (GameManager.Instance.CurrentGameState == GameStateName.GameStart)
         {
             CurrentMovementMode = MovementMode.Menu;

@@ -1,15 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Events;
 
 public class ButtonCursorSelectable : JoystickCursorSelectable
 {
-    public UnityEvent onSelect = new();
+    public UnityEvent onSelect { get; private set; } = new();
 
     public override void OnSelect()
     {
-        if (GameManager.Instance.CurrentState != GameManager.Instance.EncyclopediaState) return;
+        if (MainMenuUIController.Instance.CurrentView != MainMenuUIController.MainMenuView.Encyclopedia) return;
         onSelect.Invoke();
     }
 }

@@ -65,7 +65,7 @@ public class JoystickCursor : MonoBehaviour
     void Start()
     {
         CurrentCursorPos = CursorRect.anchoredPosition;
-        GameManager.Instance.GameStateEntered.AddListener(OnGameStateUpdated);
+        MainMenuUIController.Instance.ViewChanged.AddListener(OnMainMenuViewChanged);
     }
 
     void Update()
@@ -75,11 +75,12 @@ public class JoystickCursor : MonoBehaviour
         UpdateBrailleValues();
     }
 
-    private void OnGameStateUpdated(GameState state)
+    // Reset cursor position when entering the encyclopedia state
+    private void OnMainMenuViewChanged(MainMenuUIController.MainMenuView newView)
     {
-        if (state == GameManager.Instance.EncyclopediaState)
+        if (newView == MainMenuUIController.MainMenuView.Encyclopedia)
         {
-            // Reset cursor position when entering the encyclopedia state
+            
             CurrentCursorPos = ResetPosition;
             CursorRect.anchoredPosition = CurrentCursorPos;
         }

@@ -1,18 +1,12 @@
-using DG.Tweening.Core.Easing;
 using UnityEngine;
 using UnityEngine.Events;
 
 /// <summary>
 /// Handles global game data and game state transitions
 /// </summary>
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    // Singleton instance of the game manager
-    public static GameManager Instance { get; private set; }
-
     // Game states
-    public MainMenuGameState MainMenuState { get; private set; }
-    public EncyclopediaGameState EncyclopediaState { get; private set; }
     public GameStartGameState GameStartState { get; private set; }
     public PlayingGameState PlayingState { get; private set; }
     public GameEndGameState GameEndState { get; private set; }
@@ -57,23 +51,9 @@ public class GameManager : MonoBehaviour
     public int FishCaught => _fishCaught;
     public int FishTotalToCatch => _fishTotalToCatch;
 
-    private void Awake()
+    protected override void OnAwake()
     {
-        // Singleton pattern
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject); // Persistence
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-
         // Initialize states
-        MainMenuState = new MainMenuGameState(this);
-        EncyclopediaState = new EncyclopediaGameState(this);
         GameStartState = new GameStartGameState(this);
         PlayingState = new PlayingGameState(this);
         GameEndState = new GameEndGameState(this);
@@ -87,7 +67,6 @@ public class GameManager : MonoBehaviour
 
         // TODO: Load new data every time total fish to catch is updated
         CurrentGameData = GameDataHandler.GetGameData("data", $"{_fishTotalToCatch}");
-        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => Time.timeScale = 1f);
     }
 
     private void Update()
@@ -124,11 +103,13 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void OnStartupLoad()
     {
+        Time.timeScale = 1f;
+
         // Reset for safety
         InputDeviceManager.SendBrailleASCII(0, 0, 0, 0);
 
-        // Start in the main menu state
-        TransitionToState(MainMenuState);
+        // Start
+        TransitionToState(GameStartState);
     }
 
     /// <summary>

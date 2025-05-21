@@ -30,7 +30,7 @@ public class MainMenuSelect : MenuSelect
 
     protected override void OnOptionSelected()
     {
-        if (GameManager.Instance.CurrentState != GameManager.Instance.MainMenuState) return;
+        //if (GameManager.Instance.CurrentState != GameManager.Instance.MainMenuState) return;
 
         switch (_menuSelectOptions[_currentSelectionIndex].Action)
         {

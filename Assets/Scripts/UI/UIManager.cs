@@ -3,9 +3,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class UIManager : MonoBehaviour
+public class UIManager : Singleton<UIManager>
 {
-    public static UIManager Instance { get; private set; }
 
     [Header("Loading Screen")]
     [SerializeField] private GUIContainer _loadingScreen;
@@ -15,7 +14,6 @@ public class UIManager : MonoBehaviour
     // Prompt list is out here for centralized access
     // idk if this is final
     [Header("Input Prompts")]
-    [SerializeField] private List<InputPrompt> _inputPrompts; // Input prompts to use
     [SerializeField] private InputPrompt _mainMenuInput; // List of sprites for input prompts
     [SerializeField] private InputPrompt _mainMenuSecondInput; // List of sprites for input prompts
     [SerializeField] private InputPrompt _encyclopediaInput;
@@ -46,20 +44,7 @@ public class UIManager : MonoBehaviour
 
     public JoystickCursor JoystickCursor => _joystickCursor;
 
-    private void Awake()
-    {
-        // Singleton pattern
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    private void Start()
+    protected override void OnRegister()
     {
         HideAllGUI();
 
@@ -109,21 +94,11 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// Show primary input prompt
     /// </summary>
-    /// <param name="name">Input prompt to show. Pass null to hide the input prompt panel</param>
+    /// <param name="name">Input prompt to show. Values with no match are treated as null</param>
     public void ShowMainInputPrompt(string name)
     {
         Debug.Log($"Showing prompt {name}");
-        foreach (var prompt in _inputPrompts)
-        {
-            if (prompt.PromptName == name)
-            {
-                Debug.Log($"Prompt {name} found");
-                MainInputPromptShown.Invoke(prompt);
-                return;
-            }
-        }
-        MainInputPromptShown.Invoke(null);
-        return;
+        MainInputPromptShown.Invoke(ResourceSystem.Instance.GetInputPrompt(name));
     }
 
     /// <summary>
@@ -138,20 +113,11 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// Show secondary input prompt
     /// </summary>
-    /// <param name="name">Input prompt to show. Pass null to hide the input prompt panel</param>
+    /// <param name="name">Input prompt to show. Values with no match are treated as null</param>
     public void ShowSecondInputPrompt(string name)
     {
         Debug.Log($"2nd prompt {name}");
-        foreach (var prompt in _inputPrompts)
-        {
-            if (prompt.PromptName == name)
-            {
-                SecondInputPromptShown.Invoke(prompt);
-                return;
-            }
-        }
-        SecondInputPromptShown.Invoke(null);
-        return;
+        SecondInputPromptShown.Invoke(ResourceSystem.Instance.GetInputPrompt(name));
     }
 
     /// <summary>

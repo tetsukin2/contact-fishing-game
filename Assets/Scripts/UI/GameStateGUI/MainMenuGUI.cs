@@ -16,8 +16,5 @@ public class MainMenuGUI : GUIContainer
 
         if (!show) return;
 
-        // Show navigation instructions on show
-        UIManager.Instance.ShowMainInputPrompt(UIManager.Instance.MainMenuInput);
-        UIManager.Instance.ShowSecondInputPrompt(UIManager.Instance.MainMenuSecondInput);
     }
 }

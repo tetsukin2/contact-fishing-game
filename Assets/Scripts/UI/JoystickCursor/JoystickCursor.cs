@@ -70,7 +70,7 @@ public class JoystickCursor : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance.CurrentState != GameManager.Instance.EncyclopediaState) return;
+        if (MainMenuUIController.Instance.CurrentView != MainMenuUIController.MainMenuView.Encyclopedia) return;
         UpdateCursorPosition();
         UpdateBrailleValues();
     }

@@ -5,7 +5,7 @@ public class ExitCursorSelectable : JoystickCursorSelectable
 {
     public override void OnSelect()
     {
-        if (GameManager.Instance.CurrentState != GameManager.Instance.EncyclopediaState) return;
-        GameManager.Instance.TransitionToState(GameManager.Instance.MainMenuState);
+        if (MainMenuUIController.Instance.CurrentView != MainMenuUIController.MainMenuView.Encyclopedia) return;
+        MainMenuUIController.Instance.ChangeView(MainMenuUIController.MainMenuView.MainMenu);
     }
 }

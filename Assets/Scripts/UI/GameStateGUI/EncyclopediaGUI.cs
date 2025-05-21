@@ -30,8 +30,8 @@ public class EncyclopediaGUI : GUIContainer
             RefreshFishes();
 
             // Show navigation instructions
-            UIManager.Instance.ShowMainInputPrompt(UIManager.Instance.EncyclopediaInput);
-            UIManager.Instance.ShowSecondInputPrompt(UIManager.Instance.EncyclopediaSecondInput);
+            UIManager.Instance.ShowMainInputPrompt(MainMenuUIController.Instance.EncyclopediaInput);
+            UIManager.Instance.ShowSecondInputPrompt(MainMenuUIController.Instance.EncyclopediaSecondInput);
         }
     }
 

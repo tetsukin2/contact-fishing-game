@@ -269,7 +269,7 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
                 else
                     _currentIndexPatternIndex %= _currentIndexSequence.Values.Count; // Wrap around if looping              
             }
-            InputDeviceManager.SendBrailleASCII(t1, t2, i1, i2);
+            InputDeviceManager.Instance.SendBrailleASCII(t1, t2, i1, i2);
             yield return interval; // buffer interval
             SequenceStopCheck();
         }

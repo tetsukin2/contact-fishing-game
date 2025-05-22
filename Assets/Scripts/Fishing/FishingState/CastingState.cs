@@ -50,13 +50,13 @@ public class CastingState : FishingState
         //Debug.Log(Mathf.Lerp(fishingManager.RotateUpAngle, 0f, Mathf.Abs(InputDeviceManager.IMURotation.y)));
 
         if (!_hasCastBack 
-            && InputDeviceRotationHelper.HasReachedRotation(Mathf.Lerp(InputDeviceManager.IMURotation.z, 0f, Mathf.Abs(InputDeviceManager.IMURotation.y)), fishingManager.RotateUpAngle))
+            && InputDeviceRotationHelper.HasReachedRotation(Mathf.Lerp(InputDeviceManager.Instance.IMURotation.z, 0f, Mathf.Abs(InputDeviceManager.Instance.IMURotation.y)), fishingManager.RotateUpAngle))
         {
             OnCastBack();
         }
         // OnCast forward
         else if (_hasCastBack 
-            && InputDeviceRotationHelper.HasReachedRotation(Mathf.Lerp(InputDeviceManager.IMURotation.z, 0f, Mathf.Abs(InputDeviceManager.IMURotation.y)), fishingManager.RotateDownAngle))
+            && InputDeviceRotationHelper.HasReachedRotation(Mathf.Lerp(InputDeviceManager.Instance.IMURotation.z, 0f, Mathf.Abs(InputDeviceManager.Instance.IMURotation.y)), fishingManager.RotateDownAngle))
         {
             OnCastForward();
         }

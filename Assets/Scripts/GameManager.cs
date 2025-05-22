@@ -54,18 +54,10 @@ public class GameManager : Singleton<GameManager>
         EndScoreState = new EndScoreGameState(this);
     }
 
-    protected override void OnSetup() // Get everything registered first before setting up
+    // Get everything registered first before setting up
+    protected override void OnSetup() 
     {
-        if (InputDeviceManager.IsConnected)
-        {
-            // Start game if connected
-            SetupGame();
-        }
-        else
-        {
-            // Wait for connection
-            InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(SetupGame);
-        }
+        InputDeviceManager.Instance.RunWhenConnected(SetupGame);
     }
 
     private void Update()
@@ -108,7 +100,7 @@ public class GameManager : Singleton<GameManager>
         Time.timeScale = 1f;
 
         // Reset for safety
-        InputDeviceManager.SendBrailleASCII(0, 0, 0, 0);
+        InputDeviceManager.Instance.SendBrailleASCII(0, 0, 0, 0);
 
         // Start
         TransitionToState(GameStartState);

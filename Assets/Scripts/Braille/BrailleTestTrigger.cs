@@ -13,7 +13,7 @@ public class BrailleTestTrigger : MonoBehaviour
 
     void Update()
     {
-        if (!InputDeviceManager.IsConnected) return;
+        if (!InputDeviceManager.Instance.IsConnected) return;
 
         if (_active && !patternActive)
         {
@@ -30,9 +30,9 @@ public class BrailleTestTrigger : MonoBehaviour
         }
 
         // Only send when state changes
-        if (InputDeviceManager.JoystickHeld != lastPressedState)
+        if (InputDeviceManager.Instance.JoystickHeld != lastPressedState)
         {
-            lastPressedState = InputDeviceManager.JoystickHeld;
+            lastPressedState = InputDeviceManager.Instance.JoystickHeld;
 
             //toggle
             //if (InputDeviceManager.JoystickHeld) patternActive = !patternActive;

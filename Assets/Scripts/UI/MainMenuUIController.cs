@@ -47,22 +47,11 @@ public class MainMenuUIController : Singleton<MainMenuUIController>
 
     protected override void OnSetup()
     {
-        // Setup depending on current connection state
-        if (InputDeviceManager.IsConnected)
-        {
-            FirstTimeSetup();
-        }
-        else
-        {
-            InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(FirstTimeSetup);
-        }
+        InputDeviceManager.Instance.RunWhenConnected(FirstTimeSetup);
     }
 
     private void FirstTimeSetup()
     {
-        // Stop listening if called in response to event
-        InputDeviceManager.Instance.CharacteristicsLoaded.RemoveListener(FirstTimeSetup);
-
         // Start in the main menu
         ChangeView(MainMenuView.MainMenu);
 

@@ -33,6 +33,10 @@ public class EncyclopediaGUI : GUIContainer
             UIManager.Instance.ShowMainInputPrompt(MainMenuUIController.Instance.EncyclopediaInput);
             UIManager.Instance.ShowSecondInputPrompt(MainMenuUIController.Instance.EncyclopediaSecondInput);
         }
+        else
+        {
+            InputDeviceManager.ResetBraille();
+        }
     }
 
     /// <summary>
@@ -42,7 +46,7 @@ public class EncyclopediaGUI : GUIContainer
     {
         foreach (FishSelectable fishSelectable in _fishSelectables)
         {
-            GameData gameData = GameManager.Instance.CurrentGameData;
+            GameData gameData = GameDataHandler.CurrentGameData;
             if (gameData != null)
             {
                 fishSelectable.SetDiscovered(gameData.HasDiscoveredFish(fishSelectable.FishID));
@@ -60,7 +64,7 @@ public class EncyclopediaGUI : GUIContainer
     /// </summary>
     private void OnDeleteData()
     {
-        GameManager.Instance.DeleteData();
+        GameDataHandler.DeleteGameData();
         UpdateFishData();
         RefreshFishes();
     }

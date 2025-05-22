@@ -32,6 +32,7 @@ public class EndScoreGameState : GameState
     public void ProcessScore()
     {
         NewBestAchieved = GameDataHandler.CurrentGameData.TryAddNewBestTime(gameManager.LevelName, gameManager.FishTotalToCatch, gameManager.Timer);
+        GameDataHandler.SaveGameData();
         ScoreProcessed.Invoke();
     }
 

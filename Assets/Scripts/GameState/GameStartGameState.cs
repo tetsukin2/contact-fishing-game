@@ -16,7 +16,7 @@ public class GameStartGameState : GameState
 
     public override void Enter()
     {
-        //Debug.Log("Entering Game Start State");
+        Debug.Log("Entering Game Start State");
         CameraController.Instance.SetCameraView(CameraController.CameraView.Gameplay);
 
         // Game Manager resets

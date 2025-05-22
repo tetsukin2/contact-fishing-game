@@ -6,6 +6,8 @@ public class MainMenuSelect : MenuSelect
     private const string ENCYCLOPEDIA_ACTION = "OpenEncyclopedia";
     private const string EXIT_ACTION = "Exit";
 
+    private const string FIRST_LEVEL_NAME = "Stage1";
+
     protected override void Start()
     {
         base.Start();
@@ -35,7 +37,7 @@ public class MainMenuSelect : MenuSelect
         switch (_menuSelectOptions[_currentSelectionIndex].Action)
         {
             case PLAY_ACTION:
-                //GameManager.Instance.TransitionToState(GameManager.Instance.GameStartState);
+                SceneSwitchHandler.Instance.LoadScene(FIRST_LEVEL_NAME);
                 break;
             case ENCYCLOPEDIA_ACTION:
                 MainMenuUIController.Instance.ChangeView(MainMenuUIController.MainMenuView.Encyclopedia);

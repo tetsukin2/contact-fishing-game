@@ -141,9 +141,9 @@ public class FishingManager : StaticInstance<FishingManager>
     }
 
     /// <summary>
-    /// Handles fishing state transition
+    /// Handles fishing state _transitionAnimator
     /// </summary>
-    /// <param name="newState">New fishing state to transition to</param>
+    /// <param name="newState">New fishing state to _transitionAnimator to</param>
     public void TransitionToState(FishingState newState)
     {
         _currentState?.Exit(); // Exit the current state

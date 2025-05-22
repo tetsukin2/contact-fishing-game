@@ -164,18 +164,17 @@ public class FishingManager : StaticInstance<FishingManager>
 
     public void OnFishInspection()
     {
-        GameManager.Instance.CurrentGameData.AddFish(_caughtFish.FishID);
-        ShowFishInspection();
-        Debug.Log($"Has {_caughtFish.FishID} been discovered: {GameManager.Instance.CurrentGameData.HasDiscoveredFish(_caughtFish.FishID)}");
+        ShowFishInspection(); // Goes first so we can properly display if fish hasn't been discovered yet
+        Debug.Log($"Has {_caughtFish.FishID} been discovered: {GameDataHandler.CurrentGameData.HasDiscoveredFish(_caughtFish.FishID)}");
+        GameDataHandler.CurrentGameData.AddDiscoveredFish(_caughtFish.FishID);
         HookedFish.SetActive(false);
     }
 
-    public void ShowFishInspection()
+    private void ShowFishInspection()
     {
-        GameManager gameManager = GameManager.Instance;
         _fishInspectionGUI.Show(true);
         _fishInspectionGUI.ShowFish(_caughtFish);
-        _fishInspectionGUI.ShowDiscoveredBanner(gameManager.CurrentGameData.HasDiscoveredFish(_caughtFish.FishID));
+        _fishInspectionGUI.ShowDiscoveredBanner(!GameDataHandler.CurrentGameData.HasDiscoveredFish(_caughtFish.FishID));
     }
 
     public void HideFishInspection()

@@ -158,7 +158,7 @@ public class InputDeviceManager : MonoBehaviour
                 }
                 if (characteristicsLoaded >= 3)
                 {
-                    UnityMainThreadDispatcher.Instance().Enqueue(() => CharacteristicsLoaded.Invoke());
+                    UnityMainThreadDispatcher.Instance.Enqueue(() => CharacteristicsLoaded.Invoke());
                     Debug.Log("All Characteristics Loaded!");
                     IsConnected = true;
                     return;
@@ -178,7 +178,7 @@ public class InputDeviceManager : MonoBehaviour
             if (subscribed)
             {
                 QueueConnectionStatusLog("Subscribed to IMU!");
-                UnityMainThreadDispatcher.Instance().Enqueue(() => StartCoroutine(ReadIMUData(deviceId, serviceUuid, characteristicUuid)));
+                UnityMainThreadDispatcher.Instance.Enqueue(() => StartCoroutine(ReadIMUData(deviceId, serviceUuid, characteristicUuid)));
                 return;
             }
         }
@@ -196,7 +196,7 @@ public class InputDeviceManager : MonoBehaviour
             if (subscribed)
             {
                 QueueConnectionStatusLog("Subscribed to JoystickCursor!");
-                UnityMainThreadDispatcher.Instance().Enqueue(() => StartCoroutine(ReadJoystickData(deviceId, serviceUuid, characteristicUuid)));
+                UnityMainThreadDispatcher.Instance.Enqueue(() => StartCoroutine(ReadJoystickData(deviceId, serviceUuid, characteristicUuid)));
                 return;
             }
         }
@@ -281,7 +281,7 @@ public class InputDeviceManager : MonoBehaviour
                     //Debug.Log($"{wasJoystickPreviouslyPressed}, {JoystickHeld}");
                     if ( !wasJoystickPreviouslyPressed && JoystickHeld)
                     {
-                        UnityMainThreadDispatcher.Instance().Enqueue(() => JoystickPressed.Invoke());
+                        UnityMainThreadDispatcher.Instance.Enqueue(() => JoystickPressed.Invoke());
                         Debug.Log("Joystick Pressed!");
                     }
                     if (showJoystickData) Debug.Log(JoystickInput);
@@ -350,7 +350,7 @@ public class InputDeviceManager : MonoBehaviour
     /// <param name="message"></param>
     private void QueueConnectionStatusLog(string message)
     {
-        UnityMainThreadDispatcher.Instance().Enqueue(() => ConnectionStatusLog.Invoke(message));
+        UnityMainThreadDispatcher.Instance.Enqueue(() => ConnectionStatusLog.Invoke(message));
         Debug.Log(message);
     }
 

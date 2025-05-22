@@ -36,7 +36,7 @@ public class FishingRodMovement : MonoBehaviour
     private void Start()
     {
         _defaultRotation = FishingRodPivot.localRotation.eulerAngles;
-        GameManager.Instance.GameStateEntered.AddListener(OnGameStateUpdated);
+        GameManager.Instance?.GameStateEntered.AddListener(OnGameStateUpdated);
     }
 
     void Update()

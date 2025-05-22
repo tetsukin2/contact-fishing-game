@@ -45,7 +45,6 @@ public class FishInspectionState : FishingState
                 && fishingManager.InputHelper.HasReachedRotationZ(-1.25f))
             {
                 _reachedInitialRotation = false; // Reset for release rotation
-                fishingManager.InputHelper.ClearRotationHistory(); // Clean read for fish release
                 FishingManager.OnFishInspection();
                 UIManager.Instance.ShowMainInputPrompt(fishingManager.ReleaseReadyPromptName);
                 _fishInspected = true;

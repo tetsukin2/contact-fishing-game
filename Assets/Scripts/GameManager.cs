@@ -44,6 +44,9 @@ public class GameManager : Singleton<GameManager>
 
     protected override void OnAwake()
     {
+        // Setup when transition complete
+        //SceneSwitchHandler.Instance.SceneTransitionComplete += SetupGame;
+
         // Initialize states
         GameStartState = new GameStartGameState(this);
         PlayingState = new PlayingGameState(this);
@@ -51,10 +54,18 @@ public class GameManager : Singleton<GameManager>
         EndScoreState = new EndScoreGameState(this);
     }
 
-    private void Start()
+    protected override void OnSetup() // Get everything registered first before setting up
     {
-        // Reset ahead just in case
-        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(OnStartupLoad);
+        if (InputDeviceManager.IsConnected)
+        {
+            // Start game if connected
+            SetupGame();
+        }
+        else
+        {
+            // Wait for connection
+            InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(SetupGame);
+        }
     }
 
     private void Update()
@@ -89,8 +100,11 @@ public class GameManager : Singleton<GameManager>
     /// <summary>
     /// When the starts for the first time, technically depends on first connection established
     /// </summary>
-    private void OnStartupLoad()
+    private void SetupGame()
     {
+        // Stop listening if called in response to event
+        InputDeviceManager.Instance.CharacteristicsLoaded.RemoveListener(SetupGame);
+
         Time.timeScale = 1f;
 
         // Reset for safety
@@ -103,7 +117,7 @@ public class GameManager : Singleton<GameManager>
     /// <summary>
     /// Handles game state transitions
     /// </summary>
-    /// <param name="newState">New game state to transition to</param>
+    /// <param name="newState">New game state to _transitionAnimator to</param>
     public void TransitionToState(GameState newState)
     {
         CurrentState?.Exit();

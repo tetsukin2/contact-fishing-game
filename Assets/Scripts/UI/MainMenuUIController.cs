@@ -74,7 +74,7 @@ public class MainMenuUIController : Singleton<MainMenuUIController>
     /// <summary>
     /// Handles main menu view changes
     /// </summary>
-    /// <param name="newView">New view to transition to</param>
+    /// <param name="newView">New view to _transitionAnimator to</param>
     public void ChangeView(MainMenuView newView)
     {
         CurrentView = newView;

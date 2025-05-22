@@ -40,7 +40,7 @@ public class BaitPreparationState : FishingState
 
     public override void Update()
     {
-        // Placeholder as game state transition messes this up
+        // Placeholder as game state _transitionAnimator messes this up
         if (fishingManager.RodMovement.CurrentMovementMode != FishingRodMovement.MovementMode.BaitLock)
             fishingManager.RodMovement.CurrentMovementMode = FishingRodMovement.MovementMode.BaitLock;
 

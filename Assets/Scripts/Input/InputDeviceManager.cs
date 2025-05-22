@@ -5,10 +5,8 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class InputDeviceManager : MonoBehaviour
+public class InputDeviceManager : SingletonPersistent<InputDeviceManager>
 {
-    public static InputDeviceManager Instance { get; private set; }
-
     public enum RotationAxis { x, y, z }
 
     private const string TARGET_DEVICE_NAME = "FishingRodIMU";
@@ -22,10 +20,10 @@ public class InputDeviceManager : MonoBehaviour
     private const string BRAILLE_SERVICE_UUID = "19b30000-e8f2-537e-4f6c-d104768a1214";
     private const string BRAILLE_CHARACTERISTIC_UUID = "19b30001-e8f2-537e-4f6c-d104768a1214";
 
-    private static string targetDeviceId = null;
+    private string targetDeviceId = null;
     //private string imuCharUUID = null;
     //private string joyCharUUID = null;
-    private static string brailleCharUUID = null;
+    private string brailleCharUUID = null;
 
     [Header("Debugging")]
     [SerializeField] private bool showIMUData = false;
@@ -35,13 +33,13 @@ public class InputDeviceManager : MonoBehaviour
     private Thread scanThread;
     private bool isScanning = true;
 
-    private static Vector3 imuRotationRaw = Vector3.zero; 
-    public static Vector2 JoystickInput { get; private set; } = Vector2.zero;
-    public static bool JoystickHeld = false;
-    public static bool IsConnected { get; private set; } = false;
+    private Vector3 imuRotationRaw = Vector3.zero; 
+    public Vector2 JoystickInput { get; private set; } = Vector2.zero;
+    public bool JoystickHeld { get; private set; } = false;
+    public bool IsConnected { get; private set; } = false;
 
-    private static Vector2 joystickCenter = Vector2.zero;
-    private static bool calibrated = false;
+    private Vector2 joystickCenter = Vector2.zero;
+    private bool calibrated = false;
 
     private UnityEvent<string> _connectionStatusLog = new();
     private UnityEvent _characteristicsLoaded = new();
@@ -54,21 +52,9 @@ public class InputDeviceManager : MonoBehaviour
     /// <summary>~
     /// Returns IMU rotation in ~~degrees~~
     /// </summary>
-    public static Vector3 IMURotation => imuRotationRaw;
+    public Vector3 IMURotation => imuRotationRaw;
 
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    void Start()
+    protected override void OnSetup()
     {
         QueueConnectionStatusLog("Restarting BLE Scanner...");
 
@@ -298,7 +284,7 @@ public class InputDeviceManager : MonoBehaviour
     /// <summary>
     /// Resets the Braille display to a blank state (all cells off).
     /// </summary>
-    public static void ResetBraille()
+    public void ResetBraille()
     {
         SendBrailleASCII(0, 0, 0, 0);
     }
@@ -310,7 +296,7 @@ public class InputDeviceManager : MonoBehaviour
     /// <param name="t1">Thumb Cell 1</param>
     /// <param name="i0">Index Cell 0</param>
     /// <param name="i1">Index Cell 1</param>
-    public static void SendBrailleASCII(int t0, int t1, int i0, int i1)
+    public void SendBrailleASCII(int t0, int t1, int i0, int i1)
     {
         if (!IsConnected)
         {
@@ -345,6 +331,27 @@ public class InputDeviceManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Executes the given action if connected, or waits until characteristics are Loaded before execution.
+    /// </summary>
+    public void RunWhenConnected(UnityAction action)
+    {
+        if (IsConnected)
+        {
+            action();
+        }
+        else
+        {
+            // Stop listening once event fires and action is executed
+            void HandleActionSubscription()
+            {
+                CharacteristicsLoaded.RemoveListener(HandleActionSubscription);
+                action();
+            }
+            CharacteristicsLoaded.AddListener(HandleActionSubscription);
+        }
+    }
+
+    /// <summary>
     /// Queues a connection status log and event to the main thread
     /// </summary>
     /// <param name="message"></param>
@@ -354,23 +361,25 @@ public class InputDeviceManager : MonoBehaviour
         Debug.Log(message);
     }
 
-    void OnApplicationQuit()
+    protected override void OnApplicationQuit()
     {
         isScanning = false;
 
         if (!string.IsNullOrEmpty(targetDeviceId))
         {
-            Debug.Log("🚨 Unsubscribing from BLE characteristic before quitting...");
+            Debug.Log("Unsubscribing from BLE characteristic before quitting...");
             BleApi.SubscribeCharacteristic(targetDeviceId, IMU_SERVICE_UUID, IMU_CHARACTERISTIC_UUID, false);
         }
 
-        Debug.Log("❌ Stopping BLE scan...");
+        Debug.Log("Stopping BLE scan...");
         BleApi.StopDeviceScan();
         
         scanThread?.Abort();
 
-        Debug.Log("♻️ Full BLE Reset...");
+        Debug.Log("Full BLE Reset...");
         BleApi.Quit(); 
+
+        base.OnApplicationQuit();
     }
 
 }

@@ -39,14 +39,14 @@ public class InputDeviceRotationHelper : MonoBehaviour
     void Start()
     {
         // Setup the previous rotation with the current IMU rotation
-        previousRotation = InputDeviceManager.IMURotation;
+        previousRotation = InputDeviceManager.Instance.IMURotation;
     }
 
     void Update()
     {
-        if (!InputDeviceManager.IsConnected) return;
+        if (!InputDeviceManager.Instance.IsConnected) return;
 
-        if (_debugMode) Debug.Log(InputDeviceManager.IMURotation);
+        if (_debugMode) Debug.Log(InputDeviceManager.Instance.IMURotation);
 
         // Track the rotation change in the current frame
         //TrackRotation();
@@ -58,7 +58,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
     void TrackRotation()
     {
         // Get the current rotation from the IMU device
-        Vector3 currentRotation = InputDeviceManager.IMURotation;
+        Vector3 currentRotation = InputDeviceManager.Instance.IMURotation;
 
         // Calculate the angular difference around the specified axis
         Vector3 rotationDifference = currentRotation - previousRotation;
@@ -124,13 +124,13 @@ public class InputDeviceRotationHelper : MonoBehaviour
         switch (axis)
         {
             case InputDeviceManager.RotationAxis.x:
-                deviceRotation = InputDeviceManager.IMURotation.x;
+                deviceRotation = InputDeviceManager.Instance.IMURotation.x;
                 break;
             case InputDeviceManager.RotationAxis.y:
-                deviceRotation = InputDeviceManager.IMURotation.y;
+                deviceRotation = InputDeviceManager.Instance.IMURotation.y;
                 break;
             case InputDeviceManager.RotationAxis.z:
-                deviceRotation = InputDeviceManager.IMURotation.z;
+                deviceRotation = InputDeviceManager.Instance.IMURotation.z;
                 break;
         }
         if (_debugMode) Debug.Log("Rotation Difference: " + Mathf.Abs(angle - deviceRotation));
@@ -178,13 +178,13 @@ public class InputDeviceRotationHelper : MonoBehaviour
         switch (axis)
         {
             case InputDeviceManager.RotationAxis.x:
-                deviceRotation = InputDeviceManager.IMURotation.x;
+                deviceRotation = InputDeviceManager.Instance.IMURotation.x;
                 break;
             case InputDeviceManager.RotationAxis.y:
-                deviceRotation = InputDeviceManager.IMURotation.y;
+                deviceRotation = InputDeviceManager.Instance.IMURotation.y;
                 break;
             case InputDeviceManager.RotationAxis.z:
-                deviceRotation = InputDeviceManager.IMURotation.z;
+                deviceRotation = InputDeviceManager.Instance.IMURotation.z;
                 break;
         }
         // Return true if deviceRotation is greater than or equal to a positive or zero angle,  
@@ -254,7 +254,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
     private void TrackJoystickRotations()
     {
         // Get the current joystick input
-        Vector2 joystickInput = InputDeviceManager.JoystickInput;
+        Vector2 joystickInput = InputDeviceManager.Instance.JoystickInput;
 
         // Ignore if the joystick is not being moved
         if (joystickInput == Vector2.zero) return;

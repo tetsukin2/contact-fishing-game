@@ -91,7 +91,7 @@ public class FishTargeting : MonoBehaviour
 
     public void HandleJoystickInput()
     {
-        Vector2 input = InputDeviceManager.JoystickInput;
+        Vector2 input = InputDeviceManager.Instance.JoystickInput;
         if (input != _defaultJoystickinput && input != _lastJoystickInput)
         {
             // Find direction and select nearest fish in that direction

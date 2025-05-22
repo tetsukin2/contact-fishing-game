@@ -22,7 +22,7 @@ public class GameEndSelect : MenuSelect
                 GameManager.Instance.TransitionToState(GameManager.Instance.GameStartState);
                 break;
             case MAIN_MENU_ACTION:
-                //GameManager.Instance.TransitionToState(GameManager.Instance.MainMenuState);
+                SceneSwitchHandler.Instance.ReturnToMainMenu();
                 break;
             case EXIT_ACTION:
                 GameManager.QuitGame();

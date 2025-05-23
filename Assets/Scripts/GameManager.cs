@@ -57,7 +57,7 @@ public class GameManager : Singleton<GameManager>
     // Get everything registered first before setting up
     protected override void OnSetup() 
     {
-        InputDeviceManager.Instance.RunWhenConnected(SetupGame);
+        InputDeviceManager.Instance.BLEDevice.RunWhenConnected(SetupGame);
     }
 
     private void Update()
@@ -73,7 +73,7 @@ public class GameManager : Singleton<GameManager>
         }
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            InputDeviceManager.Instance.JoystickPressed.Invoke();
+            InputDeviceManager.Instance.JoystickInput.JoystickPressed.Invoke();
         }
         if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -94,13 +94,10 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     private void SetupGame()
     {
-        // Stop listening if called in response to event
-        InputDeviceManager.Instance.CharacteristicsLoaded.RemoveListener(SetupGame);
-
         Time.timeScale = 1f;
 
         // Reset for safety
-        InputDeviceManager.Instance.SendBrailleASCII(0, 0, 0, 0);
+        InputDeviceManager.Instance.BrailleOutput.SendBrailleASCII(0, 0, 0, 0);
 
         // Start
         TransitionToState(GameStartState);

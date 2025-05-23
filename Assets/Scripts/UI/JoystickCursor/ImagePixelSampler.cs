@@ -22,7 +22,7 @@ public class ImagePixelSampler : MonoBehaviour
     {
         // Get our own copy of the braille pins
         _braillePins = new List<CursorBraillePin>(UIManager.Instance.JoystickCursor.GetBraillePins());
-        InputDeviceManager.Instance.JoystickPressed.AddListener(OnJoystickPressed);
+        InputDeviceManager.Instance.JoystickInput.JoystickPressed.AddListener(OnJoystickPressed);
     }
 
     void Update()

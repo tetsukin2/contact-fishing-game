@@ -22,11 +22,11 @@ public class MainMenuSelect : MenuSelect
     {
         if (newView == MainMenuUIController.MainMenuView.MainMenu)
         {
-            InputDeviceManager.Instance.JoystickPressed.AddListener(OnOptionSelected);
+            InputDeviceManager.Instance.JoystickInput.JoystickPressed.AddListener(OnOptionSelected);
         }
         else
         {
-            InputDeviceManager.Instance.JoystickPressed.RemoveListener(OnOptionSelected);
+            InputDeviceManager.Instance.JoystickInput.JoystickPressed.RemoveListener(OnOptionSelected);
         }
     }
 

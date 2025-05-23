@@ -30,9 +30,9 @@ public abstract class MenuSelect : GUIContainer
     // Update is called once per frame
     protected virtual void Update()
     {
-        //Debug.Log($"{_fishingRodMovement.MenuRotationMin}/{InputDeviceManager.IMURotation.y}/{_fishingRodMovement.MenuRotationMax}");
+        //Debug.Log($"{_fishingRodMovement.MenuRotationMin}/{InputDeviceManager.Rotation.y}/{_fishingRodMovement.MenuRotationMax}");
         // Get the current IMU rotation on the Y-axis
-        float currentRotation = Mathf.Lerp(-InputDeviceManager.Instance.IMURotation.z, 0f, Mathf.Abs(InputDeviceManager.Instance.IMURotation.y));
+        float currentRotation = Mathf.Lerp(-InputDeviceManager.Instance.IMUInput.Rotation.z, 0f, Mathf.Abs(InputDeviceManager.Instance.IMUInput.Rotation.y));
 
         int closestPointIndex = 0;
         float closestDistance = Mathf.Abs(currentRotation - _selectionPoints[0]);

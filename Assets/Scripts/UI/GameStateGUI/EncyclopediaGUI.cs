@@ -35,7 +35,7 @@ public class EncyclopediaGUI : GUIContainer
         }
         else
         {
-            InputDeviceManager.Instance.ResetBraille();
+            InputDeviceManager.Instance.BrailleOutput.ResetBraille();
         }
     }
 

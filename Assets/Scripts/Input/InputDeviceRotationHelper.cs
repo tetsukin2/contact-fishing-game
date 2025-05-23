@@ -48,31 +48,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
         TrackJoystickRotations();
     }
 
-    void TrackRotation()
-    {
-        // Get the current rotation from the IMU device
-        Vector3 currentRotation = InputDeviceManager.Instance.IMUInput.Rotation;
-
-        // Calculate the angular difference around the specified axis
-        Vector3 rotationDifference = currentRotation - previousRotation;
-
-        // Record the rotation change with a timestamp
-        rotationHistory.Enqueue(new RotationData
-        {
-            Rotation = rotationDifference,
-            Timestamp = Time.time
-        });
-
-        // Remove old entries outside the time window
-        while (rotationHistory.Count > 0 && Time.time - rotationHistory.Peek().Timestamp > InputReadWindow)
-        {
-            rotationHistory.Dequeue();
-        }
-
-        // Update the previous rotation
-        previousRotation = currentRotation;
-    }
-
     /// <summary>
     /// Checks whether device has rotated by a certain amount
     /// </summary>

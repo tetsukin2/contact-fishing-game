@@ -2721,7 +2721,7 @@ MonoBehaviour:
   BobberSensitivity: 60
   _fishingBobber: {fileID: 387807545}
   _bobberLandTransform: {fileID: 1114487055}
-  _inputHelper: {fileID: 673116354}
+  _inputHelper: {fileID: 0}
   _rodMovement: {fileID: 673116355}
   RotateUpAngle: -0.5
   RotateDownAngle: 0.2
@@ -2899,7 +2899,6 @@ GameObject:
   m_Component:
   - component: {fileID: 673116353}
   - component: {fileID: 673116355}
-  - component: {fileID: 673116354}
   m_Layer: 0
   m_Name: FishingRod
   m_TagString: Untagged
@@ -2925,21 +2924,6 @@ Transform:
   - {fileID: 387807544}
   m_Father: {fileID: 551481134}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &673116354
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 673116352}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7aa660a4335b0340aeec87a1de4ec07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InputReadWindow: 0.5
-  AbsoluteRotationAllowance: 0.08
-  _debugMode: 0
 --- !u!114 &673116355
 MonoBehaviour:
   m_ObjectHideFlags: 0

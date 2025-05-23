@@ -38,7 +38,7 @@ public class CastingState : FishingState
         UIManager.Instance.ShowMainInputPrompt(fishingManager.CastBackPromptName);
         UIManager.Instance.ShowSecondInputPrompt(fishingManager.CastSelectPromptName);
 
-        fishingManager.InputHelper.ClearRotationHistory(); // Clean read for casting
+        InputDeviceManager.Instance.RotationHelper.ClearRotationHistory(); // Clean read for casting
         Debug.Log("Entering Casting State");
     }
 

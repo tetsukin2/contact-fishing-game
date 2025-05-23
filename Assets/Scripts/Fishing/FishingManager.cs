@@ -25,7 +25,6 @@ public class FishingManager : StaticInstance<FishingManager>
     public float BobberSensitivity = 1f;
     [SerializeField] private FishingBobber _fishingBobber;
     [SerializeField] private Transform _bobberLandTransform;
-    [SerializeField] private InputDeviceRotationHelper _inputHelper;
     [SerializeField] private FishingRodMovement _rodMovement;
     public float RotateUpAngle = 30f;
     public float RotateDownAngle = -30f; // Y rod rotation thresholds
@@ -93,7 +92,6 @@ public class FishingManager : StaticInstance<FishingManager>
     public ReelProgressBar ReelProgressBar => _reelProgressBar;
     public FishTargeting Targeting => _fishTargeting;
     public FishingBobber FishingBobber => _fishingBobber;
-    public InputDeviceRotationHelper InputHelper => _inputHelper;
     public FishingRodMovement RodMovement => _rodMovement;
     public GameObject HookedFish => _hookedFish;
     public FishingStateLabelPanel StateLabelPanel => _stateLabelPanel;

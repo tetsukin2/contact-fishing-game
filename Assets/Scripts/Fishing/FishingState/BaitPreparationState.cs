@@ -46,12 +46,12 @@ public class BaitPreparationState : FishingState
 
         // Alternate directions, even (and start) directions go upward
         if (_currentStep % 2 == 0 
-            && fishingManager.InputHelper.HasReachedRotationY(fishingManager.RollRightAngle))
+            && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(fishingManager.RollRightAngle))
         {
             UIManager.Instance?.ShowMainInputPrompt(fishingManager.BaitPrepPromptLeftName);
             _currentStep++;
         }
-        else if (_currentStep % 2 != 0 && fishingManager.InputHelper.HasReachedRotationY(fishingManager.RollLeftAngle))
+        else if (_currentStep % 2 != 0 && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(fishingManager.RollLeftAngle))
         {
             UIManager.Instance.ShowMainInputPrompt(fishingManager.BaitPrepPromptRightName);
             _currentStep++;

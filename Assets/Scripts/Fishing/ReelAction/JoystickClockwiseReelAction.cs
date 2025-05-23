@@ -8,15 +8,15 @@ public class JoystickClockwiseReelAction : ReelAction
         //Debug.Log("JoystickClockwiseReelAction: Enter");
 
         // Input helper setup
-        fishingManager.InputHelper.TrackJoystickClockwise = true;
-        fishingManager.InputHelper.ResetJoystickRotationCount();
+        InputDeviceManager.Instance.RotationHelper.TrackJoystickClockwise = true;
+        InputDeviceManager.Instance.RotationHelper.ResetJoystickRotationCount();
     }
 
     public override void Update()
     {
-        if (fishingManager.InputHelper.GetJoystickRotationCount(true) > 0)
+        if (InputDeviceManager.Instance.RotationHelper.GetJoystickRotationCount(true) > 0)
         {
-            fishingManager.InputHelper.ResetJoystickRotationCount();
+            InputDeviceManager.Instance.RotationHelper.ResetJoystickRotationCount();
             FishingManager.Instance.ReelProgressBar.ProgressReel(); // Progress the reel
         }
     }

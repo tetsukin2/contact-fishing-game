@@ -26,7 +26,7 @@ public class FishInspectionState : FishingState
         fishingManager.HookedFish.SetActive(true); // Show the fish in the inspection panel
 
         // Input reset
-        fishingManager.InputHelper.ClearRotationHistory();
+        InputDeviceManager.Instance.RotationHelper.ClearRotationHistory();
     }
 
     public override void Update()
@@ -34,7 +34,7 @@ public class FishInspectionState : FishingState
         if (!_fishInspected)
         {
             if (!_reachedInitialRotation && // Start at side neutral
-                fishingManager.InputHelper.HasReachedRotationY(fishingManager.RollLeftAngle))
+                InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(fishingManager.RollLeftAngle))
             {
                 _reachedInitialRotation = true;
                 UIManager.Instance.ShowMainInputPrompt(fishingManager.InspectPromptName);
@@ -42,7 +42,7 @@ public class FishInspectionState : FishingState
             else if (_reachedInitialRotation && // Now rotate up
                 InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.Instance.IMUInput.Rotation.x, 0.4f)
                 && InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.Instance.IMUInput.Rotation.y, 0.5f)
-                && fishingManager.InputHelper.HasReachedRotationZ(-1.25f))
+                && InputDeviceManager.Instance.RotationHelper.HasReachedRotationZ(-1.25f))
             {
                 _reachedInitialRotation = false; // Reset for release rotation
                 FishingManager.OnFishInspection();
@@ -53,15 +53,15 @@ public class FishInspectionState : FishingState
         else if (_fishInspected)
         {
             if (!_reachedInitialRotation && // Return to neutral
-                fishingManager.InputHelper.HasReachedRotationY(fishingManager.RollLeftAngle))
+                InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(fishingManager.RollLeftAngle))
             {
                 _reachedInitialRotation = true;
                 UIManager.Instance.ShowMainInputPrompt(fishingManager.ReleasePromptName);
             }
             else if (_reachedInitialRotation && // Now rotate down
-                fishingManager.InputHelper.HasReachedRotationX(1f)
+                InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(1f)
                 && InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.Instance.IMUInput.Rotation.y, 0.75f)
-                && fishingManager.InputHelper.HasReachedRotationZ(0f))
+                && InputDeviceManager.Instance.RotationHelper.HasReachedRotationZ(0f))
             {
                 GameManager.Instance.AddFish();
                 BraillePatternPlayer.Instance.PlayPatternSequence("BasicPulse", false);

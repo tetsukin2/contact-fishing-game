@@ -510,6 +510,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1872285388935444209, guid: 7305ef0656b1b974b8072d0aaccb70fd,
+        type: 3}
+      propertyPath: showIMUData
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4778080553075497654, guid: 7305ef0656b1b974b8072d0aaccb70fd,
         type: 3}
       propertyPath: m_Name
@@ -11492,6 +11497,11 @@ PrefabInstance:
     - target: {fileID: 2953322143387073720, guid: 38837bc17835b0d4e801fa9c06a01102,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5358089458127908277, guid: 38837bc17835b0d4e801fa9c06a01102,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

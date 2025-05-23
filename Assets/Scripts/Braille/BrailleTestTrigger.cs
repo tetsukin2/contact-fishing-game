@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class BrailleTestTrigger : MonoBehaviour
@@ -7,13 +6,11 @@ public class BrailleTestTrigger : MonoBehaviour
     [SerializeField] private string _indexPatternSequence;
     [SerializeField] private bool _active = false;
 
-    private bool lastPressedState = false;
-
     private bool patternActive = false;
 
     void Update()
     {
-        if (!InputDeviceManager.Instance.IsConnected) return;
+        if (!InputDeviceManager.Instance.BLEDevice.IsConnected) return;
 
         if (_active && !patternActive)
         {
@@ -29,36 +26,5 @@ public class BrailleTestTrigger : MonoBehaviour
             //BraillePatternPlayer.Instance.StopPatternSequence();
         }
 
-        // Only send when state changes
-        if (InputDeviceManager.Instance.JoystickHeld != lastPressedState)
-        {
-            lastPressedState = InputDeviceManager.Instance.JoystickHeld;
-
-            //toggle
-            //if (InputDeviceManager.JoystickHeld) patternActive = !patternActive;
-
-            //if (patternActive)
-            //{
-            //    BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", BraillePatternPlayer.Finger.THUMB, true);
-            //    BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", BraillePatternPlayer.Finger.INDEX, true);
-            //}
-                
-            //else
-            //{
-            //    BraillePatternPlayer.Instance.StopPatternSequence(BraillePatternPlayer.Finger.BOTH);
-            //}
-                
-
-            //if (InputDeviceManager.JoystickHeld)
-            //{
-            //    Debug.Log("🧪 Thumbstick Pressed → Sending <255255>");
-            //    InputDeviceManager.SendBrailleASCII(255, 255);
-            //}
-            //else
-            //{
-            //    Debug.Log("🧪 Thumbstick Released → Sending <000000>");
-            //    InputDeviceManager.SendBrailleASCII(0, 0);
-            //}
-        }
     }
 }

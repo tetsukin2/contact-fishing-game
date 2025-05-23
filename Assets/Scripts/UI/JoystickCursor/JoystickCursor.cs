@@ -89,7 +89,7 @@ public class JoystickCursor : MonoBehaviour
     private void UpdateCursorPosition()
     {
         // Get input vector (you can replace this with actual joystick input)
-        Vector2 input = InputDeviceManager.Instance.JoystickInput;
+        Vector2 input = InputDeviceManager.Instance.JoystickInput.Value;
 
         // Move position based on joystick
         Vector2 delta = CursorSpeed * Time.deltaTime * input;
@@ -137,7 +137,7 @@ public class JoystickCursor : MonoBehaviour
             T1 = temp_t1;
             I0 = temp_i0;
             I1 = temp_i1;
-            InputDeviceManager.Instance.SendBrailleASCII(T0, T1, I0, I1);
+            InputDeviceManager.Instance.BrailleOutput.SendBrailleASCII(T0, T1, I0, I1);
         }
     }
 

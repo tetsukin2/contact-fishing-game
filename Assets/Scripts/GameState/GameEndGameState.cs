@@ -11,7 +11,7 @@ public class GameEndGameState : GameState
         CameraController.Instance.SetCameraView(CameraController.CameraView.Gameplay);
 
         // Allow player to skip
-        InputDeviceManager.Instance.JoystickPressed.AddListener(EndState);
+        InputDeviceManager.Instance.JoystickInput.JoystickPressed.AddListener(EndState);
     }
 
     public override void Update()
@@ -31,7 +31,7 @@ public class GameEndGameState : GameState
 
     public override void Exit()
     {
-        InputDeviceManager.Instance.JoystickPressed.RemoveListener(EndState);
+        InputDeviceManager.Instance.JoystickInput.JoystickPressed.RemoveListener(EndState);
         Debug.Log("Exiting Game End State");
     }
 }

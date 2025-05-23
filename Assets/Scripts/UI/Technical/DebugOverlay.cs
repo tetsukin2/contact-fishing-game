@@ -10,7 +10,6 @@ public class DebugOverlay : MonoBehaviour
 
     private void Update()
     {
-        if (!InputDeviceManager.Instance.IsConnected) return;
-        debugText.text = $"IMU Rotation: {InputDeviceManager.Instance.IMURotation}";
+        debugText.text = $"IMU Rotation: {InputDeviceManager.Instance.IMUInput.Rotation}";
     }
 }

@@ -9,7 +9,7 @@ public class GameEndSelect : MenuSelect
     protected override void Start()
     {
         base.Start();
-        InputDeviceManager.Instance.JoystickPressed.AddListener(OnOptionSelected);
+        InputDeviceManager.Instance.JoystickInput.JoystickPressed.AddListener(OnOptionSelected);
     }
 
     protected override void OnOptionSelected()

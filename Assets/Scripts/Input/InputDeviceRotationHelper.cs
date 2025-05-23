@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,17 +35,11 @@ public class InputDeviceRotationHelper : MonoBehaviour
         set => _trackJoystickClockwise = value;
     }
 
-    void Start()
-    {
-        // Setup the previous rotation with the current IMU rotation
-        previousRotation = InputDeviceManager.Instance.IMURotation;
-    }
-
     void Update()
     {
-        if (!InputDeviceManager.Instance.IsConnected) return;
+        if (!InputDeviceManager.Instance.BLEDevice.IsConnected) return;
 
-        if (_debugMode) Debug.Log(InputDeviceManager.Instance.IMURotation);
+        if (_debugMode) Debug.Log(InputDeviceManager.Instance.IMUInput.Rotation);
 
         // Track the rotation change in the current frame
         //TrackRotation();
@@ -58,7 +51,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
     void TrackRotation()
     {
         // Get the current rotation from the IMU device
-        Vector3 currentRotation = InputDeviceManager.Instance.IMURotation;
+        Vector3 currentRotation = InputDeviceManager.Instance.IMUInput.Rotation;
 
         // Calculate the angular difference around the specified axis
         Vector3 rotationDifference = currentRotation - previousRotation;
@@ -86,7 +79,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// <param name="angle">Angle in degrees</param>
     /// <param name="axis">Axis to check</param>
     /// <returns></returns>
-    public bool HasRotatedByDegrees(float angle, InputDeviceManager.RotationAxis axis)
+    public bool HasRotatedByDegrees(float angle, IMUInput.RotationAxis axis)
     {
         float cumulativeRotation = 0f;
 
@@ -94,13 +87,13 @@ public class InputDeviceRotationHelper : MonoBehaviour
         {
             switch (axis)
             {
-                case InputDeviceManager.RotationAxis.x:
+                case IMUInput.RotationAxis.x:
                     cumulativeRotation += rotationData.Rotation.x;
                     break;
-                case InputDeviceManager.RotationAxis.y:
+                case IMUInput.RotationAxis.y:
                     cumulativeRotation += rotationData.Rotation.y;
                     break;
-                case InputDeviceManager.RotationAxis.z:
+                case IMUInput.RotationAxis.z:
                     cumulativeRotation += rotationData.Rotation.z;
                     break;
             }
@@ -118,19 +111,19 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// <summary>
     /// Checks if the device is currently in a specified rotation, with an allowance.
     /// </summary>
-    public bool IsNearRotation(float angle, InputDeviceManager.RotationAxis axis)
+    public bool IsNearRotation(float angle, IMUInput.RotationAxis axis)
     {
         float deviceRotation = 0f;
         switch (axis)
         {
-            case InputDeviceManager.RotationAxis.x:
-                deviceRotation = InputDeviceManager.Instance.IMURotation.x;
+            case IMUInput.RotationAxis.x:
+                deviceRotation = InputDeviceManager.Instance.IMUInput.Rotation.x;
                 break;
-            case InputDeviceManager.RotationAxis.y:
-                deviceRotation = InputDeviceManager.Instance.IMURotation.y;
+            case IMUInput.RotationAxis.y:
+                deviceRotation = InputDeviceManager.Instance.IMUInput.Rotation.y;
                 break;
-            case InputDeviceManager.RotationAxis.z:
-                deviceRotation = InputDeviceManager.Instance.IMURotation.z;
+            case IMUInput.RotationAxis.z:
+                deviceRotation = InputDeviceManager.Instance.IMUInput.Rotation.z;
                 break;
         }
         if (_debugMode) Debug.Log("Rotation Difference: " + Mathf.Abs(angle - deviceRotation));
@@ -143,7 +136,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// </summary>
     public bool IsNearRotationX(float angle)
     {
-        return IsNearRotation(angle, InputDeviceManager.RotationAxis.x);
+        return IsNearRotation(angle, IMUInput.RotationAxis.x);
     }
 
     /// <summary>
@@ -151,7 +144,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// </summary>
     public bool IsNearRotationY(float angle)
     {
-        return IsNearRotation(angle, InputDeviceManager.RotationAxis.y);
+        return IsNearRotation(angle, IMUInput.RotationAxis.y);
     }
 
     /// <summary>
@@ -159,7 +152,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// </summary>
     public bool IsNearRotationZ(float angle)
     {
-        return IsNearRotation(angle, InputDeviceManager.RotationAxis.z);
+        return IsNearRotation(angle, IMUInput.RotationAxis.z);
     }
 
     public void ClearRotationHistory()
@@ -172,19 +165,19 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// 
     /// Negative values measure rotation in the negative direction.
     /// </summary> 
-    public bool HasReachedRotation(float angle, InputDeviceManager.RotationAxis axis)
+    public bool HasReachedRotation(float angle, IMUInput.RotationAxis axis)
     {
         float deviceRotation = 0f;
         switch (axis)
         {
-            case InputDeviceManager.RotationAxis.x:
-                deviceRotation = InputDeviceManager.Instance.IMURotation.x;
+            case IMUInput.RotationAxis.x:
+                deviceRotation = InputDeviceManager.Instance.IMUInput.Rotation.x;
                 break;
-            case InputDeviceManager.RotationAxis.y:
-                deviceRotation = InputDeviceManager.Instance.IMURotation.y;
+            case IMUInput.RotationAxis.y:
+                deviceRotation = InputDeviceManager.Instance.IMUInput.Rotation.y;
                 break;
-            case InputDeviceManager.RotationAxis.z:
-                deviceRotation = InputDeviceManager.Instance.IMURotation.z;
+            case IMUInput.RotationAxis.z:
+                deviceRotation = InputDeviceManager.Instance.IMUInput.Rotation.z;
                 break;
         }
         // Return true if deviceRotation is greater than or equal to a positive or zero angle,  
@@ -225,7 +218,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// </summary>  
     public bool HasReachedRotationX(float angle)
     {
-        return HasReachedRotation(angle, InputDeviceManager.RotationAxis.x);
+        return HasReachedRotation(angle, IMUInput.RotationAxis.x);
     }
 
     /// <summary>  
@@ -235,7 +228,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// </summary>  
     public bool HasReachedRotationY(float angle)
     {
-        return HasReachedRotation(angle, InputDeviceManager.RotationAxis.y);
+        return HasReachedRotation(angle, IMUInput.RotationAxis.y);
     }
 
     /// <summary>  
@@ -245,7 +238,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
     /// </summary>
     public bool HasReachedRotationZ(float angle)
     {
-        return HasReachedRotation(angle, InputDeviceManager.RotationAxis.z);
+        return HasReachedRotation(angle, IMUInput.RotationAxis.z);
     }
 
     /// <summary>
@@ -254,7 +247,7 @@ public class InputDeviceRotationHelper : MonoBehaviour
     private void TrackJoystickRotations()
     {
         // Get the current joystick input
-        Vector2 joystickInput = InputDeviceManager.Instance.JoystickInput;
+        Vector2 joystickInput = InputDeviceManager.Instance.JoystickInput.Value;
 
         // Ignore if the joystick is not being moved
         if (joystickInput == Vector2.zero) return;

@@ -25,8 +25,8 @@ public class UIManager : Singleton<UIManager>
     {
         // Loading screen things
         _loadingScreen.Show(true);
-        InputDeviceManager.Instance.ConnectionStatusLog.AddListener((string message) => _loadingText.SetText(message));
-        InputDeviceManager.Instance.CharacteristicsLoaded.AddListener(() => _loadingScreen.Show(false));
+        InputDeviceManager.Instance.StatusUpdated.AddListener((string message) => _loadingText.SetText(message));
+        InputDeviceManager.Instance.BLEDevice.CharacteristicsLoaded.AddListener(() => _loadingScreen.Show(false));
     }
 
     #region Input Prompts

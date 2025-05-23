@@ -40,8 +40,8 @@ public class FishInspectionState : FishingState
                 UIManager.Instance.ShowMainInputPrompt(fishingManager.InspectPromptName);
             }
             else if (_reachedInitialRotation && // Now rotate up
-                InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.Instance.IMURotation.x, 0.4f)
-                && InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.Instance.IMURotation.y, 0.5f)
+                InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.Instance.IMUInput.Rotation.x, 0.4f)
+                && InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.Instance.IMUInput.Rotation.y, 0.5f)
                 && fishingManager.InputHelper.HasReachedRotationZ(-1.25f))
             {
                 _reachedInitialRotation = false; // Reset for release rotation
@@ -60,7 +60,7 @@ public class FishInspectionState : FishingState
             }
             else if (_reachedInitialRotation && // Now rotate down
                 fishingManager.InputHelper.HasReachedRotationX(1f)
-                && InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.Instance.IMURotation.y, 0.75f)
+                && InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.Instance.IMUInput.Rotation.y, 0.75f)
                 && fishingManager.InputHelper.HasReachedRotationZ(0f))
             {
                 GameManager.Instance.AddFish();

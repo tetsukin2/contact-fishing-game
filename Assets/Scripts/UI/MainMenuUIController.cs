@@ -47,7 +47,7 @@ public class MainMenuUIController : Singleton<MainMenuUIController>
 
     protected override void OnSetup()
     {
-        InputDeviceManager.Instance.RunWhenConnected(FirstTimeSetup);
+        InputDeviceManager.Instance.BLEDevice.RunWhenConnected(FirstTimeSetup);
     }
 
     private void FirstTimeSetup()

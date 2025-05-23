@@ -41,13 +41,13 @@ public class FishingRodMovement : MonoBehaviour
 
     void Update()
     {
-        if (!InputDeviceManager.Instance.IsConnected) return;
+        if (!InputDeviceManager.Instance.BLEDevice.IsConnected) return;
         ReadIMUData();
     }
 
     void ReadIMUData()
     {
-        Vector3 imuData = InputDeviceManager.Instance.IMURotation;
+        Vector3 imuData = InputDeviceManager.Instance.IMUInput.Rotation;
 
         //Debug.Log(imuData);
 

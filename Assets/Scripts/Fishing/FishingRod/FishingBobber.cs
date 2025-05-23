@@ -46,7 +46,7 @@ public class FishingBobber : MonoBehaviour
 
     void Update()
     {
-        if (InputDeviceManager.Instance.IsConnected) ProcessRotation();
+        if (InputDeviceManager.Instance.BLEDevice.IsConnected) ProcessRotation();
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ public class FishingBobber : MonoBehaviour
     {
         if (!_controllable) return;
 
-        Vector3 imuData = InputDeviceManager.Instance.IMURotation;
+        Vector3 imuData = InputDeviceManager.Instance.IMUInput.Rotation;
 
         bobberRotation.y = Mathf.SmoothDamp(bobberRotation.y, -imuData.y * FishingManager.Instance.BobberSensitivity, ref velocity.y, smoothFactor);
         bobberRotation.y = Mathf.Clamp(bobberRotation.y, -90f, 90f);

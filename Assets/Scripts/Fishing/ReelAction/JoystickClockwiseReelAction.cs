@@ -1,10 +1,8 @@
-public class JoystickClockwiseReelAction : ReelAction
+public class JoystickClockwiseReelAction : IReelAction
 {
-    public JoystickClockwiseReelAction(ReelingState reelingState) : base(reelingState) { }
-
-    public override void Enter()
+    public void Enter()
     {
-        UIManager.Instance.ShowMainInputPrompt(fishingManager.ReelClockwisePromptName);
+        UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.ReelClockwisePromptName);
         //Debug.Log("JoystickClockwiseReelAction: Enter");
 
         // Input helper setup
@@ -12,7 +10,7 @@ public class JoystickClockwiseReelAction : ReelAction
         InputDeviceManager.Instance.RotationHelper.ResetJoystickRotationCount();
     }
 
-    public override void Update()
+    public void Update()
     {
         if (InputDeviceManager.Instance.RotationHelper.GetJoystickRotationCount(true) > 0)
         {
@@ -21,7 +19,7 @@ public class JoystickClockwiseReelAction : ReelAction
         }
     }
 
-    public override void Exit()
+    public void Exit()
     {
         //Debug.Log("JoystickClockwiseReelAction: Exit");
     }

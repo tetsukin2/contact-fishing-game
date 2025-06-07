@@ -1,15 +1,6 @@
-public abstract class ReelAction
+public interface IReelAction
 {
-    protected ReelingState reelingState;
-
-    public ReelAction(ReelingState reelingState)
-    {
-        this.reelingState = reelingState;
-    }
-
-    protected FishingManager fishingManager => reelingState.FishingManager;
-
-    public virtual void Enter() { }
-    public virtual void Update() { }
-    public virtual void Exit() { }
+    public abstract void Enter();
+    public abstract void Update();
+    public abstract void Exit();
 }

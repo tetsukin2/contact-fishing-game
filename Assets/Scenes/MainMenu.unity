@@ -10111,7 +10111,6 @@ MonoBehaviour:
   - {fileID: 346215352}
   - {fileID: 1007715062}
   - {fileID: 1706330492}
-  _fishingRodMovement: {fileID: 673116355}
 --- !u!1 &1875777046
 GameObject:
   m_ObjectHideFlags: 0
@@ -11487,6 +11486,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7019683981560186861, guid: 38837bc17835b0d4e801fa9c06a01102,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

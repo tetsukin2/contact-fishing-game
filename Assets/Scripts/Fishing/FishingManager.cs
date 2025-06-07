@@ -25,7 +25,7 @@ public class FishingManager : StaticInstance<FishingManager>
     public float BobberSensitivity = 1f;
     [SerializeField] private FishingBobber _fishingBobber;
     [SerializeField] private Transform _bobberLandTransform;
-    [SerializeField] private FishingRodMovement _rodMovement;
+    [SerializeField] private FishingRodGameplayMovement _rodMovement;
     public float RotateUpAngle = 30f;
     public float RotateDownAngle = -30f; // Y rod rotation thresholds
 
@@ -74,41 +74,33 @@ public class FishingManager : StaticInstance<FishingManager>
     [SerializeField] private FishInspectionPanel _fishInspectionGUI;
     [SerializeField] private GameObject _hookedFish; // show and hide in inspection
 
-    private FishingState _currentState;
+    private IFishingState _currentState;
     private FishData _caughtFish;
 
     // State change events
-    public UnityEvent<FishingState> FishingStateExited { get; private set; } = new();
-    public UnityEvent<FishingState> FishingStateEntered { get; private set; } = new();
+    public UnityEvent<IFishingState> FishingStateExited { get; private set; } = new();
+    public UnityEvent<IFishingState> FishingStateEntered { get; private set; } = new();
 
     // State Accessors
-    public BaitPreparationState BaitPreparationState { get; private set; }
-    public CastingState CastingState { get; private set; }
-    public WaitingForBiteState WaitingForBiteState { get; private set; }
-    public ReelingState ReelingState { get; private set; }
-    public FishInspectionState FishInspectionState { get; private set; }
+    public IdleFishingState IdleFishingState { get; private set; } = new();
+    public BaitPreparationState BaitPreparationState { get; private set; } = new();
+    public CastingState CastingState { get; private set; } = new();
+    public WaitingForBiteState WaitingForBiteState { get; private set; } = new();
+    public ReelingState ReelingState { get; private set; } = new();
+    public FishInspectionState FishInspectionState { get; private set; } = new();
 
     // Some exposed properties
     public ReelProgressBar ReelProgressBar => _reelProgressBar;
     public FishTargeting Targeting => _fishTargeting;
     public FishingBobber FishingBobber => _fishingBobber;
-    public FishingRodMovement RodMovement => _rodMovement;
+    public FishingRodGameplayMovement RodMovement => _rodMovement;
     public GameObject HookedFish => _hookedFish;
     public FishingStateLabelPanel StateLabelPanel => _stateLabelPanel;
-
-    protected override void OnAwake()
-    {
-        // Initialize states
-        BaitPreparationState = new(this);
-        CastingState = new(this);
-        WaitingForBiteState = new(this);
-        ReelingState = new(this);
-        FishInspectionState = new(this);
-    }
 
     protected override void OnRegister()
     {
         // Setup states, these are in start to ensure all references are set
+        IdleFishingState.Setup();
         BaitPreparationState.Setup();
         CastingState.Setup();
         WaitingForBiteState.Setup();
@@ -139,10 +131,10 @@ public class FishingManager : StaticInstance<FishingManager>
     }
 
     /// <summary>
-    /// Handles fishing state _transitionAnimator
+    /// Handles fishing state transitions
     /// </summary>
-    /// <param name="newState">New fishing state to _transitionAnimator to</param>
-    public void TransitionToState(FishingState newState)
+    /// <param name="newState">Fishing state to transition to/param>
+    public void TransitionToState(IFishingState newState)
     {
         _currentState?.Exit(); // Exit the current state
         FishingStateExited.Invoke(_currentState); // Notify listeners of the state exit

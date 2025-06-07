@@ -5,7 +5,6 @@ using UnityEngine;
 public abstract class MenuSelect : GUIContainer
 {
     [SerializeField] protected MenuSelectOption[] _menuSelectOptions;
-    [SerializeField] protected FishingRodMovement _fishingRodMovement;
 
     protected List<float> _selectionPoints = new();
     protected int _currentSelectionIndex = 0;
@@ -13,11 +12,11 @@ public abstract class MenuSelect : GUIContainer
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        float menuRange = _fishingRodMovement.MenuRotationMax - _fishingRodMovement.MenuRotationMin;
+        float menuRange = FishingRodMenuMovement.Instance.MenuRotationMax - FishingRodMenuMovement.Instance.MenuRotationMin;
         float selectionRange = menuRange / _menuSelectOptions.Length;
         for (int i = 0; i < _menuSelectOptions.Length; i++)
         {
-            float selectionPoint = _fishingRodMovement.MenuRotationMin + selectionRange * (i + 0.5f);
+            float selectionPoint = FishingRodMenuMovement.Instance.MenuRotationMin + selectionRange * (i + 0.5f);
             _selectionPoints.Add(selectionPoint);
         }
 

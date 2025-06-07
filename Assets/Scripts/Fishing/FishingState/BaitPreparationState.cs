@@ -1,11 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
-using static FishingManager;
 
-public class BaitPreparationState : FishingState
+public class BaitPreparationState : IFishingState
 {
-    public BaitPreparationState(FishingManager fishingManager) : base(fishingManager) { }
-
     private int _currentStep = 0;
 
     // Events for each bobber action
@@ -19,60 +16,59 @@ public class BaitPreparationState : FishingState
     /// </summary>
     public UnityEvent CompletedOddRotation { get; private set; } = new();
 
-    public override void Enter()
+    public void Setup() { }
+
+    public void Enter()
     {
-        // Only go back to start if need more fish, otherwise cam may mess up
-        if (GameManager.Instance.FishCaught < GameManager.Instance.FishTotalToCatch)
-            CameraController.Instance.SetCameraView(CameraController.CameraView.BaitPrep); // Set camera priority for bait preparation
+        // Do not adjust cam if we already ending
+        //if (GameManager.Instance.FishCaught < GameManager.Instance.FishTotalToCatch)
+        if (GameManager.Instance.CurrentState != GameManager.Instance.PlayingState) return;
+        CameraController.Instance.SetCameraView(CameraController.CameraView.BaitPrep);
 
         // UI
-        fishingManager.StateLabelPanel.SetLabel(FishingStateName.BaitPreparation);
-        UIManager.Instance.ShowMainInputPrompt(fishingManager.BaitPrepPromptRightName);
+        FishingManager.Instance.StateLabelPanel.SetLabel(FishingManager.FishingStateName.BaitPreparation);
+        UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.BaitPrepPromptRightName);
 
         _currentStep = 0; // Reset step counter
-        
+
         // Fishing bobber setup
-        fishingManager.FishingBobber.SetControllable(true);
-        fishingManager.FishingBobber.SetupLureAttach();
+        FishingManager.Instance.FishingBobber.SetControllable(true);
+        FishingManager.Instance.FishingBobber.SetupLureAttach();
         
         Debug.Log("Entering Bait Preparation State");
     }
 
-    public override void Update()
+    public void Update()
     {
-        // Placeholder as game state _transitionAnimator messes this up
-        if (fishingManager.RodMovement.CurrentMovementMode != FishingRodMovement.MovementMode.BaitLock)
-            fishingManager.RodMovement.CurrentMovementMode = FishingRodMovement.MovementMode.BaitLock;
-
         // Alternate directions, even (and start) directions go upward
         if (_currentStep % 2 == 0 
-            && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(fishingManager.RollRightAngle))
+            && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(FishingManager.Instance.RollRightAngle))
         {
-            UIManager.Instance?.ShowMainInputPrompt(fishingManager.BaitPrepPromptLeftName);
+            UIManager.Instance?.ShowMainInputPrompt(FishingManager.Instance.BaitPrepPromptLeftName);
             _currentStep++;
         }
-        else if (_currentStep % 2 != 0 && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(fishingManager.RollLeftAngle))
+        else if (_currentStep % 2 != 0 && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(FishingManager.Instance.RollLeftAngle))
         {
-            UIManager.Instance.ShowMainInputPrompt(fishingManager.BaitPrepPromptRightName);
+            UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.BaitPrepPromptRightName);
             _currentStep++;
         }
 
         if (_currentStep == 1)
-            fishingManager.FishingBobber.OnAttachLure();
+            FishingManager.Instance.FishingBobber.OnAttachLure();
         //Debug.Log("current step modulo: " + _currentStep % 2);
         //Debug.Log(fishingManager.InputHelper.IsNearRotation(
         //    -90f, InputDeviceManager.RotationAxis.x));
 
-        if (_currentStep >= fishingManager.BaitPreparationSteps)
+        if (_currentStep >= FishingManager.Instance.BaitPreparationSteps)
         {
-            fishingManager.TransitionToState(fishingManager.CastingState);
+            FishingManager.Instance.TransitionToState(FishingManager.Instance.CastingState);
         }
     }
 
-    public override void Exit()
+    public void Exit()
     {
-        fishingManager.RodMovement.CurrentMovementMode = FishingRodMovement.MovementMode.Normal;
-        fishingManager.FishingBobber.SetControllable(false);
+        FishingRodGameplayMovement.Instance.SetMovementMode(FishingRodGameplayMovement.MovementMode.Normal);
+        FishingManager.Instance.FishingBobber.SetControllable(false);
         Debug.Log("Exiting Bait Preparation State");
     }
 }

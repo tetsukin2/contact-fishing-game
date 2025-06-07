@@ -1,38 +1,36 @@
 using UnityEngine;
 
-public class RotateVerticalReelAction : ReelAction
+public class RotateVerticalReelAction : IReelAction
 {
-    public RotateVerticalReelAction(ReelingState reelingState) : base(reelingState) { }
-
     private bool _hasRotatedForward = false; // Need the initial rotation for proper input
 
-    public override void Enter()
+    public void Enter()
     {
         _hasRotatedForward = false; // Reset for new action
-        UIManager.Instance.ShowMainInputPrompt(fishingManager.ReelForwardPromptName);
+        UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.ReelForwardPromptName);
         //Debug.Log("RotateVerticalReelAction: Enter");
     }
 
-    public override void Update()
+    public void Update()
     {
         if (!_hasRotatedForward &&
             InputDeviceRotationHelper.HasReachedRotation(
-                Mathf.Lerp(InputDeviceManager.Instance.IMUInput.Rotation.z, 0f, Mathf.Abs(InputDeviceManager.Instance.IMUInput.Rotation.y)), 
-                fishingManager.RotateDownAngle))
+                Mathf.Lerp(InputDeviceManager.Instance.IMUInput.Rotation.z, 0f, Mathf.Abs(InputDeviceManager.Instance.IMUInput.Rotation.y)),
+                FishingManager.Instance.RotateDownAngle))
         {
-            UIManager.Instance.ShowMainInputPrompt(fishingManager.ReelBackPromptName);
+            UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.ReelBackPromptName);
             _hasRotatedForward = true;
         }
         else if (_hasRotatedForward &&
             InputDeviceRotationHelper.HasReachedRotation(
-                Mathf.Lerp(InputDeviceManager.Instance.IMUInput.Rotation.z, 0f, Mathf.Abs(InputDeviceManager.Instance.IMUInput.Rotation.y)), 
-                fishingManager.RotateUpAngle))
+                Mathf.Lerp(InputDeviceManager.Instance.IMUInput.Rotation.z, 0f, Mathf.Abs(InputDeviceManager.Instance.IMUInput.Rotation.y)),
+                FishingManager.Instance.RotateUpAngle))
         {
             FishingManager.Instance.ReelProgressBar.ProgressReel(); // Progress the reel
         }
     }
 
-    public override void Exit()
+    public void Exit()
     {
         //Debug.Log("RotateVerticalReelAction: Exit");
     }

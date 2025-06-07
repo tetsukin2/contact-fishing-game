@@ -1,11 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
-using static FishingManager;
 
-public class CastingState : FishingState
+public class CastingState : IFishingState
 {
-    public CastingState(FishingManager fishingManager) : base(fishingManager) { }
-
     private int _currentCastSteps = 0;
     private bool _hasCastBack = false; // Flag to check if the cast back has been completed
     private bool _hasCast;
@@ -16,14 +13,16 @@ public class CastingState : FishingState
     public UnityEvent LineCast { get; private set; } = new(); 
 
     // Hook listener for bobber hitting water only once
-    public override void Setup()
+    public void Setup()
     {
         _hasCast = false;
-        fishingManager.FishingBobber.BobberHitWater.AddListener(OnBobberHitWater);
+        FishingManager.Instance.FishingBobber.BobberHitWater.AddListener(OnBobberHitWater);
     }
 
-    public override void Enter()
+    public void Enter()
     {
+        var fishingManager = FishingManager.Instance;
+
         // Fish selection setup
         CameraController.Instance.SetCameraView(CameraController.CameraView.FishSelect);
         fishingManager.Targeting.CanChangeSelection = true;
@@ -34,7 +33,7 @@ public class CastingState : FishingState
         _hasCast = false;
 
         // Cast labels
-        fishingManager.StateLabelPanel.SetLabel(FishingStateName.Casting);
+        fishingManager.StateLabelPanel.SetLabel(FishingManager.FishingStateName.Casting);
         UIManager.Instance.ShowMainInputPrompt(fishingManager.CastBackPromptName);
         UIManager.Instance.ShowSecondInputPrompt(fishingManager.CastSelectPromptName);
 
@@ -42,7 +41,7 @@ public class CastingState : FishingState
         Debug.Log("Entering Casting State");
     }
 
-    public override void Update()
+    public void Update()
     {
         if (_hasCast) // Don't do any more of this stuff if line alreaddy cast
             return;
@@ -51,16 +50,16 @@ public class CastingState : FishingState
 
         if (!_hasCastBack 
             && InputDeviceRotationHelper.HasReachedRotation(
-                Mathf.Lerp(InputDeviceManager.Instance.IMUInput.Rotation.z, 0f, Mathf.Abs(InputDeviceManager.Instance.IMUInput.Rotation.y)), 
-                fishingManager.RotateUpAngle))
+                Mathf.Lerp(InputDeviceManager.Instance.IMUInput.Rotation.z, 0f, Mathf.Abs(InputDeviceManager.Instance.IMUInput.Rotation.y)),
+                FishingManager.Instance.RotateUpAngle))
         {
             OnCastBack();
         }
         // OnCast forward
         else if (_hasCastBack 
             && InputDeviceRotationHelper.HasReachedRotation(
-                Mathf.Lerp(InputDeviceManager.Instance.IMUInput.Rotation.z, 0f, Mathf.Abs(InputDeviceManager.Instance.IMUInput.Rotation.y)), 
-                fishingManager.RotateDownAngle))
+                Mathf.Lerp(InputDeviceManager.Instance.IMUInput.Rotation.z, 0f, Mathf.Abs(InputDeviceManager.Instance.IMUInput.Rotation.y)),
+                FishingManager.Instance.RotateDownAngle))
         {
             OnCastForward();
         }
@@ -69,17 +68,17 @@ public class CastingState : FishingState
     private void OnCastBack()
     {
         _hasCastBack = true;
-        UIManager.Instance.ShowMainInputPrompt(fishingManager.CastForwardPromptName);
+        UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.CastForwardPromptName);
     }
 
     private void OnCastForward()
     {
-        fishingManager.Targeting.CanChangeSelection = false; // Disable fish selection while casting
+        FishingManager.Instance.Targeting.CanChangeSelection = false; // Disable fish selection while casting
 
         // Reset for return to cast forward
         _hasCastBack = false;
         _currentCastSteps++;
-        if (_currentCastSteps >= fishingManager.CastSteps) // cast proper if steps reached
+        if (_currentCastSteps >= FishingManager.Instance.CastSteps) // cast proper if steps reached
         {
             _hasCast = true;
             _currentCastSteps = 0;
@@ -90,7 +89,7 @@ public class CastingState : FishingState
         }
         else // Update prompt otherwise
         {
-            UIManager.Instance.ShowMainInputPrompt(fishingManager.CastBackPromptName);
+            UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.CastBackPromptName);
         }
     }
 
@@ -98,13 +97,13 @@ public class CastingState : FishingState
     {
         if (!_hasCast) return; // Flag as this object exists even when in another state
 
-        fishingManager.Targeting.LureFish(); // Lure the fish
-        fishingManager.TransitionToState(fishingManager.WaitingForBiteState);
+        FishingManager.Instance.Targeting.LureFish(); // Lure the fish
+        FishingManager.Instance.TransitionToState(FishingManager.Instance.WaitingForBiteState);
         BraillePatternPlayer.Instance.PlayPatternSequence("Ripple", false);
         _hasCast = false;
     }
 
-    public override void Exit()
+    public void Exit()
     {
         Debug.Log("Exiting Casting State");
     }

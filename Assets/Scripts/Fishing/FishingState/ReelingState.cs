@@ -1,10 +1,9 @@
 using UnityEngine;
-using static FishingManager;
 
 /// <summary>
 /// The fish is struggling
 /// </summary>
-public class ReelingState : FishingState
+public class ReelingState : IFishingState
 {
     [System.Serializable]
     public enum ReelActionName
@@ -13,20 +12,18 @@ public class ReelingState : FishingState
         JoystickClockwise
     } // Mapping reel action classes to enum values
 
-    public ReelingState(FishingManager fishingManager) : base(fishingManager) { }
-
     // Reel Actions
-    private RotateVerticalReelAction _rotateUpReelAction;
-    private JoystickClockwiseReelAction _joystickClockwiseReelAction;
+    private RotateVerticalReelAction _rotateUpReelAction = new();
+    private JoystickClockwiseReelAction _joystickClockwiseReelAction = new();
 
     // Reel Action State
     private int _currentReelActionIndex; // Current Action in sequence array
-    private ReelAction _currentReelActionState;
+    private IReelAction _currentReelActionState;
     
     // References
     private ReelProgressBar _progressBar;
 
-    public override void Setup()
+    public void Setup()
     {
         // References
         _progressBar = FishingManager.Instance.ReelProgressBar;
@@ -37,39 +34,37 @@ public class ReelingState : FishingState
             return;
         }
 
-        // Initialize reel actions
-        _rotateUpReelAction = new(this);
-        _joystickClockwiseReelAction = new(this);
-
         _progressBar.ReelProgressed.AddListener(OnReelProgressed);
         _progressBar.ReelCompleted.AddListener(OnReelCompleted);
     }
 
-    public override void Enter()
+    public void Enter()
     {
         //Debug.Log("Entering Reeling State");
-        fishingManager.StateLabelPanel.SetLabel(FishingStateName.Reeling);
+        FishingManager.Instance.StateLabelPanel.SetLabel(FishingManager.FishingStateName.Reeling);
         _progressBar.StartReel();
         BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", true);
 
         // Set up reel progress and sequence
         _currentReelActionIndex = 0;
-        SetReelAction(fishingManager.ReelActionSequence[_currentReelActionIndex]);
+        SetReelAction(FishingManager.Instance.ReelActionSequence[_currentReelActionIndex]);
     }
 
-    public override void Update()
+    public void Update()
     {
         // Update the current reel acction
         _currentReelActionState?.Update();
     }
 
-    public override void Exit()
+    public void Exit()
     {
         Debug.Log("Exiting Reeling State");
     }
 
     private void OnReelCompleted()
     {
+        var fishingManager = FishingManager.Instance;
+
         fishingManager.ReelIn(); // Call the reel in function
         fishingManager.Targeting.CatchSelected(); // Catch the fish and do resets
         BraillePatternPlayer.Instance.PlayPatternSequence("Ripple", false);
@@ -82,8 +77,8 @@ public class ReelingState : FishingState
 
     private void OnReelProgressed()
     {
-        _currentReelActionIndex = (_currentReelActionIndex + 1) % fishingManager.ReelActionSequence.Count;
-        SetReelAction(fishingManager.ReelActionSequence[_currentReelActionIndex]);
+        _currentReelActionIndex = (_currentReelActionIndex + 1) % FishingManager.Instance.ReelActionSequence.Count;
+        SetReelAction(FishingManager.Instance.ReelActionSequence[_currentReelActionIndex]);
     }
 
     // OnReel state maching switching

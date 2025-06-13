@@ -18,9 +18,11 @@ public class JoystickInput : MonoBehaviour
     /// <summary>
     /// Invoked on the frame the joystick is pressed.
     /// </summary>
-    public UnityEvent JoystickPressed { get; private set; } = new();
+    [SerializeField] private UnityEvent _joystickPressed = new();
 
     public bool JoystickHeld { get; private set; } = false;
+
+    public UnityEvent JoystickPressed => _joystickPressed;
 
     /// <summary>
     /// Begins the process of reading Joystick data.
@@ -32,10 +34,9 @@ public class JoystickInput : MonoBehaviour
 
     private IEnumerator ReadJoystickData(string characteristicUuid)
     {
-        BleApi.BLEData data;
         while (true)
         {
-            bool hasData = BleApi.PollData(out data, false);
+            bool hasData = BleApi.PollData(out BleApi.BLEData data, false);
 
             if (hasData && data.characteristicUuid.ToLower().Contains(characteristicUuid.ToLower()))
             {
@@ -84,7 +85,7 @@ public class JoystickInput : MonoBehaviour
                     if (!wasJoystickPreviouslyPressed && JoystickHeld)
                     {
                         UnityMainThreadDispatcher.Instance.Enqueue(() => JoystickPressed.Invoke());
-                        Debug.Log("Joystick Pressed!");
+                        if (showJoystickData) Debug.Log("Joystick Pressed!");
                     }
                     if (showJoystickData) Debug.Log(Value);
 
@@ -93,7 +94,7 @@ public class JoystickInput : MonoBehaviour
                     //Debug.Log($"JoystickCursor: ({normX:F2}, {normY:F2}), {JoystickInput}");
                 }
             }
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSecondsRealtime(0.01f);
         }
     }
 }

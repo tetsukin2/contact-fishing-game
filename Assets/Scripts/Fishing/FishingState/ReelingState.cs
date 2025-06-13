@@ -71,7 +71,7 @@ public class ReelingState : IFishingState
         fishingManager.TransitionToState(fishingManager.FishInspectionState);
 
         // why?
-        //if (GameManager.Instance.FishCaught < GameManager.Instance.FishTotalToCatch)
+        //if (LevelManager.Instance.FishCaught < LevelManager.Instance.FishTotalToCatch)
         //    fishingManager.TransitionToState(fishingManager.FishInspectionState);
     }
 

@@ -44,7 +44,7 @@ public class IMUInput : MonoBehaviour
                     if (showIMUData) Debug.Log($"Processed IMU Rotation: {Rotation}");
                 }
             }
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSecondsRealtime(0.01f);
         }
     }
 

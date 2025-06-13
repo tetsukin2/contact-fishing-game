@@ -7,6 +7,7 @@ using UnityEngine.Events;
 [RequireComponent(typeof(BLEDevice))]
 [RequireComponent(typeof(IMUInput))]
 [RequireComponent(typeof(JoystickInput))]
+[RequireComponent(typeof(ButtonInput))]
 [RequireComponent(typeof(InputDeviceRotationHelper))]
 [RequireComponent(typeof(BrailleOutput))]
 public class InputDeviceManager : SingletonPersistent<InputDeviceManager>
@@ -14,6 +15,7 @@ public class InputDeviceManager : SingletonPersistent<InputDeviceManager>
     public BLEDevice BLEDevice { get; private set; }
     public IMUInput IMUInput { get; private set; }
     public JoystickInput JoystickInput { get; private set; }
+    public ButtonInput ButtonInput { get; private set; }
     public BrailleOutput BrailleOutput { get; private set; }
     public InputDeviceRotationHelper RotationHelper { get; private set; }
 
@@ -27,6 +29,7 @@ public class InputDeviceManager : SingletonPersistent<InputDeviceManager>
         BLEDevice = GetComponent<BLEDevice>();
         IMUInput = GetComponent<IMUInput>();
         JoystickInput = GetComponent<JoystickInput>();
+        ButtonInput = GetComponent<ButtonInput>();
         BrailleOutput = GetComponent<BrailleOutput>();
         RotationHelper = GetComponent<InputDeviceRotationHelper>();
     }

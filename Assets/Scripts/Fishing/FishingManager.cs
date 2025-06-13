@@ -108,9 +108,9 @@ public class FishingManager : StaticInstance<FishingManager>
         FishInspectionState.Setup();
 
         // Only start bait prep after gameplay actually starts
-        GameManager.Instance.GameStateEntered.AddListener((state) =>
+        LevelManager.Instance.GameStateEntered.AddListener((state) =>
         {
-            if (state == GameManager.Instance.PlayingState)
+            if (state == LevelManager.Instance.PlayingState)
             {
                 TransitionToState(BaitPreparationState);
             }
@@ -126,7 +126,7 @@ public class FishingManager : StaticInstance<FishingManager>
     void Update()
     {
         // Only update if the game is in the playing state
-        if (GameManager.Instance.CurrentState != GameManager.Instance.PlayingState) return;
+        if (LevelManager.Instance.CurrentState != LevelManager.Instance.PlayingState) return;
         _currentState?.Update();
     }
 

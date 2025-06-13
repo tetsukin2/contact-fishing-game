@@ -21,9 +21,11 @@ public class BaitPreparationState : IFishingState
     public void Enter()
     {
         // Do not adjust cam if we already ending
-        //if (GameManager.Instance.FishCaught < GameManager.Instance.FishTotalToCatch)
-        if (GameManager.Instance.CurrentState != GameManager.Instance.PlayingState) return;
+        //if (LevelManager.Instance.FishCaught < LevelManager.Instance.FishTotalToCatch)
+        if (LevelManager.Instance.CurrentState != LevelManager.Instance.PlayingState) return;
         CameraController.Instance.SetCameraView(CameraController.CameraView.BaitPrep);
+
+        FishingRodGameplayMovement.Instance.SetMovementMode(FishingRodGameplayMovement.MovementMode.BaitLock);
 
         // UI
         FishingManager.Instance.StateLabelPanel.SetLabel(FishingManager.FishingStateName.BaitPreparation);

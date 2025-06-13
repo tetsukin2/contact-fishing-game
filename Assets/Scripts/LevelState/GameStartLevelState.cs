@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class GameStartGameState : GameState
+public class GameStartLevelState : LevelState
 {
-    public GameStartGameState(GameManager gameManager) : base(gameManager) { }
+    public GameStartLevelState(LevelManager gameManager) : base(gameManager) { }
 
     private float _gameStartTimer = 0;
     private int _gameStage = 0;

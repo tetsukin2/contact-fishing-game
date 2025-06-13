@@ -1,8 +1,8 @@
-public abstract class GameState
+public abstract class LevelState
 {
-    protected GameManager gameManager;
+    protected LevelManager gameManager;
 
-    public GameState(GameManager gameManager)
+    public LevelState(LevelManager gameManager)
     {
         this.gameManager = gameManager;
     }

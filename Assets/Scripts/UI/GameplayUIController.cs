@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -18,7 +16,8 @@ public class GameplayUIController : Singleton<GameplayUIController>
     {
         HideAllGUI();
 
-        GameManager.Instance.GameStateEntered.AddListener(HandleGameStateGUI);
+        LevelManager.Instance.GameStateEntered.AddListener(HandleGameStateGUI);
+        LevelManager.Instance.GamePaused.AddListener(OnGamePaused);
 
         SetupFishingStateInputPromptListeners();
     }
@@ -41,12 +40,21 @@ public class GameplayUIController : Singleton<GameplayUIController>
         _endScoreGUI.Show(false);
     }
 
-    private void HandleGameStateGUI(GameState gameState)
+    // GUI visibility when pausing
+    private void OnGamePaused(bool isPaused)
+    {
+        if 
+            (isPaused) _gameplayGUI.Show(false);
+        else // Double checking, juuuust in case
+            _gameplayGUI.Show(LevelManager.Instance.CurrentState == LevelManager.Instance.PlayingState);
+    }
+
+    private void HandleGameStateGUI(LevelState gameState)
     {
         // Show the appropriate GUI based on the game state
-        _gameStartGUI.Show(gameState == GameManager.Instance.GameStartState);
-        _gameplayGUI.Show(gameState == GameManager.Instance.PlayingState);
-        _gameEndGUI.Show(gameState == GameManager.Instance.GameEndState);
-        _endScoreGUI.Show(gameState == GameManager.Instance.EndScoreState);
+        _gameStartGUI.Show(gameState == LevelManager.Instance.GameStartState);
+        _gameplayGUI.Show(gameState == LevelManager.Instance.PlayingState);
+        _gameEndGUI.Show(gameState == LevelManager.Instance.GameEndState);
+        _endScoreGUI.Show(gameState == LevelManager.Instance.EndScoreState);
     }
 }

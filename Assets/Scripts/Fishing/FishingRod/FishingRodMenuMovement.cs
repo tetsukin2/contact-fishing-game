@@ -16,14 +16,13 @@ public class FishingRodMenuMovement : StaticInstance<FishingRodMenuMovement>
     private Vector3 rodRotation = Vector3.zero;
     private Vector3 velocity = Vector3.zero;
 
-    // Update is called once per frame
     void Update()
     {
         if (!InputDeviceManager.Instance.BLEDevice.IsConnected) return;
 
         Vector3 imuData = InputDeviceManager.Instance.IMUInput.Rotation;
 
-        rodRotation.y = Mathf.SmoothDamp(rodRotation.y, Mathf.Lerp(-imuData.z, 0f, Mathf.Abs(imuData.y)) * sensitivity, ref velocity.y, smoothFactor);
+        rodRotation.y = Mathf.SmoothDamp(rodRotation.y, imuData.x * sensitivity, ref velocity.y, smoothFactor, Mathf.Infinity, Time.unscaledDeltaTime);
         rodRotation.y = Mathf.Clamp(rodRotation.y, -30f, 30f);
 
         FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y + _menuOffsetRotation, 0, -rodRotation.x);

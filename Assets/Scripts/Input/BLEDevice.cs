@@ -127,9 +127,10 @@ public class BLEDevice : MonoBehaviour
                 }
                 if (imuCharacteristicLoaded && joystickCharacteristicLoaded && brailleCharacteristicLoaded)
                 {
+                    InputDeviceManager.Instance.QueueStatusLog("All Characteristics Loaded!");
                     UnityMainThreadDispatcher.Instance.Enqueue(() => CharacteristicsLoaded.Invoke());
-                    Debug.Log("All Characteristics Loaded!");
                     IsConnected = true;
+                    InputDeviceManager.Instance.ButtonInput.StartReadingButtonData(""); // placeholder until proper button
                     return;
                 }
             }

@@ -12,21 +12,22 @@ public class FishBucket : MonoBehaviour
         // Hide the fish bucket UI at the start
         _bucketUI.SetActive(false); 
 
-        GameManager.Instance.FishCaughtUpdated.AddListener(UpdateFishes);
-        GameManager.Instance.GameStateEntered.AddListener(OnGameStateEntered);
+        LevelManager.Instance.FishCaughtUpdated.AddListener(UpdateFishes);
+        LevelManager.Instance.GamePaused.AddListener(OnGamePaused);
+        LevelManager.Instance.GameStateEntered.AddListener(OnGameStateEntered);
 
         // Initialize fish related display
-        UpdateFishes(GameManager.Instance.FishCaught);
+        UpdateFishes(LevelManager.Instance.FishCaught);
     }
 
-    private void OnGameStateEntered(GameState newState)
+    private void OnGameStateEntered(LevelState newState)
     {
-        if (newState == GameManager.Instance.PlayingState
-            || newState == GameManager.Instance.GameEndState)
+        if (newState == LevelManager.Instance.PlayingState
+            || newState == LevelManager.Instance.GameEndState)
         {
             // Show the fish bucket when the game is playing, and update fishes in case
             _bucketUI.SetActive(true);
-            UpdateFishes(GameManager.Instance.FishCaught);
+            UpdateFishes(LevelManager.Instance.FishCaught);
         }
         else
         {
@@ -35,10 +36,18 @@ public class FishBucket : MonoBehaviour
         }
     }
 
+    private void OnGamePaused(bool isPaused)
+    {
+        if (LevelManager.Instance.CurrentState != LevelManager.Instance.PlayingState) return;
+
+        _bucketUI.SetActive(!isPaused);
+        if (!isPaused) UpdateFishes(LevelManager.Instance.FishCaught);
+    }
+
     private void UpdateFishes(int caught)
     {
         // Progress as percentage, multiplied by length
-        float fishCaughtProgress = ( (float)caught / (float)GameManager.Instance.FishTotalToCatch);
+        float fishCaughtProgress = ( (float)caught / (float)LevelManager.Instance.FishTotalToCatch);
 
         // Determine how many fish objects should be visible based on the progress
         int visibleFishCount = Mathf.CeilToInt(fishCaughtProgress * _fishes.Length);
@@ -50,6 +59,6 @@ public class FishBucket : MonoBehaviour
         }
 
         // Update the text to show the number of fish caught
-        _fishCaughtNumberText.text = $"{caught}/{GameManager.Instance.FishTotalToCatch}";
+        _fishCaughtNumberText.text = $"{caught}/{LevelManager.Instance.FishTotalToCatch}";
     }
 }

@@ -52,6 +52,12 @@ public class SceneSwitchHandler : SingletonPersistent<SceneSwitchHandler>
             StartCoroutine(LoadSceneCoroutine(SceneManager.GetActiveScene().buildIndex + 1));
     }
 
+    public void ReloadScene()
+    {
+        if (!IsSwitching)
+            StartCoroutine(LoadSceneCoroutine(SceneManager.GetActiveScene().buildIndex));
+    }
+
     public void ReturnToMainMenu()
     {
         if (!IsSwitching)

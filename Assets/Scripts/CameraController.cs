@@ -21,6 +21,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera _fishSelectVCam;
     [SerializeField] CinemachineVirtualCamera _baitPrepVCam;
 
+    private int _previousMenuPriority = 0;
+
     public CinemachineVirtualCamera FishSelectVCam => _fishSelectVCam;
 
     private void Awake()
@@ -32,6 +34,23 @@ public class CameraController : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    /// <summary>
+    /// Toggles the priority of the menu camera view, to a higher priority than any other view.
+    /// Original priority is restored when toggled off.
+    /// </summary>
+    public void SetPriorityMenuView(bool enable)
+    {
+        if (enable)
+        {
+            _previousMenuPriority = _menuVCam.Priority;
+            _menuVCam.Priority = 10; // Set to a higher priority
+        }
+        else
+        {
+            _menuVCam.Priority = _previousMenuPriority; // Restore previous priority
         }
     }
 

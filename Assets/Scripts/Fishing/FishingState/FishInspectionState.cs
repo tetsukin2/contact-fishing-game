@@ -85,9 +85,9 @@ public class FishInspectionState : IFishingState
     // What happens when a fish is to be added to the score after inspection
     private void HandleFishAdding()
     {
-        GameManager.Instance.AddFish();
+        LevelManager.Instance.AddFish();
         BraillePatternPlayer.Instance.PlayPatternSequence("BasicPulse", false);
-        if (GameManager.Instance.FishCaught < GameManager.Instance.FishTotalToCatch)
+        if (LevelManager.Instance.FishCaught < LevelManager.Instance.FishTotalToCatch)
         {
             // If not all fish caught, return to bait preparation
             FishingManager.Instance.TransitionToState(FishingManager.Instance.BaitPreparationState);
@@ -96,7 +96,7 @@ public class FishInspectionState : IFishingState
         {
             // If all fish caught, move to game end
             FishingManager.Instance.TransitionToState(FishingManager.Instance.IdleFishingState);
-            GameManager.Instance.TransitionToState(GameManager.Instance.GameEndState);
+            LevelManager.Instance.TransitionToState(LevelManager.Instance.GameEndState);
         }
     }
 

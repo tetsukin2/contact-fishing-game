@@ -35,9 +35,9 @@ public class FishingBobber : MonoBehaviour
     private void Start()
     {
         // Always hide lures outside of main gameplay
-        GameManager.Instance.GameStateEntered.AddListener((state) =>
+        LevelManager.Instance.GameStateEntered.AddListener((state) =>
         {
-            if (state != GameManager.Instance.PlayingState) HideLures();            
+            if (state != LevelManager.Instance.PlayingState) HideLures();            
         });
         HideLures();
 
@@ -54,14 +54,15 @@ public class FishingBobber : MonoBehaviour
     /// </summary>
     void ProcessRotation()
     {
-        if (!_controllable) return;
+        // Pause check is stopgap
+        if (!_controllable || LevelManager.Instance.IsGamePaused) return;
 
         Vector3 imuData = InputDeviceManager.Instance.IMUInput.Rotation;
 
         bobberRotation.y = Mathf.SmoothDamp(bobberRotation.y, -imuData.y * FishingManager.Instance.BobberSensitivity, ref velocity.y, smoothFactor);
         bobberRotation.y = Mathf.Clamp(bobberRotation.y, -90f, 90f);
 
-        _bobberPivot.localRotation = Quaternion.Euler(-bobberRotation.y, 0, -bobberRotation.x);
+        _bobberPivot.localRotation = Quaternion.Euler(bobberRotation.y, 0f, 0f);
     }
 
     /// <summary>

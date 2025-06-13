@@ -14,7 +14,7 @@ public class EndScoreGUI : GUIContainer
 
     private void Start()
     {
-        GameManager.Instance.EndScoreState.ScoreProcessed.AddListener(OnScoreProcessed);
+        LevelManager.Instance.EndScoreState.ScoreProcessed.AddListener(OnScoreProcessed);
     }
 
     public override void Show(bool show)
@@ -26,7 +26,7 @@ public class EndScoreGUI : GUIContainer
     // Setup New Best details
     private void OnScoreProcessed()
     {
-        var gameManager = GameManager.Instance;
+        var gameManager = LevelManager.Instance;
         Debug.Log("attempting to show score");
         _gameEndSessionText.text = $"Nice Haul! {gameManager.FishTotalToCatch} fish in {GameDataHandler.ConvertToTimeFormat(gameManager.Timer)}";
         if (gameManager.EndScoreState.NewBestAchieved)

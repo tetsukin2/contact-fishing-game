@@ -12,12 +12,13 @@ public class GameStartGUI : GUIContainer
     private void Start()
     {
         // Listening to a specific state's events here
-        GameManager.Instance.GameStartState.GameStartStageReached.AddListener(OnGameStartStageReached);
+        LevelManager.Instance.GameStartState.GameStartStageReached.AddListener(OnGameStartStageReached);
     }
 
     // For each game start stage being reached, show a bit more of the ready text
     private void OnGameStartStageReached(int stage)
     {
+        //Debug.Log($"Game start stage reached: {stage}");
         switch (stage)
         {
             case 0:

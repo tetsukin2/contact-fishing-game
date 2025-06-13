@@ -32,8 +32,6 @@ public class MainMenuSelect : MenuSelect
 
     protected override void OnOptionSelected()
     {
-        //if (GameManager.Instance.CurrentState != GameManager.Instance.MainMenuState) return;
-
         switch (_menuSelectOptions[_currentSelectionIndex].Action)
         {
             case PLAY_ACTION:
@@ -43,7 +41,7 @@ public class MainMenuSelect : MenuSelect
                 MainMenuUIController.Instance.ChangeView(MainMenuUIController.MainMenuView.Encyclopedia);
                 break;
             case EXIT_ACTION:
-                GameManager.QuitGame();
+                LevelManager.QuitGame();
                 break;
             default:
                 Debug.LogWarning($"Unknown action: {_menuSelectOptions[_currentSelectionIndex].Action}");

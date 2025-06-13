@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class PlayingGameState : GameState
+public class PlayingLevelState : LevelState
 {
-    public PlayingGameState(GameManager gameManager) : base(gameManager) { }
+    public PlayingLevelState(LevelManager gameManager) : base(gameManager) { }
 
     public override void Enter()
     {

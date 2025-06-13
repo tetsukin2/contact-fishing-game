@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class EndScoreGameState : GameState
+public class EndScoreLevelState : LevelState
 {
-    public EndScoreGameState(GameManager gameManager) : base(gameManager) { }
+    public EndScoreLevelState(LevelManager gameManager) : base(gameManager) { }
 
     // Flag to check if a new best score was achieved
     // Prevents race condition at the start of the end score state

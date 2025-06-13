@@ -64,26 +64,26 @@ void setup() {
   }
 
   // === IMU Calibration (Set current position as neutral) ===
-  float sum_x = 0, sum_y = 0, sum_z = 0;
-  int samples = 100;
-  for (int i = 0; i < samples; i++) {
-    float x, y, z;
-    if (IMU.accelerationAvailable()) {
-      IMU.readAcceleration(x, y, z);
-      sum_x += x;
-      sum_y += y;
-      sum_z += z;
-    }
-    delay(10);
-  }
-  x_offset = sum_x / samples;
-  y_offset = sum_y / samples;
-  z_offset = sum_z / samples;
+  // float sum_x = 0, sum_y = 0, sum_z = 0;
+  // int samples = 100;
+  // for (int i = 0; i < samples; i++) {
+  //   float x, y, z;
+  //   if (IMU.accelerationAvailable()) {
+  //     IMU.readAcceleration(x, y, z);
+  //     sum_x += x;
+  //     sum_y += y;
+  //     sum_z += z;
+  //   }
+  //   delay(10);
+  // }
+  // x_offset = sum_x / samples;
+  // y_offset = sum_y / samples;
+  // z_offset = sum_z / samples;
 
-  Serial.print("📏 Calibrated Offset: ");
-  Serial.print(x_offset); Serial.print(", ");
-  Serial.print(y_offset); Serial.print(", ");
-  Serial.println(z_offset);
+  // Serial.print("📏 Calibrated Offset: ");
+  // Serial.print(x_offset); Serial.print(", ");
+  // Serial.print(y_offset); Serial.print(", ");
+  // Serial.println(z_offset);
 
   // Reset both braille cells
   cells1[0] = cells1[1] = 0;

@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class GameEndGameState : GameState
+public class GameEndLevelState : LevelState
 {
-    public GameEndGameState(GameManager gameManager) : base(gameManager) { }
+    public GameEndLevelState(LevelManager gameManager) : base(gameManager) { }
     private float _gameEndTimer = 0f;
 
     public override void Enter()

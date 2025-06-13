@@ -12,6 +12,6 @@ public class GameplayGUI : GUIContainer
     {
         //only run if timer object exists
         if (_timerText)
-            _timerText.text = GameDataHandler.ConvertToTimeFormat(GameManager.Instance.Timer);
+            _timerText.text = GameDataHandler.ConvertToTimeFormat(LevelManager.Instance.Timer);
     }
 }

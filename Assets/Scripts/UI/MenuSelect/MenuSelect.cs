@@ -12,11 +12,11 @@ public abstract class MenuSelect : GUIContainer
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        float menuRange = FishingRodMenuMovement.Instance.MenuRotationMax - FishingRodMenuMovement.Instance.MenuRotationMin;
+        float menuRange = FishingRodMenu.Instance.MenuRotationMax - FishingRodMenu.Instance.MenuRotationMin;
         float selectionRange = menuRange / _menuSelectOptions.Length;
         for (int i = 0; i < _menuSelectOptions.Length; i++)
         {
-            float selectionPoint = FishingRodMenuMovement.Instance.MenuRotationMin + selectionRange * (i + 0.5f);
+            float selectionPoint = FishingRodMenu.Instance.MenuRotationMin + selectionRange * (i + 0.5f);
             _selectionPoints.Add(selectionPoint);
         }
 
@@ -31,7 +31,7 @@ public abstract class MenuSelect : GUIContainer
     {
         //Debug.Log($"{_fishingRodMovement.MenuRotationMin}/{InputDeviceManager.Rotation.y}/{_fishingRodMovement.MenuRotationMax}");
         // Get the current IMU rotation on the Y-axis
-        float currentRotation = InputDeviceManager.Instance.IMUInput.Rotation.x;
+        float currentRotation = -InputDeviceManager.Instance.IMUInput.Rotation.x;
 
         int closestPointIndex = 0;
         float closestDistance = Mathf.Abs(currentRotation - _selectionPoints[0]);

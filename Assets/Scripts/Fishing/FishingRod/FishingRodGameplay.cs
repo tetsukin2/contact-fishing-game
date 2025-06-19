@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// Fishing Rod Object rotation based on IMU data.
 /// </summary>
-public class FishingRodGameplayMovement : StaticInstance<FishingRodGameplayMovement>
+public class FishingRodGameplay : StaticInstance<FishingRodGameplay>
 {
     public enum MovementMode
     {

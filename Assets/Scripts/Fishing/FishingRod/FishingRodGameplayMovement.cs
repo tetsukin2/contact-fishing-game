@@ -21,6 +21,7 @@ public class FishingRodGameplayMovement : StaticInstance<FishingRodGameplayMovem
 
     [Space]
 
+    [SerializeField] private float _defaultAngle = 20f;
     [SerializeField] private float _baitLockAngle = 30f;
 
     private Vector3 rodRotation = Vector3.zero;
@@ -40,10 +41,10 @@ public class FishingRodGameplayMovement : StaticInstance<FishingRodGameplayMovem
 
         if (CurrentMovementMode == MovementMode.Normal)
         {
-            rodRotation.y = Mathf.SmoothDamp(rodRotation.y, Mathf.Lerp(-imuData.z, 0f, Mathf.Abs(imuData.y)) * sensitivity, ref velocity.y, smoothFactor);
-            rodRotation.y = Mathf.Clamp(rodRotation.y, -30f, 30f);
+            rodRotation.x = Mathf.SmoothDamp(rodRotation.x, -imuData.x * sensitivity, ref velocity.x, smoothFactor);
+            rodRotation.x = Mathf.Clamp(rodRotation.x, -30f, 30f);
 
-            FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.y, 0f, 0f);
+            FishingRodPivot.localRotation = Quaternion.Euler(-rodRotation.x + _defaultAngle, 0f, 0f);
         }
         else if (CurrentMovementMode == MovementMode.BaitLock)
         {

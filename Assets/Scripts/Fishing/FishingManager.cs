@@ -65,8 +65,8 @@ public class FishingManager : StaticInstance<FishingManager>
 
     [Space]
     [Header("FishData Inspection")]
-    //public float SideRotateUpAngle = 30f;
-    //public float SideRotateDownAngle = -30f; // Y rod rotation thresholds
+    public float SideRotateUpAngle = 30f;
+    public float SideRotateDownAngle = -30f; // Y rod rotation thresholds
     public string InspectReadyPromptName;
     public string InspectPromptName;
     public string ReleaseReadyPromptName;

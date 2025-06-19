@@ -43,13 +43,14 @@ public class BaitPreparationState : IFishingState
     public void Update()
     {
         // Alternate directions, even (and start) directions go upward
+        // TODO: Investigate why these prompts are messed up
         if (_currentStep % 2 == 0 
-            && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(FishingManager.Instance.RollRightAngle))
+            && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(-FishingManager.Instance.RollRightAngle))
         {
             UIManager.Instance?.ShowMainInputPrompt(FishingManager.Instance.BaitPrepPromptLeftName);
             _currentStep++;
         }
-        else if (_currentStep % 2 != 0 && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(FishingManager.Instance.RollLeftAngle))
+        else if (_currentStep % 2 != 0 && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(-FishingManager.Instance.RollLeftAngle))
         {
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.BaitPrepPromptRightName);
             _currentStep++;

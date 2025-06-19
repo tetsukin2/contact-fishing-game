@@ -46,16 +46,16 @@ public class FishInspectionState : IFishingState
     // Checks while the fish is not inspected
     private void FishNotInspectedCheck()
     {
+        // Maybe double check these rotation checks?
+
         if (!_reachedInitialRotation && // Start at side neutral
-            InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(FishingManager.Instance.RollLeftAngle))
+            InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(-0.8f))
         {
             _reachedInitialRotation = true;
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.InspectPromptName);
         }
         else if (_reachedInitialRotation && // Now rotate up
-            InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.Instance.IMUInput.Rotation.x, 0.4f)
-            && InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.Instance.IMUInput.Rotation.y, 0.5f)
-            && InputDeviceManager.Instance.RotationHelper.HasReachedRotationZ(-1.25f))
+            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(FishingManager.Instance.SideRotateUpAngle))
         {
             _reachedInitialRotation = false; // Reset for release rotation
             FishingManager.Instance.OnFishInspection();
@@ -68,15 +68,13 @@ public class FishInspectionState : IFishingState
     private void FishInspectedCheck()
     {
         if (!_reachedInitialRotation && // Return to neutral
-                InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(FishingManager.Instance.RollLeftAngle))
+            InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(-0.8f))
         {
             _reachedInitialRotation = true;
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.ReleasePromptName);
         }
         else if (_reachedInitialRotation && // Now rotate down
-            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(1f)
-            && InputDeviceRotationHelper.IsLessThanRotation(InputDeviceManager.Instance.IMUInput.Rotation.y, 0.75f)
-            && InputDeviceManager.Instance.RotationHelper.HasReachedRotationZ(0f))
+            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(FishingManager.Instance.SideRotateDownAngle))
         {
             HandleFishAdding();
         }

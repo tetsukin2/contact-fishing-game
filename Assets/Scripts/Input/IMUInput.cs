@@ -38,8 +38,8 @@ public class IMUInput : MonoBehaviour
                     short y = System.BitConverter.ToInt16(data.buf, 2);
                     short z = System.BitConverter.ToInt16(data.buf, 4);
 
-                    //Debug.Log($"Raw IMU Data: X={x}, Y={y}, Z={z}");
-                    Rotation = new Vector3(x / 1000f, y / 1000f, z / 1000f);
+                    // Do calcs
+                    Rotation = new Vector3(-x / 1000f, -y / 1000f, -z / 1000f);
 
                     if (showIMUData) Debug.Log($"Processed IMU Rotation: {Rotation}");
                 }

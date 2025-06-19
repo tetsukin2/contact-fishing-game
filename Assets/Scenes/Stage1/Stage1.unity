@@ -2370,6 +2370,7 @@ MonoBehaviour:
   FishingRodPivot: {fileID: 1780299182}
   sensitivity: 90
   smoothFactor: 0.1
+  _defaultAngle: 20
   _baitLockAngle: 30
 --- !u!1 &675506680
 GameObject:
@@ -3193,7 +3194,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 2144066287181881803}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
@@ -6446,7 +6447,7 @@ PrefabInstance:
     - target: {fileID: 5358089458127908277, guid: 38837bc17835b0d4e801fa9c06a01102,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6984,7 +6985,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565256410}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0051364875, y: 0.6497041, z: -0.0043901396, w: 0.7601572}
+  m_LocalRotation: {x: 0.005136468, y: 0.6497041, z: -0.0043901303, w: 0.76015717}
   m_LocalPosition: {x: 7.64, y: -2.997, z: 4.161}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -8037,7 +8038,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1760328429
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9088,6 +9089,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7281317352880155514, guid: 61c265bea2e41334c8ab4a8c3e8318ce,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9439,6 +9445,21 @@ PrefabInstance:
       objectReference: {fileID: 673116355}
     - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
         type: 3}
+      propertyPath: RollLeftAngle
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
+        type: 3}
+      propertyPath: RotateUpAngle
+      value: -0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
+        type: 3}
+      propertyPath: RollRightAngle
+      value: -0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
+        type: 3}
       propertyPath: _fishTargeting
       value: 
       objectReference: {fileID: 269142900}
@@ -9459,14 +9480,29 @@ PrefabInstance:
       objectReference: {fileID: 873962102}
     - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
         type: 3}
+      propertyPath: SideRotateUpAngle
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
+        type: 3}
       propertyPath: _fishInspectionGUI
       value: 
       objectReference: {fileID: 1514559615}
     - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
         type: 3}
+      propertyPath: SideRotateDownAngle
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
+        type: 3}
       propertyPath: _bobberLandTransform
       value: 
       objectReference: {fileID: 1114487055}
+    - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
+        type: 3}
+      propertyPath: ReelActionSequence.Array.data[1]
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7349347328210164043, guid: b9c097d67d01ce241b473ee0a81089bd,
         type: 3}
       propertyPath: m_Name

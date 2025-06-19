@@ -32,6 +32,9 @@ public class InputDeviceManager : SingletonPersistent<InputDeviceManager>
         ButtonInput = GetComponent<ButtonInput>();
         BrailleOutput = GetComponent<BrailleOutput>();
         RotationHelper = GetComponent<InputDeviceRotationHelper>();
+
+
+        
     }
 
     /// <summary>

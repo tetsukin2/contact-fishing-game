@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class GameEndSelect : MenuSelect
 {
-    private const string REPLAY_ACTION = "Replay";
+    private const string NEXT_LEVEL_ACTION = "NextLevel";
+    private const string RESTART_ACTION = "Restart";
     private const string MAIN_MENU_ACTION = "MainMenu";
-    private const string EXIT_ACTION = "Exit";
 
     protected override void Start()
     {
@@ -18,14 +18,14 @@ public class GameEndSelect : MenuSelect
 
         switch (_menuSelectOptions[_currentSelectionIndex].Action)
         {
-            case REPLAY_ACTION:
-                LevelManager.Instance.TransitionToState(LevelManager.Instance.GameStartState);
+            case NEXT_LEVEL_ACTION:
+                SceneSwitchHandler.Instance.LoadNextScene();
+                break;
+            case RESTART_ACTION:
+                SceneSwitchHandler.Instance.ReloadScene();
                 break;
             case MAIN_MENU_ACTION:
                 SceneSwitchHandler.Instance.ReturnToMainMenu();
-                break;
-            case EXIT_ACTION:
-                LevelManager.QuitGame();
                 break;
             default:
                 Debug.LogWarning($"Unknown action: {_menuSelectOptions[_currentSelectionIndex].Action}");

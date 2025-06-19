@@ -25,7 +25,7 @@ public class BaitPreparationState : IFishingState
         if (LevelManager.Instance.CurrentState != LevelManager.Instance.PlayingState) return;
         CameraController.Instance.SetCameraView(CameraController.CameraView.BaitPrep);
 
-        FishingRodGameplayMovement.Instance.SetMovementMode(FishingRodGameplayMovement.MovementMode.BaitLock);
+        FishingRodGameplay.Instance.SetMovementMode(FishingRodGameplay.MovementMode.BaitLock);
 
         // UI
         FishingManager.Instance.StateLabelPanel.SetLabel(FishingManager.FishingStateName.BaitPreparation);
@@ -70,7 +70,7 @@ public class BaitPreparationState : IFishingState
 
     public void Exit()
     {
-        FishingRodGameplayMovement.Instance.SetMovementMode(FishingRodGameplayMovement.MovementMode.Normal);
+        FishingRodGameplay.Instance.SetMovementMode(FishingRodGameplay.MovementMode.Normal);
         FishingManager.Instance.FishingBobber.SetControllable(false);
         Debug.Log("Exiting Bait Preparation State");
     }

@@ -383,7 +383,7 @@ PrefabInstance:
     - target: {fileID: 1872285388935444209, guid: 7305ef0656b1b974b8072d0aaccb70fd,
         type: 3}
       propertyPath: showIMUData
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4778080553075497654, guid: 7305ef0656b1b974b8072d0aaccb70fd,
         type: 3}

@@ -19,6 +19,8 @@ public class EndScoreLevelState : LevelState
         CameraController.Instance.SetCameraView(CameraController.CameraView.Menu);
         Debug.Log("Entering End Score State");
         ProcessScore();
+        FishingRodGameplay.Instance.gameObject.SetActive(false);
+        FishingRodMenu.Instance.gameObject.SetActive(true);
     }
 
     public override void Update()
@@ -38,6 +40,8 @@ public class EndScoreLevelState : LevelState
 
     public override void Exit()
     {
+        FishingRodGameplay.Instance.gameObject.SetActive(true);
+        FishingRodMenu.Instance.gameObject.SetActive(false);
         NewBestAchieved = false; // Resetting here, if in Enter it might be read before properly set?
         Debug.Log("Exiting End Score State");
     }

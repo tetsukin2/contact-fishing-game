@@ -1,10 +1,12 @@
 using UnityEngine;
 
-public class GameEndSelect : MenuSelect
+public class GameLastEndSelect : MenuSelect
 {
-    private const string NEXT_LEVEL_ACTION = "NextLevel";
+    private const string RESTART_ACTION = "Restart";
     private const string REPLAY_LEVEL_ACTION = "ReplayLevel";
     private const string MAIN_MENU_ACTION = "MainMenu";
+
+    private const string STAGE_1_NAME = "Stage1";
 
     protected override void Start()
     {
@@ -18,8 +20,8 @@ public class GameEndSelect : MenuSelect
 
         switch (_menuSelectOptions[_currentSelectionIndex].Action)
         {
-            case NEXT_LEVEL_ACTION:
-                SceneSwitchHandler.Instance.LoadNextScene();
+            case RESTART_ACTION:
+                SceneSwitchHandler.Instance.LoadScene(STAGE_1_NAME);
                 break;
             case REPLAY_LEVEL_ACTION:
                 SceneSwitchHandler.Instance.ReloadScene();

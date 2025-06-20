@@ -190,8 +190,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c843c16aef81994086d446a482544d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _normalSprite: {fileID: 21300000, guid: 9fd6d2964965f024cadeb0b0d84e7522, type: 3}
-  _selectedSprite: {fileID: 21300000, guid: 850daa7ab87c51d488b8b38dbd57c5ef, type: 3}
+  _normalSprite: {fileID: 21300000, guid: df98d5612fe300e469a6d1ea216689f5, type: 3}
+  _selectedSprite: {fileID: 21300000, guid: 59980ad2464f47843abd7d499925790e, type: 3}
   _image: {fileID: 3927755110380964366}
   Action: MainMenu
 --- !u!1 &2822456694814484274
@@ -208,7 +208,7 @@ GameObject:
   - component: {fileID: 8304374578652237884}
   - component: {fileID: 4684152568435026236}
   m_Layer: 5
-  m_Name: Restart
+  m_Name: ReplayLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -222,7 +222,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2822456694814484274}
   m_LocalRotation: {x: -0, y: 0.30070576, z: -0, w: 0.953717}
-  m_LocalPosition: {x: 0, y: 0, z: 14.52}
+  m_LocalPosition: {x: 0, y: 0, z: 14.79}
   m_LocalScale: {x: 0.03743897, y: 0.03743897, z: 0.03743897}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -231,7 +231,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 8.72, y: 1.21}
+  m_AnchoredPosition: {x: 7.92, y: 1.21}
   m_SizeDelta: {x: 300, y: 100}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!223 &6193419667543208292
@@ -309,10 +309,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c843c16aef81994086d446a482544d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _normalSprite: {fileID: 21300000, guid: fdaef91d569472a468fe1fe5274b3d0c, type: 3}
-  _selectedSprite: {fileID: 21300000, guid: 08c7602c59ce1c443889b2f11fa7b012, type: 3}
+  _normalSprite: {fileID: 21300000, guid: 2d348688e5cec6b43831f6f3b92105af, type: 3}
+  _selectedSprite: {fileID: 21300000, guid: 7a63e1edf6f764943bdeae43af0e9d58, type: 3}
   _image: {fileID: 5948286486593600804}
-  Action: Restart
+  Action: ReplayLevel
 --- !u!1 &4301439072264659461
 GameObject:
   m_ObjectHideFlags: 0
@@ -603,7 +603,7 @@ GameObject:
   - component: {fileID: 4318268828441754417}
   - component: {fileID: 5948286486593600804}
   m_Layer: 5
-  m_Name: ImageRestart
+  m_Name: ImageReplayLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -618,7 +618,7 @@ RectTransform:
   m_GameObject: {fileID: 8105490436470114968}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.56159, y: 0.56159, z: 0.56159}
+  m_LocalScale: {x: 0.76173604, y: 0.76173604, z: 0.76173604}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1980757935997810227}
@@ -656,7 +656,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fdaef91d569472a468fe1fe5274b3d0c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2d348688e5cec6b43831f6f3b92105af, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

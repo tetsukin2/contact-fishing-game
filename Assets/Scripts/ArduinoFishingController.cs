@@ -26,7 +26,7 @@ public class ArduinoFishingController : MonoBehaviour
         rodRotation.y = Mathf.Clamp(rodRotation.y, -30f, 30f);
         rodRotation.z = Mathf.Clamp(rodRotation.z, -30f, 30f);
 
-        FishingRod.localRotation = Quaternion.Euler(-rodRotation.y, 0, -rodRotation.x);
+        FishingRod.localRotation = Quaternion.Euler(-rodRotation.y, 0, rodRotation.x);
     }
 }
 

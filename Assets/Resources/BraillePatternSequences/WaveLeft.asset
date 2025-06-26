@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f00867fde896045b938d3ac9bdcd5e, type: 3}
+  m_Name: WaveLeft
+  m_EditorClassIdentifier: 
+  SequenceName: WaveLeft
+  Sequence:
+  - Row1: 0001
+    Row2: 0001
+    Row3: 0001
+    Row4: 0001
+  - Row1: 0010
+    Row2: 0010
+    Row3: 0010
+    Row4: 0010
+  - Row1: 0100
+    Row2: 0100
+    Row3: 0100
+    Row4: 0100
+  - Row1: 1000
+    Row2: 1000
+    Row3: 1000
+    Row4: 1000
+  - Row1: 0000
+    Row2: 0000
+    Row3: 0000
+    Row4: 0000
+  - Row1: 0000
+    Row2: 0000
+    Row3: 0000
+    Row4: 0000
+  - Row1: 0000
+    Row2: 0000
+    Row3: 0000
+    Row4: 0000

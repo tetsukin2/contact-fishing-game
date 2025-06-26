@@ -47,8 +47,9 @@ public class JoystickInput : MonoBehaviour
                     byte sw = data.buf[2];
                     //Debug.Log(sw);
 
-                    float normX = (rawX - 128) / 128f;
-                    float normY = (rawY - 128) / 128f;
+                    // some transposition happend cuz joystick component is rotated
+                    float normX = (rawY - 128) / 128f;
+                    float normY = (rawX - 128) / 128f;
 
                     Vector2 rawInput = new(normX, normY);
 

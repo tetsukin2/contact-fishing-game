@@ -51,7 +51,7 @@ public class BrailleOutput : MonoBehaviour
         bool success = BleApi.SendData(in bleData, false);
         if (success)
             Debug.Log("Braille ASCII data sent successfully.");
-        else
+        else if (showBrailleData)
         {
             BleApi.GetError(out BleApi.ErrorMessage error);
             Debug.LogError("Failed to send Braille data: " + error.msg);

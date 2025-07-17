@@ -8,6 +8,7 @@ using UnityEngine;
 public class ResourceSystem : SingletonPersistent<ResourceSystem>
 {
     private List<InputPrompt> _inputPrompts; // Input prompts to use
+    
 
     protected override void OnAwake()
     {

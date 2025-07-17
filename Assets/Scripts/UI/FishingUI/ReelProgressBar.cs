@@ -26,7 +26,7 @@ public class ReelProgressBar : GUIContainer
         // Update progress values
         if (_isReeling)
         {
-            _currentReelProgress = Mathf.Max(0f, _currentReelProgress - Time.deltaTime * FishingManager.Instance.ReelDecayRate); // Decay progress over time
+            _currentReelProgress = Mathf.Max(0f, _currentReelProgress - Time.deltaTime * ResourceSystem.Instance.GameplayConfig.ReelDecayRate); // Decay progress over time
             _progressSlider.value = Mathf.Min(_currentReelProgress, _progressSlider.maxValue);
         }
     }
@@ -47,7 +47,7 @@ public class ReelProgressBar : GUIContainer
 
         // Slider Setup
         Show(true);
-        _progressSlider.maxValue = FishingManager.Instance.ReelTotalProgress;
+        _progressSlider.maxValue = ResourceSystem.Instance.GameplayConfig.ReelTotalProgress;
         _progressSlider.value = 0f;
     }
 
@@ -57,10 +57,10 @@ public class ReelProgressBar : GUIContainer
     public void ProgressReel()
     {
         // Update reel progress
-        _currentReelProgress += FishingManager.Instance.ReelProgressAmount;
+        _currentReelProgress += ResourceSystem.Instance.GameplayConfig.ReelProgressAmount;
 
         // Check if the reel progress is complete
-        if (_currentReelProgress >= FishingManager.Instance.ReelTotalProgress)
+        if (_currentReelProgress >= ResourceSystem.Instance.GameplayConfig.ReelTotalProgress)
         {
             StopReel();
             ReelCompleted.Invoke();

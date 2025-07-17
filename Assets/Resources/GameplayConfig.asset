@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8dcdaa5edc88c97439a6f667d7c2ed7f, type: 3}
-  m_Name: GameConfig
+  m_Name: GameplayConfig
   m_EditorClassIdentifier: 
-  BobberSensitivity: 60
   RotateUpAngle: -0.3
   RotateDownAngle: 0.2
   RollRightAngle: -0.8
   RollLeftAngle: 0.8
+  SideRotateUpAngle: -0.5
+  SideRotateDownAngle: 0.2
+  BobberSensitivity: 60
   BaitPreparationSteps: 4
   ReelTotalProgress: 20
   ReelProgressAmount: 5
   ReelDecayRate: 0.3
   ReelActionSequence: 0000000001000000
-  side_rotate_up_angle: -0.5
-  side_rotate_down_angle: 0.2
-  braille_pattern_interval: 0.12
+  BraillePatternInterval: 0.12

@@ -7,20 +7,25 @@ using UnityEngine;
 /// </summary>
 public class ResourceSystem : SingletonPersistent<ResourceSystem>
 {
-    public GameConfig GameConfig { get; private set; } // Game configuration scriptable object
+    /// <summary>
+    /// The currently loaded gameplay configuration.
+    /// </summary>
+    public GameplayConfig GameplayConfig { get; private set; }
 
     private List<InputPrompt> _inputPrompts; // Input prompts to use
 
-    private const string InputPromptsPath = "InputPrompts"; // Path to input prompts in Resources
+    // === Resource Paths ===
+    private const string InputPromptsPath = "InputPrompts"; // Path to input prompt directory
+    private const string GameplayConfigPath = "GameplayConfig"; // Path to gameplay config
 
     protected override void OnAwake()
     {
         // Load all input prompts from resources
         _inputPrompts = Resources.LoadAll<InputPrompt>(InputPromptsPath).ToList();
-        GameConfig = Resources.Load<GameConfig>("GameConfig");
+        GameplayConfig = Resources.Load<GameplayConfig>(GameplayConfigPath);
 
         // a test
-        Debug.Log($"Loaded {GameConfig.name} with {GameConfig.ReelActionSequence.Count} reel actions and {GameConfig.BaitPreparationSteps} bait preparation steps.");
+        //Debug.Log($"Loaded {GameplayConfig.name} with {GameplayConfig.ReelActionSequence.Count} reel actions and {GameplayConfig.BaitPreparationSteps} bait preparation steps.");
     }
 
     /// <summary>

@@ -55,7 +55,7 @@ public class FishInspectionState : IFishingState
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.InspectPromptName);
         }
         else if (_reachedInitialRotation && // Now rotate up
-            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(FishingManager.Instance.SideRotateUpAngle))
+            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.SideRotateUpAngle))
         {
             _reachedInitialRotation = false; // Reset for release rotation
             FishingManager.Instance.OnFishInspection();
@@ -74,7 +74,7 @@ public class FishInspectionState : IFishingState
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.ReleasePromptName);
         }
         else if (_reachedInitialRotation && // Now rotate down
-            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(FishingManager.Instance.SideRotateDownAngle))
+            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.SideRotateDownAngle))
         {
             HandleFishAdding();
         }

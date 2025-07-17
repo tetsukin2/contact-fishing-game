@@ -4,7 +4,7 @@ using UnityEngine;
 
 [System.Serializable]
 [CreateAssetMenu(menuName = "Scriptable Object/Game Config")]
-public class GameConfig : ScriptableObject
+public class GameplayConfig : ScriptableObject
 {
     [Header("Rotation Thresholds")]
     public float RotateUpAngle;

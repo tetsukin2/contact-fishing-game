@@ -5,30 +5,6 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-[System.Serializable]
-public class SessionTelemetryData
-{
-    public string SessionID;
-    public float SessionDuration;
-    public System.DateTime SessionStartTime;
-    public string UserID;
-    public float ControllerConnectionInitializeDuration;
-    public GameConfig Config;
-}
-
-[System.Serializable]
-public class GameTelemetryData
-{
-    public string GameID;
-    public string StageID;
-    public System.DateTime StartTime;
-    public bool IsReplay;
-    public bool GameCompleted;
-    public int FishCatchRequirement;
-    public Dictionary<string, float> AverageTimeTaken;
-    public float AverageActionsPerReel;
-}
-
 /// <summary>
 /// File-based upload system.
 /// </summary>
@@ -147,12 +123,12 @@ public class FirebaseUploadHandler : SingletonPersistent<FirebaseUploadHandler>
 
         var dummySession = new SessionTelemetryData
         {
-            SessionID = "dummy_session_id",
+            SessionID = "dummySessionID",
             SessionDuration = 12345,
             SessionStartTime = System.DateTime.UtcNow,
-            UserID = "dummy_user",
+            UserID = "dummyUser",
             ControllerConnectionInitializeDuration = 100,
-            Config = ResourceSystem.Instance.GameConfig
+            Config = ResourceSystem.Instance.GameplayConfig
         };
 
         UploadSessionData(dummySession.SessionID, token, dummySession);
@@ -169,7 +145,7 @@ public class FirebaseUploadHandler : SingletonPersistent<FirebaseUploadHandler>
 
         var dummyRound = new GameTelemetryData
         {
-            GameID = "dummy_game_id",
+            GameID = "dummyGameID",
             StageID = "stage_1",
             StartTime = System.DateTime.UtcNow,
             IsReplay = false,
@@ -184,6 +160,6 @@ public class FirebaseUploadHandler : SingletonPersistent<FirebaseUploadHandler>
         };
 
         // Use a dummy session id for demonstration
-        UploadGameData("dummy_session_id", dummyRound.GameID, token, dummyRound);
+        UploadGameData("dummySessionID", dummyRound.GameID, token, dummyRound);
     }
 }

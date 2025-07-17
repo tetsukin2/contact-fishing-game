@@ -14,13 +14,13 @@ public class RotateVerticalReelAction : IReelAction
     public void Update()
     {
         if (!_hasRotatedForward &&
-            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(FishingManager.Instance.RotateDownAngle))
+            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateDownAngle))
         {
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.ReelBackPromptName);
             _hasRotatedForward = true;
         }
         else if (_hasRotatedForward &&
-            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(FishingManager.Instance.RotateUpAngle))
+            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateUpAngle))
         {
             FishingManager.Instance.ReelProgressBar.ProgressReel(); // Progress the reel
         }

@@ -8,44 +8,25 @@ using UnityEngine.Networking;
 [System.Serializable]
 public class SessionTelemetryData
 {
-    public string session_id;
-    public float session_duration;
-    public System.DateTime session_start_time;
-    public string user_id;
-    public float controller_connection_initialize_duration;
-    public GameConfig config;
-    
-}
-
-[System.Serializable]
-public class GameConfig
-{
-    public int bobber_sensitivity;
-    public float rotate_up_angle;
-    public float rotate_down_angle;
-    public float roll_right_angle;
-    public float roll_left_angle;
-    public int bait_preparation_steps;
-    public int reel_total_progress;
-    public int reel_progress_amount;
-    public float reel_decay_rate;
-    public List<string> reel_action_sequence;
-    public float side_rotate_up_angle;
-    public float side_rotate_down_angle;
-    public float braille_pattern_interval;
+    public string SessionID;
+    public float SessionDuration;
+    public System.DateTime SessionStartTime;
+    public string UserID;
+    public float ControllerConnectionInitializeDuration;
+    public GameConfig Config;
 }
 
 [System.Serializable]
 public class GameTelemetryData
 {
-    public string game_id;
-    public string stage_id;
-    public System.DateTime start_time;
-    public bool is_replay;
-    public bool game_completed;
-    public int fish_catch_requirement;
-    public Dictionary<string, float> average_time_taken;
-    public float average_actions_per_reel;
+    public string GameID;
+    public string StageID;
+    public System.DateTime StartTime;
+    public bool IsReplay;
+    public bool GameCompleted;
+    public int FishCatchRequirement;
+    public Dictionary<string, float> AverageTimeTaken;
+    public float AverageActionsPerReel;
 }
 
 /// <summary>
@@ -166,30 +147,15 @@ public class FirebaseUploadHandler : SingletonPersistent<FirebaseUploadHandler>
 
         var dummySession = new SessionTelemetryData
         {
-            session_id = "dummy_session_id",
-            session_duration = 12345,
-            session_start_time = System.DateTime.UtcNow,
-            user_id = "dummy_user",
-            controller_connection_initialize_duration = 100,
-            config = new GameConfig
-            {
-                bobber_sensitivity = 5,
-                rotate_up_angle = 10.5f,
-                rotate_down_angle = 8.2f,
-                roll_right_angle = 15.0f,
-                roll_left_angle = 14.0f,
-                bait_preparation_steps = 3,
-                reel_total_progress = 100,
-                reel_progress_amount = 10,
-                reel_decay_rate = 0.5f,
-                reel_action_sequence = new List<string> { "pull", "release", "pull" },
-                side_rotate_up_angle = 12.0f,
-                side_rotate_down_angle = 9.0f,
-                braille_pattern_interval = 1.5f
-            }
+            SessionID = "dummy_session_id",
+            SessionDuration = 12345,
+            SessionStartTime = System.DateTime.UtcNow,
+            UserID = "dummy_user",
+            ControllerConnectionInitializeDuration = 100,
+            Config = ResourceSystem.Instance.GameConfig
         };
 
-        UploadSessionData(dummySession.session_id, token, dummySession);
+        UploadSessionData(dummySession.SessionID, token, dummySession);
     }
 
     public void UploadDummyGameData()
@@ -203,21 +169,21 @@ public class FirebaseUploadHandler : SingletonPersistent<FirebaseUploadHandler>
 
         var dummyRound = new GameTelemetryData
         {
-            game_id = "dummy_game_id",
-            stage_id = "stage_1",
-            start_time = System.DateTime.UtcNow,
-            is_replay = false,
-            game_completed = true,
-            fish_catch_requirement = 5,
-            average_time_taken = new Dictionary<string, float>
+            GameID = "dummy_game_id",
+            StageID = "stage_1",
+            StartTime = System.DateTime.UtcNow,
+            IsReplay = false,
+            GameCompleted = true,
+            FishCatchRequirement = 5,
+            AverageTimeTaken = new Dictionary<string, float>
             {
                { "action1", 200 },
                { "action2", 500 },
             },
-            average_actions_per_reel = 3.5f
+            AverageActionsPerReel = 3.5f
         };
 
         // Use a dummy session id for demonstration
-        UploadGameData("dummy_session_id", dummyRound.game_id, token, dummyRound);
+        UploadGameData("dummy_session_id", dummyRound.GameID, token, dummyRound);
     }
 }

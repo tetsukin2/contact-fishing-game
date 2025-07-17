@@ -758,6 +758,7 @@ GameObject:
   - component: {fileID: 935951467}
   - component: {fileID: 935951466}
   - component: {fileID: 935951468}
+  - component: {fileID: 935951469}
   m_Layer: 0
   m_Name: FirebaseTest
   m_TagString: Untagged
@@ -802,6 +803,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 428365f9ad80fcd4d9aedf64a8b0b5fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &935951469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 935951465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d47ccf081abc0c4c882d326b13ea048, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1009446652

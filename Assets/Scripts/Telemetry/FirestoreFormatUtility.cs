@@ -33,7 +33,7 @@ public static class FirestoreFormatUtility
             if (value == null) continue;
 
             if (!first) sb.Append(",");
-            sb.Append($"\"{field.Name}\":");
+            sb.Append($"\"{ToCamelCase(field.Name)}\":");
             sb.Append(SerializeValue(value));
             first = false;
         }
@@ -61,6 +61,8 @@ public static class FirestoreFormatUtility
                 return $"{{\"booleanValue\":{(b ? "true" : "false")}}}";
             case DateTime dt:
                 return $"{{\"timestampValue\":\"{dt.ToUniversalTime():yyyy-MM-ddTHH:mm:ss.fffZ}\"}}";
+            case Enum e:
+                return $"{{\"stringValue\":\"{EscapeString(e.ToString())}\"}}";
             case IDictionary dict:
                 return SerializeDictionary(dict);
             case IList list:
@@ -98,12 +100,22 @@ public static class FirestoreFormatUtility
         {
             if (!(entry.Key is string key)) continue;
             if (!first) sb.Append(",");
-            sb.Append($"\"{EscapeString(key)}\":");
+            sb.Append($"\"{ToCamelCase(key)}\":");
             sb.Append(SerializeValue(entry.Value));
             first = false;
         }
         sb.Append("}}}");
         return sb.ToString();
+    }
+
+    // Just want this for convention sake, converts PascalCase to camelCase
+    private static string ToCamelCase(string name)
+    {
+        if (string.IsNullOrEmpty(name) || char.IsLower(name[0]))
+            return name;
+        if (name.Length == 1)
+            return name.ToLower();
+        return char.ToLower(name[0]) + name.Substring(1);
     }
 
     // Escapes special characters in strings before adding them to JSON

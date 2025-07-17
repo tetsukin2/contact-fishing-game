@@ -73,5 +73,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-/[Aa]ssets/[Ss]treamingAssets/google-services-desktop.json
-/[Aa]ssets/google-services.json
+/[Aa]ssets/**/google-services*

@@ -1713,9 +1713,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2569ba821730b8f479e844addc664ab7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _thumbPatternSequence: WaveIn
-  _indexPatternSequence: WaveIn
-  _active: 0
 --- !u!1 &787806628
 GameObject:
   m_ObjectHideFlags: 0
@@ -2445,7 +2442,7 @@ PrefabInstance:
     - target: {fileID: 6292599294523150645, guid: ae6192366780bf145af9bac527d1dc40,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6304270115195917621, guid: ae6192366780bf145af9bac527d1dc40,
         type: 3}
@@ -5730,12 +5727,12 @@ PrefabInstance:
     - target: {fileID: 8275666532592374377, guid: 5db1ddcab5f193e4899d5e7c65bb9eb2,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.0051368116
+      value: 0.005136816
       objectReference: {fileID: 0}
     - target: {fileID: 8275666532592374377, guid: 5db1ddcab5f193e4899d5e7c65bb9eb2,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.004390474
+      value: -0.004390478
       objectReference: {fileID: 0}
     - target: {fileID: 8668251303773230924, guid: 5db1ddcab5f193e4899d5e7c65bb9eb2,
         type: 3}
@@ -6289,7 +6286,7 @@ PrefabInstance:
     - target: {fileID: 5976103249143603691, guid: ae6192366780bf145af9bac527d1dc40,
         type: 3}
       propertyPath: m_text
-      value: 'Rotate controller all the way to the leftkjjkjjjlklklk
+      value: 'Rotate controller all the way to the right
 
 '
       objectReference: {fileID: 0}

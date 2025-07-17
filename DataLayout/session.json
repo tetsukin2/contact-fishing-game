@@ -1,0 +1,51 @@
+{
+  "session_id": "1234567890abcdef",
+  "session_duration": 3600,
+  "session_start_time": "2023-10-01T12:00:00Z",
+  "user_id": "user_12345",
+  "controller_connection_initialize_duration": 1500,
+  "config": {
+    "bobber_sensitivity": 60,
+    "rotate_up_angle": -0.3,
+    "rotate_down_angle": 0.2,
+    "roll_right_angle": -0.8,
+    "roll_left_angle": 0.8,
+    "bait_preparation_steps": 1,
+    "reel_total_progress": 20,
+    "reel_progress_amount": 5,
+    "reel_decay_rate": 0.3,
+    "reel_action_sequence": [
+      "reel_up",
+      "reel_clockwise"
+    ],
+    "side_rotate_up_angle": -0.5,
+    "side_rotate_down_angle": 0.2,
+    "braille_pattern_interval": 0.12
+  },
+  "games": [
+    {
+      "game_id": "game_001",
+      "stage_id": "stage_1",
+      "start_time": "2023-10-01T12:05:00Z",
+      "is_replay": false,
+      "game_completed": true,
+      "fish_catch_requirement": 5,
+      "average_time_taken": {
+        "bait_left": 200,
+        "bait_right": 180,
+        "cast_down": 220,
+        "cast_right": 210,
+        "cast_select": 300,
+        "reel_down": 250,
+        "reel_up": 240,
+        "reel_clockwise": 230,
+        "reel_counterclockwise": 260,
+        "inspect_reset": 190,
+        "inspect": 170,
+        "release_reset": 300,
+        "release": 280
+      },
+      "average_actions_per_reel": 4
+    }
+  ]
+}

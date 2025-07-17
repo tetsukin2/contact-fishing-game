@@ -21,7 +21,6 @@ public class FishingManager : StaticInstance<FishingManager>
 
     [Space]
     [Header("Fishing Rod")]
-    public float RotationTriggerThreshold = 15f;  // Rotation threshold in degrees
     public float BobberSensitivity = 1f;
     [SerializeField] private FishingBobber _fishingBobber;
     [SerializeField] private Transform _bobberLandTransform;

@@ -109,6 +109,64 @@ public class FirebaseConnectionHandler : SingletonPersistent<FirebaseConnectionH
         }
     }
 
+    public void RegisterUser(string email, string password)
+    {
+        if (auth != null)
+        {
+            auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCanceled)
+                {
+                    Debug.LogError("CreateUserWithEmailAndPasswordAsync was canceled.");
+                    return;
+                }
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("CreateUserWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                    return;
+                }
+
+                // Firebase user has been created.
+                AuthResult result = task.Result;
+                Debug.LogFormat("Firebase user created successfully: {0} ({1})",
+                    result.User.DisplayName, result.User.UserId);
+            });
+        }
+        else
+        {
+            Debug.LogError("Firebase Auth not initialized yet.");
+        }
+    }
+
+    public void SignInUser(string email, string password)
+    {
+        if (auth != null)
+        {
+            auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCanceled)
+                {
+                    Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
+                    return;
+                }
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                    return;
+                }
+
+                // Firebase user has been signed in.
+                AuthResult result = task.Result;
+                Debug.LogFormat("Firebase user signed in successfully: {0} ({1})",
+                    result.User.DisplayName, result.User.UserId);
+            });
+        }
+        else
+        {
+            Debug.LogError("Firebase Auth not initialized yet.");
+        }
+    }
+
     void OnDestroy()
     {
         if (auth != null)

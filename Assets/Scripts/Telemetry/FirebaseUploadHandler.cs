@@ -29,24 +29,30 @@ public class FirebaseUploadHandler : SingletonPersistent<FirebaseUploadHandler>
     private string queueFilePath;
     private List<UploadQueueItem> uploadQueue = new();
     private bool isUploading = false;
+    private string DummyUserId;
+
+    public string SessionId { get; private set; }
 
     protected override void OnAwake()
     {
+        // Start of the session
+        SessionId = System.Guid.NewGuid().ToString();
+
         queueFilePath = Path.Combine(Application.persistentDataPath, "uploadQueue.json");
         LoadQueueFromFile();
         StartCoroutine(ProcessQueue());
     }
 
-    public void UploadSessionData(string sessionId, string idToken, SessionTelemetryData sessionData)
+    public void UploadSessionData(string idToken, SessionTelemetryData sessionData)
     {
-        string url = $"https://firestore.googleapis.com/v1/projects/contactreelease/databases/(default)/documents/sessions/{sessionId}?access_token={idToken}";
+        string url = $"https://firestore.googleapis.com/v1/projects/contactreelease/databases/(default)/documents/sessions/{SessionId}?access_token={idToken}";
         string jsonBody = FirestoreFormatUtility.WrapClass(sessionData);
         EnqueueUpload(url, jsonBody);
     }
 
-    public void UploadGameData(string sessionId, string gameId, string idToken, GameTelemetryData roundData)
+    public void UploadGameData(string gameId, string idToken, GameTelemetryData roundData)
     {
-        string url = $"https://firestore.googleapis.com/v1/projects/contactreelease/databases/(default)/documents/sessions/{sessionId}/games/{gameId}?access_token={idToken}";
+        string url = $"https://firestore.googleapis.com/v1/projects/contactreelease/databases/(default)/documents/sessions/{SessionId}/games/{gameId}?access_token={idToken}";
         string jsonBody = FirestoreFormatUtility.WrapClass(roundData);
         EnqueueUpload(url, jsonBody);
     }
@@ -123,43 +129,67 @@ public class FirebaseUploadHandler : SingletonPersistent<FirebaseUploadHandler>
 
         var dummySession = new SessionTelemetryData
         {
-            SessionID = "dummySessionID",
-            SessionDuration = 12345,
-            SessionStartTime = System.DateTime.UtcNow,
-            UserID = "dummyUser",
-            ControllerConnectionInitializeDuration = 100,
-            Config = ResourceSystem.Instance.GameplayConfig
+            StartTime = System.DateTime.UtcNow,
+            EndTime = System.DateTime.UtcNow.AddMinutes(30), // Simulate a 30-minute session
+            ConInitDur = 100,
         };
 
-        UploadSessionData(dummySession.SessionID, token, dummySession);
+        // Use a dummy session id for demonstration  
+        // SessionId = "dummy_" + System.Guid.NewGuid().ToString();
+
+        UploadSessionData(token, dummySession);
     }
 
-    public void UploadDummyGameData()
+    public void UploadDummyUserData()
     {
         var token = FirebaseConnectionHandler.Instance.CurrentAuthToken;
         if (string.IsNullOrEmpty(token))
         {
-            Debug.LogWarning("Cannot upload dummy game data: Auth token is not available.");
+            Debug.LogWarning("Cannot upload dummy user data: Auth token is not available.");
             return;
         }
-
-        var dummyRound = new GameTelemetryData
+        DummyUserId = "dummy_" + System.Guid.NewGuid().ToString();
+        var dummySession = new SessionTelemetryData
         {
-            GameID = "dummyGameID",
-            StageID = "stage_1",
             StartTime = System.DateTime.UtcNow,
-            IsReplay = false,
-            GameCompleted = true,
-            FishCatchRequirement = 5,
-            AverageTimeTaken = new Dictionary<string, float>
-            {
-               { "action1", 200 },
-               { "action2", 500 },
-            },
-            AverageActionsPerReel = 3.5f
+            EndTime = System.DateTime.UtcNow.AddMinutes(30), // Simulate a 30-minute session
+            ConInitDur = 100,
         };
-
-        // Use a dummy session id for demonstration
-        UploadGameData("dummySessionID", dummyRound.GameID, token, dummyRound);
+        UploadSessionData(token, dummySession);
     }
+
+    //public void UploadDummyGameData()
+    //{
+    //    var token = FirebaseConnectionHandler.Instance.CurrentAuthToken;
+    //    if (string.IsNullOrEmpty(token))
+    //    {
+    //        Debug.LogWarning("Cannot upload dummy game data: Auth token is not available.");
+    //        return;
+    //    }
+
+    //    var dummyRound = new GameTelemetryData
+    //    {
+    //        GameID = "dummyGameID",
+    //        StageID = "stage_1",
+    //        StartTime = System.DateTime.UtcNow,
+    //        IsReplay = false,
+    //        GameCompleted = true,
+    //        FishCatchRequirement = 5,
+    //        AverageTimeTaken = new Dictionary<string, float>
+    //        {
+    //           { "action1", 200 },
+    //           { "action2", 500 },
+    //        },
+    //        AverageActionsPerReel = 3.5f
+    //    };
+
+    //    if (string.IsNullOrEmpty(SessionId))
+    //    {
+    //        Debug.LogWarning("Cannot upload dummy game data: Dummy Session must be uploaded first");
+    //        return;
+    //    }
+
+    //    // Use a dummy session id for demonstration
+    //    UploadGameData(dummyRound.GameID, token, dummyRound);
+    //}
 }

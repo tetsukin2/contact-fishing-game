@@ -4,10 +4,7 @@
 [System.Serializable]
 public class SessionTelemetryData
 {
-    public string SessionID;
-    public float SessionDuration;
-    public System.DateTime SessionStartTime;
-    public string UserID;
-    public float ControllerConnectionInitializeDuration;
-    public GameplayConfig Config;
+    public System.DateTime StartTime;
+    public System.DateTime EndTime;
+    public float ConInitDur; // Controller connection initialization duration
 }

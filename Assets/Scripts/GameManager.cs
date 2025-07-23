@@ -8,9 +8,9 @@ using UnityEngine.Events;
 /// </summary>
 public class GameManager : SingletonPersistent<GameManager>
 {
+    public SessionTelemetryData SessionData { get; private set; }
 
-    // Start is called before the first frame update
-    void Start()
+    protected override void OnSetup()
     {
         
     }
@@ -26,5 +26,9 @@ public class GameManager : SingletonPersistent<GameManager>
         }
     }
 
-    
+    protected override void OnApplicationQuit()
+    {
+        base.OnApplicationQuit();
+        //FirebaseUploadHandler.Instance.UploadSessionData(SessionData.IdToken, SessionData);
+    }
 }

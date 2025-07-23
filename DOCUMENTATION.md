@@ -12,6 +12,8 @@ ResourceSystem
 - Handles resource (ScriptableObject) loading and accessing
 UIManager
 - Handles Common UI for all scenes
+FirebaseHandler
+- Handles Firebase authentication and database access
 InputDeviceManager
 - Connection to controller, sending braille data, reading IMU data
 BraillePatternPlayer

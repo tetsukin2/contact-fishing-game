@@ -6,13 +6,13 @@ using System.Collections.Generic;
 [System.Serializable]
 public class GameTelemetryData
 {
-    public string GameID;
+    public string UserID;
     public string StageID;
-    public System.DateTime StartTime;
     public bool IsReplay;
+    public System.DateTime StartTime;
+    public System.DateTime EndTime;
+    public float AverageActionsPerReel;
     public bool GameCompleted;
-    public float CompletionTime;
     public int FishCatchRequirement;
     public Dictionary<string, float> AverageTimeTaken; // ActionName, AverageTimeTaken
-    public float AverageActionsPerReel;
 }

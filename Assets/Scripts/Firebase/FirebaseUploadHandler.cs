@@ -134,8 +134,7 @@ public class FirebaseUploadHandler : SingletonPersistent<FirebaseUploadHandler>
         {
             StartTime = System.DateTime.UtcNow,
             EndTime = System.DateTime.UtcNow.AddMinutes(30), // Simulate a 30-minute session
-            ConInitDur = 100,
-            ConConnectSuccess = true
+            ConInitDur = 5
         };
 
         // Use a dummy session id for demonstration  

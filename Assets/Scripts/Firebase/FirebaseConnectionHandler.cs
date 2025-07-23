@@ -174,6 +174,7 @@ public class FirebaseConnectionHandler : SingletonPersistent<FirebaseConnectionH
         {
             auth.StateChanged -= AuthStateChanged;
             auth.SignOut(); // Sign out when the handler is destroyed
+            Debug.Log("Signing out");
             auth = null;
         }
     }

@@ -59,6 +59,7 @@ public class BLEDevice : MonoBehaviour
         scanThread.Start();
         isScanning = true;
         ConnectionAttemptStarted.Invoke();
+        Debug.Log("Starting Scan");
     }
 
     void ScanForDevices()

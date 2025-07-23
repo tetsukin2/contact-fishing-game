@@ -26,34 +26,44 @@ public class FirebaseUploadHandler : SingletonPersistent<FirebaseUploadHandler>
         public string jsonBody;
     }
 
+    // Only needs to be tracked here as it just needs to block the upload
+    [SerializeField] private bool _enableTelemetry = true;
+
     private string queueFilePath;
     private List<UploadQueueItem> uploadQueue = new();
     private bool isUploading = false;
     private string DummyUserId;
 
-    public string SessionId { get; private set; }
-
     protected override void OnAwake()
     {
-        // Start of the session
-        SessionId = System.Guid.NewGuid().ToString();
-
         queueFilePath = Path.Combine(Application.persistentDataPath, "uploadQueue.json");
         LoadQueueFromFile();
         StartCoroutine(ProcessQueue());
     }
 
-    public void UploadSessionData(string idToken, SessionTelemetryData sessionData)
+    /// <summary>
+    /// Uploads data to Firestore at the specified collection.
+    /// </summary>
+    /// <param name="collection">Destination collection</param>
+    /// <param name="data">Object to serialize</param>
+    public void UploadData(string collection, object data, string documentId = null)
     {
-        string url = $"https://firestore.googleapis.com/v1/projects/contactreelease/databases/(default)/documents/sessions/{SessionId}?access_token={idToken}";
-        string jsonBody = FirestoreFormatUtility.WrapClass(sessionData);
-        EnqueueUpload(url, jsonBody);
-    }
+        if (!_enableTelemetry) return;
+        var idToken = FirebaseConnectionHandler.Instance.CurrentAuthToken;
+        if (string.IsNullOrEmpty(idToken))
+        {
+            Debug.LogWarning("Cannot upload data: Auth token is not available.");
+            return;
+        }
 
-    public void UploadGameData(string gameId, string idToken, GameTelemetryData roundData)
-    {
-        string url = $"https://firestore.googleapis.com/v1/projects/contactreelease/databases/(default)/documents/sessions/{SessionId}/games/{gameId}?access_token={idToken}";
-        string jsonBody = FirestoreFormatUtility.WrapClass(roundData);
+        string url = $"https://firestore.googleapis.com/v1/projects/contactreelease/databases/(default)/documents/{collection}";
+        if (!string.IsNullOrEmpty(documentId))
+            url += $"?documentId={documentId}&access_token={idToken}";
+        else
+            url += $"?access_token={idToken}";
+
+        Debug.Log("Uploading data to: " + url);
+        string jsonBody = FirestoreFormatUtility.WrapClass(data);
         EnqueueUpload(url, jsonBody);
     }
 
@@ -77,7 +87,7 @@ public class FirebaseUploadHandler : SingletonPersistent<FirebaseUploadHandler>
         File.WriteAllText(queueFilePath, json);
     }
 
-    public void EnqueueUpload(string url, string jsonBody)
+    private void EnqueueUpload(string url, string jsonBody)
     {
         UploadQueueItem item = new() { url = url, jsonBody = jsonBody };
         uploadQueue.Add(item);
@@ -95,7 +105,7 @@ public class FirebaseUploadHandler : SingletonPersistent<FirebaseUploadHandler>
         {
             UploadQueueItem current = uploadQueue[0];
 
-            UnityWebRequest request = new UnityWebRequest(current.url, "PATCH");
+            UnityWebRequest request = new UnityWebRequest(current.url, "POST");
             request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(current.jsonBody));
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
@@ -120,43 +130,37 @@ public class FirebaseUploadHandler : SingletonPersistent<FirebaseUploadHandler>
 
     public void UploadDummySessionData()
     {
-        var token = FirebaseConnectionHandler.Instance.CurrentAuthToken;
-        if (string.IsNullOrEmpty(token))
-        {
-            Debug.LogWarning("Cannot upload dummy session data: Auth token is not available.");
-            return;
-        }
-
         var dummySession = new SessionTelemetryData
         {
             StartTime = System.DateTime.UtcNow,
             EndTime = System.DateTime.UtcNow.AddMinutes(30), // Simulate a 30-minute session
             ConInitDur = 100,
+            ConConnectSuccess = true
         };
 
         // Use a dummy session id for demonstration  
-        // SessionId = "dummy_" + System.Guid.NewGuid().ToString();
+        string sessionId = "dummy_" + System.Guid.NewGuid().ToString("N");
 
-        UploadSessionData(token, dummySession);
+        UploadData("sessions", dummySession, sessionId);
     }
 
-    public void UploadDummyUserData()
-    {
-        var token = FirebaseConnectionHandler.Instance.CurrentAuthToken;
-        if (string.IsNullOrEmpty(token))
-        {
-            Debug.LogWarning("Cannot upload dummy user data: Auth token is not available.");
-            return;
-        }
-        DummyUserId = "dummy_" + System.Guid.NewGuid().ToString();
-        var dummySession = new SessionTelemetryData
-        {
-            StartTime = System.DateTime.UtcNow,
-            EndTime = System.DateTime.UtcNow.AddMinutes(30), // Simulate a 30-minute session
-            ConInitDur = 100,
-        };
-        UploadSessionData(token, dummySession);
-    }
+    //public void UploadDummyUserData()
+    //{
+    //    var token = FirebaseConnectionHandler.Instance.CurrentAuthToken;
+    //    if (string.IsNullOrEmpty(token))
+    //    {
+    //        Debug.LogWarning("Cannot upload dummy user data: Auth token is not available.");
+    //        return;
+    //    }
+    //    DummyUserId = "dummy_" + System.Guid.NewGuid().ToString();
+    //    var dummySession = new SessionTelemetryData
+    //    {
+    //        StartTime = System.DateTime.UtcNow,
+    //        EndTime = System.DateTime.UtcNow.AddMinutes(30), // Simulate a 30-minute session
+    //        ConInitDur = 100,
+    //    };
+    //    UploadSessionData(dummySession);
+    //}
 
     //public void UploadDummyGameData()
     //{

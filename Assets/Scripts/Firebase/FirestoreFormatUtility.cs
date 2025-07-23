@@ -45,6 +45,18 @@ public static class FirestoreFormatUtility
     // Serializes a value to a Firestore key-value pair format
     private static string SerializeValue(object value)
     {
+        if (value == null)
+            return "null";
+
+        var type = value.GetType();
+
+        // Handle nullable types
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+        {
+            var underlyingValue = Convert.ChangeType(value, Nullable.GetUnderlyingType(type));
+            return SerializeValue(underlyingValue);
+        }
+
         switch (value)
         {
             case string s:

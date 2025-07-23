@@ -394,7 +394,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &470252451
 RectTransform:
   m_ObjectHideFlags: 0
@@ -412,7 +412,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 67.25757, y: 162.25987}
+  m_AnchoredPosition: {x: 4.9999847, y: 34.1799}
   m_SizeDelta: {x: 668.5671, y: 83.2598}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &470252452
@@ -691,7 +691,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -805,6 +805,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 428365f9ad80fcd4d9aedf64a8b0b5fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enableTelemetry: 1
 --- !u!114 &935951469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -945,7 +946,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 67.25757, y: 69}
+  m_AnchoredPosition: {x: 4.9999847, y: -59.07997}
   m_SizeDelta: {x: 668.5671, y: 83.2598}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1126393440
@@ -993,8 +994,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 935951466}
-        m_TargetAssemblyTypeName: FirebaseTest, Assembly-CSharp
-        m_MethodName: OnLogin
+        m_TargetAssemblyTypeName: FirebaseConnectionHandler, Assembly-CSharp
+        m_MethodName: SignInAnonymously
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1280,7 +1281,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 67.25757, y: 252.08}
+  m_AnchoredPosition: {x: 5, y: 124}
   m_SizeDelta: {x: 668.5671, y: 83.2598}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2096450128

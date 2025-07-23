@@ -49,6 +49,7 @@ public class MainMenuUIController : Singleton<MainMenuUIController>
     {
         ChangeView(MainMenuView.TitleOnly);
         // not sure about this being in a UI script but can't think of better right now
+        GameManager.Instance.OnSessionStart();
         InputDeviceManager.Instance.BLEDevice.StartConnectionAttempt();
     }
 

@@ -7,4 +7,5 @@ public class SessionTelemetryData
     public System.DateTime StartTime;
     public System.DateTime EndTime;
     public float ConInitDur; // Controller connection initialization duration
+    public bool ConConnectSuccess; // Whether the controller connected successfully
 }

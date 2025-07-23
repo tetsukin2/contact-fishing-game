@@ -27,7 +27,7 @@ public class BLEDevice : MonoBehaviour
     //public string BrailleCharacteristicUUID { get; private set; } = null; // characteristic uuid rn are hardcoded
 
     private Thread scanThread;
-    private bool isScanning = true;
+    private bool isScanning = false;
 
     private bool imuCharacteristicLoaded = false;
     private bool joystickCharacteristicLoaded = false;
@@ -35,20 +35,30 @@ public class BLEDevice : MonoBehaviour
 
     public bool IsConnected { get; private set; } = false;
 
+    /// <summary>
+    /// Event triggered when a connection attempt to the BLE Device starts.
+    /// </summary>
+    public UnityEvent ConnectionAttemptStarted { get; private set; } = new();
     public UnityEvent CharacteristicsLoaded { get; private set; } = new();
 
     private void Start()
     {
-        InputDeviceManager.Instance.QueueStatusLog("Restarting BLE Scanner...");
+        InputDeviceManager.Instance.QueueStatusLog("Resetting BLE Scanner...");
 
         BleApi.StopDeviceScan();
         Thread.Sleep(1000);
         BleApi.Quit();
+    }
+
+    public void StartConnectionAttempt()
+    {
+        if (isScanning) return; // Only start scanning once
 
         BleApi.StartDeviceScan();
-
         scanThread = new Thread(ScanForDevices);
         scanThread.Start();
+        isScanning = true;
+        ConnectionAttemptStarted.Invoke();
     }
 
     void ScanForDevices()

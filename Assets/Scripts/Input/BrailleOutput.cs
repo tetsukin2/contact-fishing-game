@@ -28,7 +28,7 @@ public class BrailleOutput : MonoBehaviour
     {
         if (!InputDeviceManager.Instance.BLEDevice.IsConnected)
         {
-            Debug.Log("Not yet connected to BLE.");
+            Debug.LogWarning("Not yet connected to BLE.");
             return;
         }
 

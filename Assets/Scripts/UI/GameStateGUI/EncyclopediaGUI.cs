@@ -35,7 +35,9 @@ public class EncyclopediaGUI : GUIContainer
         }
         else
         {
-            InputDeviceManager.Instance.BrailleOutput.ResetBraille();
+            // Initialization at the start could trigger reset even when not connected
+            if (InputDeviceManager.Instance.BLEDevice.IsConnected) 
+                InputDeviceManager.Instance.BrailleOutput.ResetBraille();
         }
     }
 

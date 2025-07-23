@@ -26,17 +26,24 @@ public class MainMenuVisibility : MonoBehaviour
         }
     }
 
-    private void OnEnable()
+    private void Start()
     {
         MainMenuUIController.Instance.ViewChanged.AddListener(OnViewChanged);
         // Set initial visibility
         OnViewChanged(MainMenuUIController.Instance.CurrentView);
     }
 
-    private void OnDisable()
-    {
-        MainMenuUIController.Instance.ViewChanged.RemoveListener(OnViewChanged);
-    }
+    //private void OnEnable()
+    //{
+    //    MainMenuUIController.Instance.ViewChanged.AddListener(OnViewChanged);
+    //    // Set initial visibility
+    //    OnViewChanged(MainMenuUIController.Instance.CurrentView);
+    //}
+
+    //private void OnDisable()
+    //{
+    //    MainMenuUIController.Instance.ViewChanged.RemoveListener(OnViewChanged);
+    //}
 
     private void OnViewChanged(MainMenuUIController.MainMenuView view)
     {

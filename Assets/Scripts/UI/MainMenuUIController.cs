@@ -9,6 +9,7 @@ public class MainMenuUIController : Singleton<MainMenuUIController>
     public enum MainMenuView
     {
         None,
+        TitleOnly,
         MainMenu,
         Encyclopedia,
         LevelSelect,
@@ -34,15 +35,28 @@ public class MainMenuUIController : Singleton<MainMenuUIController>
     public InputPrompt EncyclopediaInput => _encyclopediaInput;
     public InputPrompt EncyclopediaSecondInput => _encyclopediaSecondInput;
 
+    // Things only happen after we establish a connection
     protected override void OnSetup()
     {
         InputDeviceManager.Instance.BLEDevice.RunWhenConnected(FirstTimeSetup);
     }
 
+    /// <summary>
+    /// Called when the user completes the login process. 
+    /// Changes view to title and starts the BLE connection process.
+    /// </summary>
+    public void OnLoginComplete()
+    {
+        ChangeView(MainMenuView.TitleOnly);
+        // not sure about this being in a UI script but can't think of better right now
+        InputDeviceManager.Instance.BLEDevice.StartConnectionAttempt();
+    }
+
+    // After login and on successful connection
     private void FirstTimeSetup()
     {
-        // Start in login
-        ChangeView(MainMenuView.Login);
+        // Start in Main Menu
+        ChangeView(MainMenuView.MainMenu);
 
         // Start with these inputs
         UIManager.Instance.ShowMainInputPrompt(MainMenuInput);

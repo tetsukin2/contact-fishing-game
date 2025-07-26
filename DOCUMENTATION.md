@@ -12,8 +12,9 @@ ResourceSystem
 - Handles resource (ScriptableObject) loading and accessing
 UIManager
 - Handles Common UI for all scenes
-FirebaseHandler
+TelemetryHandler
 - Handles Firebase authentication and database access
+- Also handles action telemetry timing
 InputDeviceManager
 - Connection to controller, sending braille data, reading IMU data
 BraillePatternPlayer
@@ -40,8 +41,6 @@ FishTargeting
 - Fish spawning/pool & targeting
 FishLootTable
 - Weighted loot table for fishing
-
----
 
 ## How Pattern Sequences Are Played
 1. Pattern Sequence Selection
@@ -125,3 +124,26 @@ Keyboard hotkeys for input or state changes
 - [A] - Button 0 Press ([Input/ButtonInput](Assets/Scripts/Input/ButtonInput.cs))
 - [B] - Button 1 Press / Pause ([Input/ButtonInput](Assets/Scripts/Input/ButtonInput.cs))
 
+# Telemetry
+
+## ActionTelemetryHandler
+Handles Action timing. Call `StartActionTimer(string actionName)` to start timing an action by name, then call `EndAndRecordActionTimer(string actionName)` to end and store the action time.
+- If the action is already being timed when calling `StartActionTimer()`, the start time will be updated to when thee method was called
+- If no action was being timed when calling `EndAndRecordActionTimer()`, nothing happens.
+
+Time taken by actions is stored in a Dictionary (`Dictionary<string, List<float>>`) where the key value is a list of the time taken by each instance of an action to execute. Call `GetAverageTimeTaken()` to get a Dictionary of the average time taken by actions, where the key value is the integer average.
+
+### Actions
+- BaitPreparationRight
+- BaitPreparationLeft
+- FishSelection
+- CastBack
+- CastForward
+- ReelBack
+- ReelForward
+- ReelClockwise
+- ReelCounterClockwise
+- InspectPrepare
+- InspectFish
+- ReleasePrepare
+- ReleaseFish

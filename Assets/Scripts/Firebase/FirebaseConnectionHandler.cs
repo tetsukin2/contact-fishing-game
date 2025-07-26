@@ -17,7 +17,6 @@ public class FirebaseConnectionHandler : SingletonPersistent<FirebaseConnectionH
 
     protected override void OnAwake()
     {
-        
         // Initialize Firebase
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
             var dependencyStatus = task.Result;

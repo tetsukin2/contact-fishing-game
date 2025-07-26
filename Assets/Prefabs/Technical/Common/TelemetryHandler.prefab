@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 2645794493257239741}
   - component: {fileID: 164442037322793477}
   - component: {fileID: 9145027295395790619}
+  - component: {fileID: 173070033624213435}
   m_Layer: 0
-  m_Name: FirebaseHandler
+  m_Name: TelemetryHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 428365f9ad80fcd4d9aedf64a8b0b5fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enableTelemetry: 1
 --- !u!114 &9145027295395790619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55,5 +57,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6e1850d5c3f0e7429a94a2e293f251e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &173070033624213435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5346895126269874170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6353abec968fa44fb36e45a263f973f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

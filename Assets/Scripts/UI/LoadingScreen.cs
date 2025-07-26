@@ -6,6 +6,7 @@ using UnityEngine;
 /// </summary>
 public class LoadingScreen : GUIContainer
 {
+    [SerializeField] private TextMeshProUGUI _titleText;
     [SerializeField] private TextMeshProUGUI _loadingText;
 
     private void Start()
@@ -19,6 +20,7 @@ public class LoadingScreen : GUIContainer
     {
         // Show loading screen and do updates
         Show(true);
+        _titleText.SetText("Connecting to Controller...");
         InputDeviceManager.Instance.StatusUpdated.AddListener((string message) => _loadingText.SetText(message));
         InputDeviceManager.Instance.BLEDevice.CharacteristicsLoaded.AddListener(OnCharacteristicsLoaded);
     }

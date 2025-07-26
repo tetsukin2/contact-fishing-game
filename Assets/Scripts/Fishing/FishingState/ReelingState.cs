@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -19,7 +20,12 @@ public class ReelingState : IFishingState
     // Reel Action State
     private int _currentReelActionIndex; // Current Action in sequence array
     private IReelAction _currentReelActionState;
-    
+
+    // Reel Telemetry
+    private int _reelActionCount = 0; // Count of actions performed
+
+    public List<int> ActionsPerReelList { get; private set; } = new();
+
     // References
     private ReelProgressBar _progressBar;
 
@@ -36,6 +42,7 @@ public class ReelingState : IFishingState
 
         _progressBar.ReelProgressed.AddListener(OnReelProgressed);
         _progressBar.ReelCompleted.AddListener(OnReelCompleted);
+        ActionsPerReelList.Clear(); // Clear the list for new reel actions
     }
 
     public void Enter()
@@ -46,6 +53,7 @@ public class ReelingState : IFishingState
         BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", true);
 
         // Set up reel progress and sequence
+        _reelActionCount = 0;
         _currentReelActionIndex = 0;
         SetReelAction(FishingManager.Instance.ReelActionSequence[_currentReelActionIndex]);
     }
@@ -58,6 +66,7 @@ public class ReelingState : IFishingState
 
     public void Exit()
     {
+        ActionsPerReelList.Add(_reelActionCount); // Add the count of actions performed to the list
         Debug.Log("Exiting Reeling State");
     }
 
@@ -84,6 +93,7 @@ public class ReelingState : IFishingState
     // OnReel state maching switching
     private void SetReelAction(ReelActionName newAction)
     {
+        _reelActionCount++;
         _currentReelActionState?.Exit();
         switch (newAction)
         {

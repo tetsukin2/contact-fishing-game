@@ -11,8 +11,8 @@ public class GameTelemetryData
     public bool IsReplay;
     public System.DateTime StartTime;
     public System.DateTime EndTime;
-    public float AverageActionsPerReel;
+    public int AverageActionsPerReel;
     public bool GameCompleted;
     public int FishCatchRequirement;
-    public Dictionary<string, float> AverageTimeTaken; // ActionName, AverageTimeTaken
+    public Dictionary<string, int> AverageTimeTaken; // ActionName, AverageTimeTaken
 }

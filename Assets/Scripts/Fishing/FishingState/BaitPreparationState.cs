@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -36,7 +37,9 @@ public class BaitPreparationState : IFishingState
         // Fishing bobber setup
         FishingManager.Instance.FishingBobber.SetControllable(true);
         FishingManager.Instance.FishingBobber.SetupLureAttach();
-        
+
+        ActionTelemetryHandler.Instance.StartActionTimer("BaitPreparationRight"); // Start telemetry timer
+
         Debug.Log("Entering Bait Preparation State");
     }
 
@@ -47,13 +50,21 @@ public class BaitPreparationState : IFishingState
         if (_currentStep % 2 == 0 
             && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(-ResourceSystem.Instance.GameplayConfig.RollRightAngle))
         {
-            UIManager.Instance?.ShowMainInputPrompt(FishingManager.Instance.BaitPrepPromptLeftName);
+            UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.BaitPrepPromptLeftName);
             _currentStep++;
+
+            ActionTelemetryHandler.Instance.EndAndRecordActionTimer("BaitPreparationRight");
+            if (!IsBaitPreparationComplete())
+                ActionTelemetryHandler.Instance.StartActionTimer("BaitPreparationLeft");
         }
         else if (_currentStep % 2 != 0 && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(-ResourceSystem.Instance.GameplayConfig.RollLeftAngle))
         {
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.BaitPrepPromptRightName);
             _currentStep++;
+
+            ActionTelemetryHandler.Instance.EndAndRecordActionTimer("BaitPreparationLeft");
+            if (!IsBaitPreparationComplete())
+                ActionTelemetryHandler.Instance.StartActionTimer("BaitPreparationRight");
         }
 
         if (_currentStep == 1)
@@ -62,10 +73,8 @@ public class BaitPreparationState : IFishingState
         //Debug.Log(fishingManager.InputHelper.IsNearRotation(
         //    -90f, InputDeviceManager.RotationAxis.x));
 
-        if (_currentStep >= ResourceSystem.Instance.GameplayConfig.BaitPreparationSteps)
-        {
+        if (!IsBaitPreparationComplete())
             FishingManager.Instance.TransitionToState(FishingManager.Instance.CastingState);
-        }
     }
 
     public void Exit()
@@ -73,5 +82,11 @@ public class BaitPreparationState : IFishingState
         FishingRodGameplay.Instance.SetMovementMode(FishingRodGameplay.MovementMode.Normal);
         FishingManager.Instance.FishingBobber.SetControllable(false);
         Debug.Log("Exiting Bait Preparation State");
+    }
+
+    // Have we reached the steps needed to complete bait preparation?
+    private bool IsBaitPreparationComplete()
+    {
+        return _currentStep >= ResourceSystem.Instance.GameplayConfig.BaitPreparationSteps;
     }
 }

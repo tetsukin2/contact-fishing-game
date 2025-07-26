@@ -26,7 +26,7 @@ public class GameManager : SingletonPersistent<GameManager>
         SessionData = new SessionTelemetryData()
         {
             StartTime = System.DateTime.Now,
-            EndTime = System.DateTime.MinValue, // Will be set on application quit
+            EndTime = System.DateTime.MinValue, // nonfunctional for now
             ConInitDur = null // Will be set when connection is established
         };
         InputDeviceManager.Instance.BLEDevice.RunWhenConnected(OnConnectionEstablished);
@@ -36,13 +36,6 @@ public class GameManager : SingletonPersistent<GameManager>
     {
         SessionData.ConInitDur = (int)System.DateTime.Now.Subtract(SessionData.StartTime).TotalSeconds;
         Debug.Log($"Connection established. Initialization duration: {SessionData.ConInitDur} seconds");
-    }
-
-    protected override void OnApplicationQuit()
-    {
-        base.OnApplicationQuit();
-        if (SessionData == null) return;
-        SessionData.EndTime = System.DateTime.Now;
-        FirebaseUploadHandler.Instance.UploadData("sessions", SessionData);
+        FirebaseUploadHandler.Instance.PostData("sessions", SessionData);
     }
 }

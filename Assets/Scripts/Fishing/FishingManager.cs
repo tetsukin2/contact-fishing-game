@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 // FishingManager with class-based state machine
 public class FishingManager : StaticInstance<FishingManager>
@@ -21,13 +19,9 @@ public class FishingManager : StaticInstance<FishingManager>
 
     [Space]
     [Header("Fishing Rod")]
-    public float RotationTriggerThreshold = 15f;  // Rotation threshold in degrees
-    public float BobberSensitivity = 1f;
     [SerializeField] private FishingBobber _fishingBobber;
     [SerializeField] private Transform _bobberLandTransform;
     [SerializeField] private FishingRodGameplay _rodMovement;
-    public float RotateUpAngle = 30f;
-    public float RotateDownAngle = -30f; // Y rod rotation thresholds
 
     [Space]
     [Header("UI")]
@@ -35,11 +29,8 @@ public class FishingManager : StaticInstance<FishingManager>
 
     [Space]
     [Header("Bait Preparation")]
-    public int BaitPreparationSteps = 1;
     public string BaitPrepPromptRightName;
     public string BaitPrepPromptLeftName;
-    public float RollRightAngle = -0.8f;
-    public float RollLeftAngle = 0.8f;
 
     [Space]
     [Header("Casting")]
@@ -53,20 +44,15 @@ public class FishingManager : StaticInstance<FishingManager>
 
     [Space]
     [Header("Reeling")]
-    public float ReelTotalProgress = 20;
-    public float ReelProgressAmount = 5;
     public string ReelForwardPromptName;
     public string ReelBackPromptName;
     public string ReelClockwisePromptName;
     public float ReelForce = 1f; // Force applied to the bobber upward
-    public float ReelDecayRate = 0.3f;
     [SerializeField] private ReelProgressBar _reelProgressBar;
     public List<ReelingState.ReelActionName> ReelActionSequence; //Sequence of actions to follow
 
     [Space]
     [Header("FishData Inspection")]
-    public float SideRotateUpAngle = 30f;
-    public float SideRotateDownAngle = -30f; // Y rod rotation thresholds
     public string InspectReadyPromptName;
     public string InspectPromptName;
     public string ReleaseReadyPromptName;

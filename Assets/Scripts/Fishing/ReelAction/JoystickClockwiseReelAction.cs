@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public class JoystickClockwiseReelAction : IReelAction
 {
     public void Enter()
@@ -8,6 +10,8 @@ public class JoystickClockwiseReelAction : IReelAction
         // Input helper setup
         InputDeviceManager.Instance.RotationHelper.TrackJoystickClockwise = true;
         InputDeviceManager.Instance.RotationHelper.ResetJoystickRotationCount();
+
+        ActionTelemetryHandler.Instance.StartActionTimer("ReelClockwise");
     }
 
     public void Update()
@@ -21,6 +25,6 @@ public class JoystickClockwiseReelAction : IReelAction
 
     public void Exit()
     {
-        //Debug.Log("JoystickClockwiseReelAction: Exit");
+        ActionTelemetryHandler.Instance.EndAndRecordActionTimer("ReelClockwise");
     }
 }

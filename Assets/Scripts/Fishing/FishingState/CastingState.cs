@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+// Each "step" is one set of cast back and cast forward
 public class CastingState : IFishingState
 {
     private int _currentCastSteps = 0;
@@ -38,24 +40,28 @@ public class CastingState : IFishingState
         UIManager.Instance.ShowSecondInputPrompt(fishingManager.CastSelectPromptName);
 
         InputDeviceManager.Instance.RotationHelper.ClearRotationHistory(); // Clean read for casting
+
+        ActionTelemetryHandler.Instance.StartActionTimer("FishSelection"); // Start telemetry timer
+        ActionTelemetryHandler.Instance.StartActionTimer("CastBack"); // Start telemetry timer for cast back
+
         Debug.Log("Entering Casting State");
     }
 
     public void Update()
     {
         if (_hasCast) // Don't do any more of this stuff if line alreaddy cast
-            return;
+            return; 
 
         //Debug.Log(Mathf.Lerp(fishingManager.RotateUpAngle, 0f, Mathf.Abs(InputDeviceManager.Rotation.y)));
 
         if (!_hasCastBack
-            && InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(FishingManager.Instance.RotateUpAngle))
+            && InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateUpAngle))
         {
             OnCastBack();
         }
         // OnCast forward
         else if (_hasCastBack
-            && InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(FishingManager.Instance.RotateDownAngle))
+            && InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateDownAngle))
         {
             OnCastForward();
         }
@@ -65,6 +71,9 @@ public class CastingState : IFishingState
     {
         _hasCastBack = true;
         UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.CastForwardPromptName);
+
+        ActionTelemetryHandler.Instance.EndAndRecordActionTimer("CastBack");
+        ActionTelemetryHandler.Instance.StartActionTimer("CastForward");
     }
 
     private void OnCastForward()
@@ -74,6 +83,7 @@ public class CastingState : IFishingState
         // Reset for return to cast forward
         _hasCastBack = false;
         _currentCastSteps++;
+        ActionTelemetryHandler.Instance.EndAndRecordActionTimer("CastForward");
         if (_currentCastSteps >= FishingManager.Instance.CastSteps) // cast proper if steps reached
         {
             _hasCast = true;
@@ -82,10 +92,13 @@ public class CastingState : IFishingState
             UIManager.Instance.ShowMainInputPrompt(null as InputPrompt);
             UIManager.Instance.ShowSecondInputPrompt(null as InputPrompt);
             BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", true);
+
+            ActionTelemetryHandler.Instance.EndAndRecordActionTimer("FishSelection");
         }
         else // Update prompt otherwise
         {
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.CastBackPromptName);
+            ActionTelemetryHandler.Instance.StartActionTimer("CastBack");
         }
     }
 

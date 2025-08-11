@@ -1,19 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 /// <summary>
 /// Handles game-wide management tasks
 /// </summary>
 public class GameManager : SingletonPersistent<GameManager>
 {
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public SessionTelemetryData SessionData { get; private set; }
+    public string SessionId { get; private set; }
 
     private void Update()
     {
@@ -22,9 +15,27 @@ public class GameManager : SingletonPersistent<GameManager>
         {
             GameDataHandler.DeleteGameData();
             //GameDataHandler.CurrentGameData = GameDataHandler.LoadGameData("data", $"{_fishTotalToCatch}");
-            Debug.Log("Debug: Deleting Data");
+            //Debug.Log("Debug: Deleting Data");
         }
     }
 
-    
+    // This telemetry data processing is very rough
+    public void OnSessionStart()
+    {
+        Debug.Log("Starting session...");
+        SessionData = new SessionTelemetryData()
+        {
+            StartTime = System.DateTime.Now,
+            EndTime = System.DateTime.MinValue, // nonfunctional for now
+            ConInitDur = null // Will be set when connection is established
+        };
+        InputDeviceManager.Instance.BLEDevice.RunWhenConnected(OnConnectionEstablished);
+    }
+
+    private void OnConnectionEstablished() 
+    {
+        SessionData.ConInitDur = (int)System.DateTime.Now.Subtract(SessionData.StartTime).TotalSeconds;
+        Debug.Log($"Connection established. Initialization duration: {SessionData.ConInitDur} seconds");
+        FirebaseUploadHandler.Instance.PostData("sessions", SessionData);
+    }
 }

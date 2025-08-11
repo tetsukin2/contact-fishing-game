@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class BrailleTestTrigger : MonoBehaviour
 {
+    // without this comment the script breaks
     [SerializeField] private string _thumbPatternSequence;
     [SerializeField] private string _indexPatternSequence;
     [SerializeField] private bool _active = false;

@@ -29,6 +29,8 @@ public class FishInspectionState : IFishingState
 
         // Input reset
         InputDeviceManager.Instance.RotationHelper.ClearRotationHistory();
+
+        ActionTelemetryHandler.Instance.StartActionTimer("InspectPrepare");
     }
 
     public void Update()
@@ -53,14 +55,20 @@ public class FishInspectionState : IFishingState
         {
             _reachedInitialRotation = true;
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.InspectPromptName);
+
+            ActionTelemetryHandler.Instance.EndAndRecordActionTimer("InspectPrepare");
+            ActionTelemetryHandler.Instance.StartActionTimer("InspectFish");
         }
         else if (_reachedInitialRotation && // Now rotate up
-            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(FishingManager.Instance.SideRotateUpAngle))
+            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.SideRotateUpAngle))
         {
             _reachedInitialRotation = false; // Reset for release rotation
             FishingManager.Instance.OnFishInspection();
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.ReleaseReadyPromptName);
             _fishInspected = true;
+
+            ActionTelemetryHandler.Instance.EndAndRecordActionTimer("InspectFish");
+            ActionTelemetryHandler.Instance.StartActionTimer("ReleasePrepare");
         }
     }
 
@@ -72,11 +80,16 @@ public class FishInspectionState : IFishingState
         {
             _reachedInitialRotation = true;
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.ReleasePromptName);
+
+            ActionTelemetryHandler.Instance.EndAndRecordActionTimer("ReleasePrepare");
+            ActionTelemetryHandler.Instance.StartActionTimer("ReleaseFish");
         }
         else if (_reachedInitialRotation && // Now rotate down
-            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(FishingManager.Instance.SideRotateDownAngle))
+            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.SideRotateDownAngle))
         {
             HandleFishAdding();
+
+            ActionTelemetryHandler.Instance.EndAndRecordActionTimer("ReleaseFish");
         }
     }
 

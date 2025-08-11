@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -22,6 +23,8 @@ public class LevelManager : Singleton<LevelManager>
     [HideInInspector] public float Timer;
 
     public bool IsGamePaused { get; private set; } = false;
+
+    private GameTelemetryData _telemetryData;
 
     private UnityEvent<bool> _gamePaused = new();
 
@@ -71,6 +74,34 @@ public class LevelManager : Singleton<LevelManager>
         InputDeviceManager.Instance.BLEDevice.RunWhenConnected(SetupGame);
         // SetGamePaused(false); // Ensure game is not paused at start
         _gamePaused.Invoke(false); // Manual invoke cuz of pause safeguards
+
+        // Telemetry
+        ActionTelemetryHandler.Instance.ClearAllActionData(); // Work on a clean slate
+        _telemetryData = new GameTelemetryData
+        {
+            StageID = _levelName,
+            GameCompleted = false,
+            FishCatchRequirement = _fishTotalToCatch,
+        };
+
+        GameStateExited.AddListener((state) =>
+        {
+            if (state == GameStartState) _telemetryData.StartTime = System.DateTime.Now;
+        });
+
+        GameStateEntered.AddListener((state) =>
+        {
+            if (state == GameEndState)
+            {
+                _telemetryData.EndTime = System.DateTime.Now;
+                _telemetryData.AverageActionsPerReel = FishingManager.Instance.ReelingState.ActionsPerReelList.Count > 0
+                    ? (int)FishingManager.Instance.ReelingState.ActionsPerReelList.Average()
+                    : 0;
+                _telemetryData.AverageTimeTaken = ActionTelemetryHandler.Instance.GetAverageTimeTaken();
+                _telemetryData.GameCompleted = true;
+                FirebaseUploadHandler.Instance.PostData("games", _telemetryData);
+            }
+        });
     }
 
     private void Update()

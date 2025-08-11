@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,11 +6,6 @@ using UnityEngine.Events;
 /// </summary>
 public class UIManager : Singleton<UIManager>
 {
-    [Header("Loading Screen")]
-    [SerializeField] private GUIContainer _loadingScreen;
-    [SerializeField] private TextMeshProUGUI _loadingText;
-
-    [Space]
     [SerializeField] private JoystickCursor _joystickCursor;
 
     // There are separate explicit input prompts because of how the video render textures work
@@ -20,14 +13,6 @@ public class UIManager : Singleton<UIManager>
     public UnityEvent<InputPrompt> SecondInputPromptShown { get; private set; } = new();
 
     public JoystickCursor JoystickCursor => _joystickCursor;
-
-    protected override void OnRegister()
-    {
-        // Loading screen things
-        _loadingScreen.Show(true);
-        InputDeviceManager.Instance.StatusUpdated.AddListener((string message) => _loadingText.SetText(message));
-        InputDeviceManager.Instance.BLEDevice.CharacteristicsLoaded.AddListener(() => _loadingScreen.Show(false));
-    }
 
     #region Input Prompts
     //Ideally, only handle prompt showing or hiding at the start or end of each game or fishing state.

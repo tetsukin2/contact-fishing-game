@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,9 +8,12 @@ public class MainMenuUIController : Singleton<MainMenuUIController>
 {
     public enum MainMenuView
     {
+        None,
+        TitleOnly,
         MainMenu,
         Encyclopedia,
         LevelSelect,
+        Login,
         Settings,
     }
 
@@ -24,13 +25,7 @@ public class MainMenuUIController : Singleton<MainMenuUIController>
     [SerializeField] private InputPrompt _encyclopediaInput;
     [SerializeField] private InputPrompt _encyclopediaSecondInput;
 
-    [Space]
-    [Header("Game State GUI")]
-    // Major game "views" that are state dependent
-    [SerializeField] private MainMenuGUI _mainMenuGUI;
-    [SerializeField] private EncyclopediaGUI _encyclopediaGUI;
-
-    public MainMenuView CurrentView { get; private set; } = MainMenuView.MainMenu;
+    public MainMenuView CurrentView { get; private set; } = MainMenuView.Login;
 
     public UnityEvent<MainMenuView> ViewChanged { get; private set; } = new();
 
@@ -40,19 +35,28 @@ public class MainMenuUIController : Singleton<MainMenuUIController>
     public InputPrompt EncyclopediaInput => _encyclopediaInput;
     public InputPrompt EncyclopediaSecondInput => _encyclopediaSecondInput;
 
-    protected override void OnRegister()
-    {
-        HideAllGUI();
-    }
-
+    // Things only happen after we establish a connection
     protected override void OnSetup()
     {
         InputDeviceManager.Instance.BLEDevice.RunWhenConnected(FirstTimeSetup);
     }
 
+    /// <summary>
+    /// Called when the user completes the login process. 
+    /// Changes view to title and starts the BLE connection process.
+    /// </summary>
+    public void OnLoginComplete()
+    {
+        ChangeView(MainMenuView.TitleOnly);
+        // not sure about this being in a UI script but can't think of better right now
+        GameManager.Instance.OnSessionStart();
+        InputDeviceManager.Instance.BLEDevice.StartConnectionAttempt();
+    }
+
+    // After login and on successful connection
     private void FirstTimeSetup()
     {
-        // Start in the main menu
+        // Start in Main Menu
         ChangeView(MainMenuView.MainMenu);
 
         // Start with these inputs
@@ -61,27 +65,12 @@ public class MainMenuUIController : Singleton<MainMenuUIController>
     }
 
     /// <summary>
-    /// Handles main menu view changes
+    /// Handles main menu view changes and fires the ViewChanged event.
+    /// Individual elements affected by view changes should subscribe to this event or use the MainMenuVisibility component.
     /// </summary>
-    /// <param name="newView">New view to _transitionAnimator to</param>
     public void ChangeView(MainMenuView newView)
     {
         CurrentView = newView;
         ViewChanged.Invoke(newView);
-        OnViewChanged(newView);
-    }
-
-    private void HideAllGUI()
-    {
-        // Hide all GUI elements
-        _mainMenuGUI.Show(false);
-        _encyclopediaGUI.Show(false);
-    }
-
-    private void OnViewChanged(MainMenuView newView)
-    {
-        // Show the appropriate GUI based on the game state
-        _mainMenuGUI.Show(newView == MainMenuView.MainMenu);
-        _encyclopediaGUI.Show(newView == MainMenuView.Encyclopedia);
     }
 }

@@ -13,8 +13,6 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
         BOTH
     }
 
-    public float PatternDelay = 0.2f; // Delay between patterns
-
     private class EncodedBraillePatternSequence
     {
         public string SequenceName; // PromptName of the sequence
@@ -30,7 +28,7 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
         public int Value2;
     }
 
-    public UnityEvent<Finger> PatternEnded = new();
+    public UnityEvent<Finger> _patternEnded = new();
 
     private List<EncodedBraillePatternSequence> _encodedThumbBraillePatternSequences = new();
     private List<EncodedBraillePatternSequence> _encodedIndexBraillePatternSequences = new();
@@ -45,9 +43,19 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
 
     private Coroutine _patternCoroutine;
 
+    /// <summary>
+    /// Event that is invoked when a pattern sequence ends. Passes finger that ended the sequence.
+    /// </summary>
+    public UnityEvent<Finger> PatternEnded => _patternEnded;
+
     protected override void OnAwake()
     {
-        // Register all braille pattern sequences from resources
+        RegisterBraillePatternSequences();
+    }
+
+    // Not loaded in ResourceSystem for now as the operations needed are deeply integrated into this class
+    private void RegisterBraillePatternSequences()
+    {
         List<BraillePinPatternSequence> rawBraillePatternSequences =
             Resources.LoadAll<BraillePinPatternSequence>("BraillePatternSequences").ToList();
 
@@ -239,7 +247,7 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
 
     private IEnumerator RunSequence()
     {
-        WaitForSeconds interval = new(PatternDelay);
+        WaitForSeconds interval = new(ResourceSystem.Instance.GameplayConfig.BraillePatternInterval);
 
         while (true)
         {
@@ -279,13 +287,13 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
     {
         _currentThumbSequence = null;
         _currentThumbPatternIndex = 0;
-        PatternEnded.Invoke(Finger.THUMB);
+        _patternEnded.Invoke(Finger.THUMB);
     }
 
     private void ResetIndexSequence()
     {
         _currentIndexSequence = null;
         _currentIndexPatternIndex = 0;
-        PatternEnded.Invoke(Finger.INDEX);
+        _patternEnded.Invoke(Finger.INDEX);
     }
 }

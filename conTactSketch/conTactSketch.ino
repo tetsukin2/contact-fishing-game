@@ -19,8 +19,8 @@ const int SW_PIN  = 8;
 const int ON     = 2;
 const int STROBE = 4; // LATCH
 const int CLOCK  = 5; // CLOCK
-const int DATA_1 = 6; // P20-1 DATA
-const int DATA_2 = 7; // P20-2 DATA
+const int DATA_1 = 7; // P20-1 DATA
+const int DATA_2 = 6; // P20-2 DATA
 
 const int bitOrder[8] = {6, 7, 2, 1, 0, 5, 4, 3};
 
@@ -165,60 +165,59 @@ void loop() {
   }
 }
 
-bool recvInProgress = false;
-byte ndx = 0;
-
 void recvWithStartEndMarkers(char rc) {
+  static bool recvInProgress = false;
+  static byte ndx = 0;
   const char startMarker = '<';
   const char endMarker = '>';
 
-  if (recvInProgress) {
-    if (rc != endMarker) {
-      if (ndx < 14) {
-        receivedChars[ndx++] = rc;
-      } else {
-        // Overflow: abort and wait for next '<'
-        recvInProgress = false;
-        ndx = 0;
-        Serial.println("⚠️ Overflow in BLE message. Waiting for new packet.");
-      }
-    } else {
-      // End marker found, finalize message
-      receivedChars[ndx] = '\0';
-      recvInProgress = false;
-      ndx = 0;
-
-      // Parse values safely
-      if (strlen(receivedChars) == 12) {
-        int c0 = atoi(&receivedChars[0]);  // 0–2
-        int c1 = atoi(&receivedChars[3]);  // 3–5
-        int c2 = atoi(&receivedChars[6]);  // 6–8
-        int c3 = atoi(&receivedChars[9]);  // 9–11
-
-        cells1[0] = (byte)c0;
-        cells1[1] = (byte)c1;
-        cells2[0] = (byte)c2;
-        cells2[1] = (byte)c3;
-        FlushDualP20();
-
-        Serial.print("📩 Received: ");
-        Serial.print(c0); Serial.print(", ");
-        Serial.print(c1); Serial.print(", ");
-        Serial.print(c2); Serial.print(", ");
-        Serial.println(c3);
-      } else {
-        Serial.println("⚠️ Invalid message length. Ignored.");
-      }
-    }
-  } else if (rc == startMarker) {
+  if (rc == startMarker) {
     recvInProgress = true;
     ndx = 0;
+    return;
+  }
+
+  if (recvInProgress) {
+    if (rc != endMarker) {
+      if (ndx < 12) {
+        receivedChars[ndx++] = rc;
+      }
+    } else {
+      // End marker received
+      receivedChars[ndx] = '\0';
+      recvInProgress = false;
+
+      // Parse 4 chunks of 3 digits each: AAA BBB CCC DDD
+      char buf0[4], buf1[4], buf2[4], buf3[4];
+      strncpy(buf0, &receivedChars[0], 3); buf0[3] = '\0';
+      strncpy(buf1, &receivedChars[3], 3); buf1[3] = '\0';
+      strncpy(buf2, &receivedChars[6], 3); buf2[3] = '\0';
+      strncpy(buf3, &receivedChars[9], 3); buf3[3] = '\0';
+
+      int c0 = atoi(buf0);
+      int c1 = atoi(buf1);
+      int c2 = atoi(buf2);
+      int c3 = atoi(buf3);
+
+      cells1[0] = (byte)c0;
+      cells1[1] = (byte)c1;
+      cells2[0] = (byte)c2;
+      cells2[1] = (byte)c3;
+
+      FlushDualP20();
+
+      Serial.print("📨 Raw receivedChars: <"); Serial.print(receivedChars); Serial.println(">");
+      Serial.print("📩 Parsed Dual P20: ");
+      Serial.print(c0); Serial.print(", ");
+      Serial.print(c1); Serial.print(", ");
+      Serial.print(c2); Serial.print(", ");
+      Serial.print(c3); Serial.println();
+    }
   }
 }
 
 void FlushDualP20() {
   digitalWrite(STROBE, LOW);
-
   for (int byteIndex = 0; byteIndex < 2; byteIndex++) {
     for (int bitIndex = 0; bitIndex < 8; bitIndex++) {
       int bit = bitOrder[bitIndex];
@@ -227,12 +226,7 @@ void FlushDualP20() {
       digitalWrite(DATA_1, bitRead(cells1[byteIndex], bit) ? LOW : HIGH);
       digitalWrite(DATA_2, bitRead(cells2[byteIndex], bit) ? LOW : HIGH);
       digitalWrite(CLOCK, HIGH);
-        Serial.print("Cell2 Byte ");
-        Serial.print(byteIndex);
-        Serial.print(": ");
-        Serial.println(cells2[byteIndex], BIN);
     }
   }
-
   digitalWrite(STROBE, HIGH);
 }

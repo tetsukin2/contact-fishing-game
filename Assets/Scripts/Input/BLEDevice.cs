@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,6 +8,7 @@ using UnityEngine.Events;
 /// </summary>
 public class BLEDevice : MonoBehaviour
 {
+    // === IDS ===
     public const string TARGET_DEVICE_NAME = "FishingRodIMU";
 
     public const string IMU_SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
@@ -26,14 +28,26 @@ public class BLEDevice : MonoBehaviour
     //private string joyCharUUID = null;
     //public string BrailleCharacteristicUUID { get; private set; } = null; // characteristic uuid rn are hardcoded
 
+    // === CONNECTION HEALTH ===
+    [SerializeField] private bool _showConnectionDebug = false;
+    [Tooltip("Time in seconds after which a ping is sent if no IMU data is received.")]
+    [SerializeField] private float _healthPingInterval = 1.0f;
+    [SerializeField] private float _healthPingTimeout = 5.0f;
+
+    public float LastDeviceUpdateTime { get; private set; } = 0f;
+    public float LastHealthCheckTime { get; private set; } = 0f;
+    private byte pingByte = 1;
+    private Coroutine _healthCheckRoutine;
+
+    public bool IsConnected { get; private set; } = false;
+
+    // === MISC ===
     private Thread scanThread;
     private bool isScanning = false;
 
     private bool imuCharacteristicLoaded = false;
     private bool joystickCharacteristicLoaded = false;
     private bool brailleCharacteristicLoaded = false;
-
-    public bool IsConnected { get; private set; } = false;
 
     /// <summary>
     /// Event triggered when a connection attempt to the BLE Device starts.
@@ -43,6 +57,9 @@ public class BLEDevice : MonoBehaviour
 
     private void Start()
     {
+        // Data received event subscription
+        InputDeviceManager.Instance.IMUInput.DataReceived += OnDataReceived;
+
         InputDeviceManager.Instance.QueueStatusLog("Resetting BLE Scanner...");
 
         BleApi.StopDeviceScan();
@@ -50,14 +67,88 @@ public class BLEDevice : MonoBehaviour
         BleApi.Quit();
     }
 
+    #region Connection Health
+
+    private IEnumerator CheckConnectionHealth()
+    {
+        while (IsConnected)
+        {
+            // No data or ping, send ping
+            if (Time.time - LastDeviceUpdateTime > _healthPingInterval
+                && Time.time - LastHealthCheckTime > _healthPingInterval)
+            {
+                SendIMUPing(ConnectedDeviceID);
+                LastHealthCheckTime = Time.time; // Prevent flooding
+            }
+
+            // Nothing at all, try reconnect
+            if (Time.time - LastDeviceUpdateTime > _healthPingTimeout)
+            {
+                if (_showConnectionDebug) Debug.Log("IMU data timeout exceeded. No data received for a long time.");
+                HandleReconnect();
+                break;
+            }
+
+            yield return new WaitForSecondsRealtime(_healthPingInterval);
+        }
+    }
+
+    private void OnDataReceived(BleApi.BLEData _)
+    {
+        LastDeviceUpdateTime = Time.time;
+        //if (_showConnectionDebug) Debug.Log("Received BLE ping response.");
+    }
+
+    private void SendIMUPing(string deviceId)
+    {
+        if (string.IsNullOrEmpty(deviceId)) return;
+
+        byte[] payload = new byte[] { pingByte };
+
+        BleApi.BLEData bleData = new BleApi.BLEData
+        {
+            buf = new byte[512],
+            size = (short)payload.Length,
+            deviceId = deviceId,
+            serviceUuid = IMU_SERVICE_UUID,
+            characteristicUuid = IMU_CHARACTERISTIC_UUID
+        };
+
+        System.Array.Copy(payload, bleData.buf, payload.Length);
+
+        BleApi.SendData(in bleData, false);
+        if (_showConnectionDebug) Debug.Log("Pinging idle BLE Device...");
+    }
+
+    private void HandleReconnect()
+    {
+        IsConnected = false;
+        imuCharacteristicLoaded = false;
+        joystickCharacteristicLoaded = false;
+        brailleCharacteristicLoaded = false;
+
+        InputDeviceManager.Instance.QueueStatusLog("BLE device disconnected. Attempting to reconnect...");
+
+        // You can choose to rescan after delay or immediately
+        Thread.Sleep(1000);
+        StartConnectionAttempt();
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Starts the connection attempt to the BLE device. Only runs if not currently scanning.
+    /// </summary>
     public void StartConnectionAttempt()
     {
         if (isScanning) return; // Only start scanning once
 
-        BleApi.StartDeviceScan();
+        BleApi.StopDeviceScan();
+        //BleApi.StartDeviceScan();
         scanThread = new Thread(ScanForDevices);
         scanThread.Start();
-        isScanning = true;
+        //isScanning = true;
+        RunWhenConnected(() => LastDeviceUpdateTime = Time.time); // Reset last update time on successful connection
         ConnectionAttemptStarted.Invoke();
         Debug.Log("Starting Scan");
     }
@@ -65,6 +156,7 @@ public class BLEDevice : MonoBehaviour
     void ScanForDevices()
     {
         InputDeviceManager.Instance.QueueStatusLog("Scanning for FishingRodIMU...");
+        isScanning = true;
 
         while (isScanning)
         {
@@ -116,6 +208,8 @@ public class BLEDevice : MonoBehaviour
 
             while (BleApi.PollCharacteristic(out BleApi.Characteristic characteristic, true) == BleApi.ScanStatus.AVAILABLE)
             {
+                Debug.Log(characteristic.uuid.ToLower());
+
                 if (!imuCharacteristicLoaded &&
                     characteristic.uuid.ToLower().Contains(IMU_CHARACTERISTIC_UUID.ToLower()))
                 {
@@ -141,11 +235,23 @@ public class BLEDevice : MonoBehaviour
                     InputDeviceManager.Instance.QueueStatusLog("All Characteristics Loaded!");
                     UnityMainThreadDispatcher.Instance.Enqueue(() => CharacteristicsLoaded.Invoke());
                     IsConnected = true;
+                    UnityMainThreadDispatcher.Instance.Enqueue(StartConnectionHealthRoutine);
+                    //LastDeviceUpdateTime = Time.time; // Reset last update time on successful connection
                     InputDeviceManager.Instance.ButtonInput.StartReadingButtonData(""); // placeholder until proper button
                     return;
                 }
             }
         }
+    }
+
+    private void StartConnectionHealthRoutine()
+    {
+        if (_showConnectionDebug) Debug.Log("Starting connection health check routine...");
+        if (_healthCheckRoutine != null)
+        {
+            StopCoroutine(_healthCheckRoutine);
+        }
+        _healthCheckRoutine = StartCoroutine(CheckConnectionHealth());
     }
 
     void SubscribeToIMU(string deviceId, string serviceUuid, string characteristicUuid)
@@ -208,6 +314,9 @@ public class BLEDevice : MonoBehaviour
     private void OnApplicationQuit()
     {
         isScanning = false;
+
+        // Disconnect data received events
+        InputDeviceManager.Instance.IMUInput.DataReceived -= OnDataReceived;
 
         if (!string.IsNullOrEmpty(ConnectedDeviceID))
         {

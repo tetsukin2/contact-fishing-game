@@ -3,7 +3,7 @@
 
 // === BLE Setup ===
 BLEService imuService("19B10000-E8F2-537E-4F6C-D104768A1214");
-BLECharacteristic imuCharacteristic("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify, 12);
+BLECharacteristic imuCharacteristic("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify | BLEWriteWithoutResponse, 12);
 
 BLEService joystickService("19B20000-E8F2-537E-4F6C-D104768A1214");
 BLECharacteristic joystickCharacteristic("19B20001-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify, 3);
@@ -96,6 +96,16 @@ void loop() {
       if (millis() - lastSendTime >= minSendInterval) {
         lastSendTime = millis();
 
+        // Heartbeat
+        if (imuCharacteristic.written()) {
+          int len = imuCharacteristic.valueLength();
+
+          if (len == 1) {
+            imuCharacteristic.writeValue((uint8_t*)1, 1);
+            Serial.println("Responded to ping.");
+          }
+        }
+
         float x, y, z;
         if (IMU.accelerationAvailable()) {
           IMU.readAcceleration(x, y, z);
@@ -147,7 +157,7 @@ void loop() {
           last_sw = sw;
         }
       }
-
+      
       if (brailleCharacteristic.written()) {
         const uint8_t* rawData = brailleCharacteristic.value();
         int len = brailleCharacteristic.valueLength();

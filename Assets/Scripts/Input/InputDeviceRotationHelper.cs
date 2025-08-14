@@ -49,41 +49,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks whether device has rotated by a certain amount
-    /// </summary>
-    /// <param name="angle">Angle in degrees</param>
-    /// <param name="axis">Axis to check</param>
-    /// <returns></returns>
-    public bool HasRotatedByDegrees(float angle, IMUInput.RotationAxis axis)
-    {
-        float cumulativeRotation = 0f;
-
-        foreach (var rotationData in rotationHistory)
-        {
-            switch (axis)
-            {
-                case IMUInput.RotationAxis.x:
-                    cumulativeRotation += rotationData.Rotation.x;
-                    break;
-                case IMUInput.RotationAxis.y:
-                    cumulativeRotation += rotationData.Rotation.y;
-                    break;
-                case IMUInput.RotationAxis.z:
-                    cumulativeRotation += rotationData.Rotation.z;
-                    break;
-            }
-
-            if ((angle < 0 && cumulativeRotation <= angle) || (angle >= 0 && cumulativeRotation >= angle))
-            {
-                LastMeasuredAngle = cumulativeRotation;  // Store the last measured angle
-                return true;  // Threshold reached  
-            }
-        }
-
-        return false;  // Threshold not reached  
-    }
-
-    /// <summary>
     /// Checks if the device is currently in a specified rotation, with an allowance.
     /// </summary>
     public bool IsNearRotation(float angle, IMUInput.RotationAxis axis)
@@ -104,30 +69,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
         if (_debugMode) Debug.Log("Rotation Difference: " + Mathf.Abs(angle - deviceRotation));
         // Check if the absolute rotation is within the threshold and matches the angle sign
         return Mathf.Abs(angle - deviceRotation) <= AbsoluteRotationAllowance;  
-    }
-
-    /// <summary>
-    /// Checks if the device is currently in a specified X rotation, with an allowance.
-    /// </summary>
-    public bool IsNearRotationX(float angle)
-    {
-        return IsNearRotation(angle, IMUInput.RotationAxis.x);
-    }
-
-    /// <summary>
-    /// Checks if the device is currently in a specified X rotation, with an allowance.
-    /// </summary>
-    public bool IsNearRotationY(float angle)
-    {
-        return IsNearRotation(angle, IMUInput.RotationAxis.y);
-    }
-
-    /// <summary>
-    /// Checks if the device is currently in a specified X rotation, with an allowance.
-    /// </summary>
-    public bool IsNearRotationZ(float angle)
-    {
-        return IsNearRotation(angle, IMUInput.RotationAxis.z);
     }
 
     public void ClearRotationHistory()
@@ -158,32 +99,6 @@ public class InputDeviceRotationHelper : MonoBehaviour
         // Return true if deviceRotation is greater than or equal to a positive or zero angle,  
         // or less than a negative angle  
         return (angle >= 0 && deviceRotation >= angle) || (angle < 0 && deviceRotation < angle);
-    }
-
-    /// <summary>
-    /// Helper version to take any two values
-    /// </summary>
-    /// <param name="angle"></param>
-    /// <param name="targetAngle"></param>
-    /// <returns></returns>
-    public static bool HasReachedRotation(float angle, float targetAngle)
-    {
-        // Return true if deviceRotation is greater than or equal to a positive or zero angle,  
-        // or less than a negative angle  
-        return (targetAngle >= 0 && angle >= targetAngle) || (targetAngle < 0 && angle < targetAngle);
-    }
-
-    /// <summary>
-    /// dunno anymore man
-    /// </summary>
-    /// <param name="angle"></param>
-    /// <param name="targetAngle"></param>
-    /// <returns></returns>
-    public static bool IsLessThanRotation(float angle, float targetAngle)
-    {
-        // Return true if deviceRotation is less than or equal to a positive or zero angle,  
-        // or greater than a negative angle  
-        return (targetAngle >= 0 && angle < targetAngle) || (targetAngle < 0 && angle > targetAngle);
     }
 
     /// <summary>  

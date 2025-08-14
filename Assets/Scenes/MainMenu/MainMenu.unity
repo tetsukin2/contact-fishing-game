@@ -383,6 +383,11 @@ PrefabInstance:
       propertyPath: showIMUData
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2924463425314946336, guid: 7305ef0656b1b974b8072d0aaccb70fd,
+        type: 3}
+      propertyPath: showBrailleData
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4778080553075497654, guid: 7305ef0656b1b974b8072d0aaccb70fd,
         type: 3}
       propertyPath: m_Name
@@ -13248,7 +13253,7 @@ PrefabInstance:
     - target: {fileID: 164442037322793477, guid: 067855f9fee577f4585097008844177a,
         type: 3}
       propertyPath: _enableTelemetry
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2645794493257239741, guid: 067855f9fee577f4585097008844177a,
         type: 3}
@@ -13431,7 +13436,7 @@ PrefabInstance:
     - target: {fileID: 5358089458127908277, guid: 38837bc17835b0d4e801fa9c06a01102,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7019683981560186861, guid: 38837bc17835b0d4e801fa9c06a01102,
         type: 3}

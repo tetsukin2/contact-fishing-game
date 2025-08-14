@@ -17,6 +17,11 @@ public class IMUInput : MonoBehaviour
     public Vector3 Rotation { get; private set; } = Vector3.zero;
 
     /// <summary>
+    /// Invoked when new IMU data is received.
+    /// </summary>
+    public event System.Action<BleApi.BLEData> DataReceived;
+
+    /// <summary>
     /// Begins the process of reading IMU data.
     /// </summary>
     public void StartReadingIMUData(string characteristicUUID)
@@ -32,7 +37,13 @@ public class IMUInput : MonoBehaviour
 
             if (hasData && data.characteristicUuid.ToLower().Contains(characteristicUuid.ToLower()))
             {
-                if (data.size >= 6)
+                //Debug.Log(data.buf);
+                if (data.size == 1)
+                {
+                    if (showIMUData) Debug.Log($"Ping response from Arduino: {data.buf[0]}");
+                    DataReceived.Invoke(data);
+                }
+                else if (data.size >= 6)
                 {
                     short x = System.BitConverter.ToInt16(data.buf, 0);
                     short y = System.BitConverter.ToInt16(data.buf, 2);
@@ -40,13 +51,13 @@ public class IMUInput : MonoBehaviour
 
                     // Do calcs
                     Rotation = new Vector3(-x / 1000f, -y / 1000f, -z / 1000f);
+                    DataReceived.Invoke(data);
 
                     if (showIMUData) Debug.Log($"Processed IMU Rotation: {Rotation}");
                 }
             }
+
             yield return new WaitForSecondsRealtime(0.01f);
         }
     }
-
-    
 }

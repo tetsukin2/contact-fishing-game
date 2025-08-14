@@ -65,11 +65,11 @@ public class JoystickInput : MonoBehaviour
 
                     // Compute per-axis scaling, as center calibration may not be 0,0
                     // Some inversion here
-                    float scaledY = (adjustedInputRaw.x >= 0)
+                    float scaledX = (adjustedInputRaw.x >= 0)
                         ? adjustedInputRaw.x / (1f - joystickCenter.x)
                         : adjustedInputRaw.x / (1f + joystickCenter.x);
 
-                    float scaledX = (adjustedInputRaw.y >= 0)
+                    float scaledY = (adjustedInputRaw.y >= 0)
                         ? adjustedInputRaw.y / (1f - joystickCenter.y)
                         : adjustedInputRaw.y / (1f + joystickCenter.y);
 

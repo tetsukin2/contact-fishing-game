@@ -50,6 +50,7 @@ public class BaitPreparationState : IFishingState
         if (_currentStep % 2 == 0 
             && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(-ResourceSystem.Instance.GameplayConfig.RollRightAngle))
         {
+            Debug.Log("has reached rotation");
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.BaitPrepPromptLeftName);
             _currentStep++;
 
@@ -73,7 +74,7 @@ public class BaitPreparationState : IFishingState
         //Debug.Log(fishingManager.InputHelper.IsNearRotation(
         //    -90f, InputDeviceManager.RotationAxis.x));
 
-        if (!IsBaitPreparationComplete())
+        if (IsBaitPreparationComplete())
             FishingManager.Instance.TransitionToState(FishingManager.Instance.CastingState);
     }
 

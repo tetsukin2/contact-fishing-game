@@ -2,12 +2,81 @@ using System.Reflection;
 using System;
 using System.Collections;
 using System.Text;
+using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Formats data to Firestore's expected JSON structure.
 /// </summary>
 public static class FirestoreFormatUtility
 {
+    public static Dictionary<string, object> Unwrap(FirestoreDocumentWrapper wrapper, string fieldKey = null)
+    {
+        if (wrapper == null || wrapper.fields == null)
+        {
+            Debug.LogError("Failed to deserialize Firestore document or fields are missing.");
+            return null;
+        }
+
+        if (!string.IsNullOrEmpty(fieldKey))
+        {
+            if (!wrapper.fields.TryGetValue(fieldKey, out var subField) || subField.mapValue == null)
+            {
+                Debug.LogWarning($"Field '{fieldKey}' not found in Firestore document.");
+                return null;
+            }
+
+            return ParseMap(subField.mapValue);
+        }
+
+        return ParseMap(new Dictionary<string, FirestoreField> { { "root", new FirestoreField { mapValue = wrapper.fields } } })["root"] as Dictionary<string, object>;
+    }
+
+    public static string WrapAsFieldsOnly<T>(T dataClass)
+{
+    return SerializeObject(dataClass); // this returns just the fields dictionary
+}
+
+
+    private static Dictionary<string, object> ParseMap(Dictionary<string, FirestoreField> map)
+    {
+        var result = new Dictionary<string, object>();
+
+        foreach (var kvp in map)
+        {
+            var field = kvp.Value;
+
+            if (field.stringValue != null) result[kvp.Key] = field.stringValue;
+            else if (field.integerValue != null && long.TryParse(field.integerValue, out var l)) result[kvp.Key] = l;
+            else if (field.doubleValue != null && double.TryParse(field.doubleValue, out var d)) result[kvp.Key] = d;
+            else if (field.booleanValue != null && bool.TryParse(field.booleanValue, out var b)) result[kvp.Key] = b;
+            else if (field.mapValue != null) result[kvp.Key] = ParseMap(field.mapValue);
+            else result[kvp.Key] = null;
+        }
+
+        return result;
+    }
+
+    private static object GetPrimitiveValue(FirestoreField field)
+    {
+        if (!string.IsNullOrEmpty(field.stringValue)) return field.stringValue;
+        if (!string.IsNullOrEmpty(field.integerValue)) return int.TryParse(field.integerValue, out int i) ? i : field.integerValue;
+        if (!string.IsNullOrEmpty(field.doubleValue)) return double.TryParse(field.doubleValue, out double d) ? d : field.doubleValue;
+        if (!string.IsNullOrEmpty(field.booleanValue)) return bool.TryParse(field.booleanValue, out bool b) ? b : field.booleanValue;
+
+        if (field.mapValue != null)
+        {
+            var map = new Dictionary<string, object>();
+            foreach (var kvp in field.mapValue)
+            {
+                map[kvp.Key] = GetPrimitiveValue(kvp.Value);
+            }
+            return map;
+        }
+
+        return null;
+    }
+
     public static string WrapClass<T>(T dataClass)
     {
         StringBuilder sb = new();
@@ -25,22 +94,36 @@ public static class FirestoreFormatUtility
         sb.Append("{");
 
         var fields = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+        var properties = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
         bool first = true;
 
+        // Serialize fields
         foreach (var field in fields)
         {
             object value = field.GetValue(obj);
-            if (value == null) continue;
 
             if (!first) sb.Append(",");
             sb.Append($"\"{ToCamelCase(field.Name)}\":");
-            sb.Append(SerializeValue(value));
+            sb.Append(value == null ? "{\"nullValue\":null}" : SerializeValue(value));
+            first = false;
+        }
+
+        // Serialize properties
+        foreach (var prop in properties)
+        {
+            object value = prop.GetValue(obj);
+
+            if (!first) sb.Append(",");
+            sb.Append($"\"{ToCamelCase(prop.Name)}\":");
+            sb.Append(value == null ? "{\"nullValue\":null}" : SerializeValue(value));
             first = false;
         }
 
         sb.Append("}");
         return sb.ToString();
     }
+
 
     // Serializes a value to a Firestore key-value pair format
     private static string SerializeValue(object value)

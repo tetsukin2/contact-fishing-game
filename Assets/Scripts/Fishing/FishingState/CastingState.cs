@@ -54,36 +54,45 @@ public class CastingState : IFishingState
 
         //Debug.Log(Mathf.Lerp(fishingManager.RotateUpAngle, 0f, Mathf.Abs(InputDeviceManager.Rotation.y)));
 
+        var rotationHelper = InputDeviceManager.Instance.RotationHelper; 
+
         if (!_hasCastBack
             && InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateUpAngle))
         {
-            OnCastBack();
+            OnCastBack(rotationHelper);
         }
         // OnCast forward
         else if (_hasCastBack
             && InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateDownAngle))
         {
-            OnCastForward();
+            OnCastForward(rotationHelper);
         }
     }
 
-    private void OnCastBack()
+    private void OnCastBack(InputDeviceRotationHelper rotationHelper)
     {
         _hasCastBack = true;
         UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.CastForwardPromptName);
 
         ActionTelemetryHandler.Instance.EndAndRecordActionTimer("CastBack");
+        ActionTelemetryHandler.Instance.RecordRepetition("CastBack");        
+        ActionTelemetryHandler.Instance.RecordAngle("CastBack", Mathf.Abs(rotationHelper.CurrentX)); 
+
         ActionTelemetryHandler.Instance.StartActionTimer("CastForward");
     }
 
-    private void OnCastForward()
+    private void OnCastForward(InputDeviceRotationHelper rotationHelper)
     {
         FishingManager.Instance.Targeting.CanChangeSelection = false; // Disable fish selection while casting
 
         // Reset for return to cast forward
         _hasCastBack = false;
         _currentCastSteps++;
+
         ActionTelemetryHandler.Instance.EndAndRecordActionTimer("CastForward");
+        ActionTelemetryHandler.Instance.RecordRepetition("CastForward");        // ✅ Added
+        ActionTelemetryHandler.Instance.RecordAngle("CastForward", Mathf.Abs(rotationHelper.CurrentX)); // ✅ Added
+        
         if (_currentCastSteps >= FishingManager.Instance.CastSteps) // cast proper if steps reached
         {
             _hasCast = true;

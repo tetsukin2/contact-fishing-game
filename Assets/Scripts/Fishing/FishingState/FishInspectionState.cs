@@ -49,6 +49,7 @@ public class FishInspectionState : IFishingState
     private void FishNotInspectedCheck()
     {
         // Maybe double check these rotation checks?
+        var rotationHelper = InputDeviceManager.Instance.RotationHelper;
 
         if (!_reachedInitialRotation && // Start at side neutral
             InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(-0.8f))
@@ -57,6 +58,9 @@ public class FishInspectionState : IFishingState
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.InspectPromptName);
 
             ActionTelemetryHandler.Instance.EndAndRecordActionTimer("InspectPrepare");
+            ActionTelemetryHandler.Instance.RecordRepetition("InspectPrepare");       
+            ActionTelemetryHandler.Instance.RecordAngle("InspectPrepare", Mathf.Abs(rotationHelper.CurrentY)); 
+
             ActionTelemetryHandler.Instance.StartActionTimer("InspectFish");
         }
         else if (_reachedInitialRotation && // Now rotate up
@@ -68,6 +72,8 @@ public class FishInspectionState : IFishingState
             _fishInspected = true;
 
             ActionTelemetryHandler.Instance.EndAndRecordActionTimer("InspectFish");
+            ActionTelemetryHandler.Instance.RecordRepetition("InspectFish");           
+            ActionTelemetryHandler.Instance.RecordAngle("InspectFish", Mathf.Abs(rotationHelper.CurrentX)); 
             ActionTelemetryHandler.Instance.StartActionTimer("ReleasePrepare");
         }
     }
@@ -75,6 +81,8 @@ public class FishInspectionState : IFishingState
     // Checks while the fish has already been inspected
     private void FishInspectedCheck()
     {
+        var rotationHelper = InputDeviceManager.Instance.RotationHelper;
+
         if (!_reachedInitialRotation && // Return to neutral
             InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(-0.8f))
         {
@@ -82,6 +90,9 @@ public class FishInspectionState : IFishingState
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.ReleasePromptName);
 
             ActionTelemetryHandler.Instance.EndAndRecordActionTimer("ReleasePrepare");
+            ActionTelemetryHandler.Instance.RecordRepetition("ReleasePrepare");       
+            ActionTelemetryHandler.Instance.RecordAngle("ReleasePrepare", Mathf.Abs(rotationHelper.CurrentY)); 
+
             ActionTelemetryHandler.Instance.StartActionTimer("ReleaseFish");
         }
         else if (_reachedInitialRotation && // Now rotate down
@@ -90,6 +101,8 @@ public class FishInspectionState : IFishingState
             HandleFishAdding();
 
             ActionTelemetryHandler.Instance.EndAndRecordActionTimer("ReleaseFish");
+            ActionTelemetryHandler.Instance.RecordRepetition("ReleaseFish");         
+            ActionTelemetryHandler.Instance.RecordAngle("ReleaseFish", Mathf.Abs(rotationHelper.CurrentX)); 
         }
     }
 

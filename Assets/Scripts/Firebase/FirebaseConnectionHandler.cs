@@ -18,7 +18,8 @@ public class FirebaseConnectionHandler : SingletonPersistent<FirebaseConnectionH
     protected override void OnAwake()
     {
         // Initialize Firebase
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
+        {
             var dependencyStatus = task.Result;
             if (dependencyStatus == DependencyStatus.Available)
             {
@@ -36,15 +37,43 @@ public class FirebaseConnectionHandler : SingletonPersistent<FirebaseConnectionH
     }
 
     // This method is called whenever the authentication state changes
+    // void AuthStateChanged(object sender, System.EventArgs eventArgs)
+    // {
+    //     if (auth.CurrentUser != currentUser)
+    //     {
+    //         currentUser = auth.CurrentUser;
+    //         if (currentUser != null)
+    //         {
+    //             Debug.Log($"Signed in as {currentUser.DisplayName ?? currentUser.UserId}");
+    //             // Get the ID Token immediately after sign-in
+    //             GetAndStoreIdToken();
+    //         }
+    //         else
+    //         {
+    //             Debug.Log("Signed out.");
+    //             CurrentAuthToken = null;
+    //         }
+    //     }
+    // }
+    
     void AuthStateChanged(object sender, System.EventArgs eventArgs)
     {
         if (auth.CurrentUser != currentUser)
         {
             currentUser = auth.CurrentUser;
+
             if (currentUser != null)
             {
+                if (currentUser.IsAnonymous)
+                {
+                    Debug.Log("Anonymous user detected at startup — signing out.");
+                    auth.SignOut();
+                    currentUser = null;
+                    CurrentAuthToken = null;
+                    return;
+                }
+
                 Debug.Log($"Signed in as {currentUser.DisplayName ?? currentUser.UserId}");
-                // Get the ID Token immediately after sign-in
                 GetAndStoreIdToken();
             }
             else
@@ -54,6 +83,7 @@ public class FirebaseConnectionHandler : SingletonPersistent<FirebaseConnectionH
             }
         }
     }
+
 
     // Function to get the ID Token
     async void GetAndStoreIdToken()

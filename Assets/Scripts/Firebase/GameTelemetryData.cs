@@ -14,5 +14,7 @@ public class GameTelemetryData
     public int AverageActionsPerReel;
     public bool GameCompleted;
     public int FishCatchRequirement;
-    public Dictionary<string, int> AverageTimeTaken; // ActionName, AverageTimeTaken
+    public Dictionary<string, float> AverageTimeTaken; // ActionName, AverageTimeTaken
+    public Dictionary<string, int> RepetitionCounts; // Number of times each action was done
+    public Dictionary<string, float> MaxAngles;       // Highest angle achieved per action
 }

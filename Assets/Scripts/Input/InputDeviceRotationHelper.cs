@@ -28,6 +28,12 @@ public class InputDeviceRotationHelper : MonoBehaviour
     private float _cumulativeJoystickAngle = 0f; // Cumulative angular change
     private int _rotationCount = 0; // Number of full rotations
 
+    // these properties to expose IMU rotation directly
+    public float CurrentX => InputDeviceManager.Instance.IMUInput.Rotation.x;
+    public float CurrentY => InputDeviceManager.Instance.IMUInput.Rotation.y;
+    public float CurrentZ => InputDeviceManager.Instance.IMUInput.Rotation.z;
+
+
     // So we don't undo a bunch of progress by going the other way
     public bool TrackJoystickClockwise
     {

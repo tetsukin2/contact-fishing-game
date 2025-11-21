@@ -58,7 +58,7 @@ public class FishingManager : StaticInstance<FishingManager>
     public string ReleaseReadyPromptName;
     public string ReleasePromptName;
     [SerializeField] private FishInspectionPanel _fishInspectionGUI;
-    [SerializeField] private GameObject _hookedFish; // show and hide in inspection
+    [SerializeField] private GameObject _hookedFish; 
 
     private IFishingState _currentState;
     private FishData _caughtFish;
@@ -85,6 +85,13 @@ public class FishingManager : StaticInstance<FishingManager>
 
     protected override void OnRegister()
     {
+        Debug.Log($"FishingManager is on GameObject: {gameObject.name}", gameObject);
+
+        Debug.Log("Before state Setup: ReelActionSequence:");
+        foreach (var action in ReelActionSequence)
+        {
+            Debug.Log(action);
+        }
         // Setup states, these are in start to ensure all references are set
         IdleFishingState.Setup();
         BaitPreparationState.Setup();
@@ -92,6 +99,12 @@ public class FishingManager : StaticInstance<FishingManager>
         WaitingForBiteState.Setup();
         ReelingState.Setup();
         FishInspectionState.Setup();
+
+        Debug.Log("After Setup: ReelActionSequence:");
+        foreach (var action in ReelActionSequence)
+        {
+            Debug.Log(action);
+        }
 
         // Only start bait prep after gameplay actually starts
         LevelManager.Instance.GameStateEntered.AddListener((state) =>

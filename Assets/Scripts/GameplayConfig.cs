@@ -29,4 +29,9 @@ public class GameplayConfig : ScriptableObject
     [Space]
     [Header("Braille")]
     public float BraillePatternInterval;
+
+     [Space]
+    [Header("Global Gameplay Data")]
+    public int FishTotalToCatch = 3; // Default value
+    public List<string> DiscoveredFish = new(); // Initialize to avoid null
 }

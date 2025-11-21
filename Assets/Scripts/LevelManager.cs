@@ -1,6 +1,8 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using Firebase.Auth;
+using Firebase;
 
 /// <summary>
 /// Handles level state transitions and other level-level stuff
@@ -51,6 +53,8 @@ public class LevelManager : Singleton<LevelManager>
     public int FishCaught => _fishCaught;
     public int FishTotalToCatch => _fishTotalToCatch;
 
+    private bool hasUploadedGameTelemetry = false;
+
     protected override void OnAwake()
     {
         // Setup when transition complete
@@ -72,6 +76,8 @@ public class LevelManager : Singleton<LevelManager>
     protected override void OnSetup() 
     {
         InputDeviceManager.Instance.BLEDevice.RunWhenConnected(SetupGame);
+
+         _fishTotalToCatch = ResourceSystem.Instance.GameplayConfig.FishTotalToCatch;
         // SetGamePaused(false); // Ensure game is not paused at start
         _gamePaused.Invoke(false); // Manual invoke cuz of pause safeguards
 
@@ -79,6 +85,7 @@ public class LevelManager : Singleton<LevelManager>
         ActionTelemetryHandler.Instance.ClearAllActionData(); // Work on a clean slate
         _telemetryData = new GameTelemetryData
         {
+             UserID = FirebaseAuth.DefaultInstance.CurrentUser?.UserId,
             StageID = _levelName,
             GameCompleted = false,
             FishCatchRequirement = _fishTotalToCatch,
@@ -91,15 +98,26 @@ public class LevelManager : Singleton<LevelManager>
 
         GameStateEntered.AddListener((state) =>
         {
-            if (state == GameEndState)
+            if (state == GameStartState)
             {
+                hasUploadedGameTelemetry = false;
+            }
+            if (state == GameEndState && !hasUploadedGameTelemetry)
+            {
+                 hasUploadedGameTelemetry = true;
+
                 _telemetryData.EndTime = System.DateTime.Now;
                 _telemetryData.AverageActionsPerReel = FishingManager.Instance.ReelingState.ActionsPerReelList.Count > 0
                     ? (int)FishingManager.Instance.ReelingState.ActionsPerReelList.Average()
                     : 0;
                 _telemetryData.AverageTimeTaken = ActionTelemetryHandler.Instance.GetAverageTimeTaken();
+                _telemetryData.RepetitionCounts = ActionTelemetryHandler.Instance.GetRepetitionCounts();
+                _telemetryData.MaxAngles = ActionTelemetryHandler.Instance.GetMaxAngles();
                 _telemetryData.GameCompleted = true;
+
+                Debug.Log("[TELEMETRY] GameTelemetryData:\n" + JsonUtility.ToJson(_telemetryData, true));
                 FirebaseUploadHandler.Instance.PostData("games", _telemetryData);
+
             }
         });
     }
@@ -187,6 +205,7 @@ public class LevelManager : Singleton<LevelManager>
 
     public static void QuitGame()
     {
+        GameManager.Instance.OnSessionEnd();  // Properly finalize session
         Application.Quit();
     }
 

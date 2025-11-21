@@ -12,6 +12,9 @@ public class ActionTelemetryHandler : SingletonPersistent<ActionTelemetryHandler
     // Stores the list of time taken for each action
     public Dictionary<string, List<float>> ActionTimeTaken { get; private set; } = new();
 
+    private Dictionary<string, int> _repetitionCounts = new();
+     private Dictionary<string, List<float>> _anglesPerAction = new();
+
     /// <summary>
     /// Starts timing an action. Multiple actions can be timed simultaneously.
     /// </summary>
@@ -46,9 +49,9 @@ public class ActionTelemetryHandler : SingletonPersistent<ActionTelemetryHandler
     /// <summary>
     /// Returns a dictionary of action names to their integer average time taken.
     /// </summary>
-    public Dictionary<string, int> GetAverageTimeTaken()
+    public Dictionary<string, float> GetAverageTimeTaken()
     {
-        var averages = new Dictionary<string, int>();
+        var averages = new Dictionary<string, float>();
         foreach (var kvp in ActionTimeTaken)
         {
             if (kvp.Value.Count > 0)
@@ -56,7 +59,8 @@ public class ActionTelemetryHandler : SingletonPersistent<ActionTelemetryHandler
                 float sum = 0f;
                 foreach (var t in kvp.Value)
                     sum += t;
-                int avg = Mathf.RoundToInt(sum / kvp.Value.Count);
+                //int avg = Mathf.RoundToInt(sum / kvp.Value.Count);
+                float avg = sum / kvp.Value.Count;
                 averages[kvp.Key] = avg;
             }
             else
@@ -71,5 +75,40 @@ public class ActionTelemetryHandler : SingletonPersistent<ActionTelemetryHandler
     {
         _activeTimers.Clear();
         ActionTimeTaken.Clear();
+    }
+
+    public void RecordRepetition(string actionName)
+    {
+        if (!_repetitionCounts.ContainsKey(actionName))
+            _repetitionCounts[actionName] = 0;
+        _repetitionCounts[actionName]++;
+    }
+
+    public void RecordAngle(string actionName, float angle)
+    {
+        if (!_anglesPerAction.ContainsKey(actionName))
+            _anglesPerAction[actionName] = new List<float>();
+        _anglesPerAction[actionName].Add(angle);
+    }
+
+
+    public Dictionary<string, int> GetRepetitionCounts() => _repetitionCounts;
+     /// <summary>
+    /// Returns average of all recorded angles per action. If no angle exists, it's excluded.
+    /// </summary>
+    public Dictionary<string, float> GetMaxAngles()
+    {
+        var maxAverages = new Dictionary<string, float>();
+        foreach (var kvp in _anglesPerAction)
+        {
+            if (kvp.Value.Count > 0)
+            {
+                float maxSum = 0f;
+                foreach (float angle in kvp.Value)
+                    maxSum += angle;
+                maxAverages[kvp.Key] = maxSum / kvp.Value.Count;
+            }
+        }
+        return maxAverages;
     }
 }

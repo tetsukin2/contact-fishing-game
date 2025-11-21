@@ -45,6 +45,7 @@ public class BaitPreparationState : IFishingState
 
     public void Update()
     {
+        var rotationHelper = InputDeviceManager.Instance.RotationHelper;
         // Alternate directions, even (and start) directions go upward
         // TODO: Investigate why these prompts are messed up
         if (_currentStep % 2 == 0 
@@ -55,6 +56,9 @@ public class BaitPreparationState : IFishingState
             _currentStep++;
 
             ActionTelemetryHandler.Instance.EndAndRecordActionTimer("BaitPreparationRight");
+            ActionTelemetryHandler.Instance.RecordRepetition("BaitPreparationRight");
+            ActionTelemetryHandler.Instance.RecordAngle("BaitPreparationRight", Mathf.Abs(rotationHelper.CurrentY));
+
             if (!IsBaitPreparationComplete())
                 ActionTelemetryHandler.Instance.StartActionTimer("BaitPreparationLeft");
         }
@@ -64,6 +68,9 @@ public class BaitPreparationState : IFishingState
             _currentStep++;
 
             ActionTelemetryHandler.Instance.EndAndRecordActionTimer("BaitPreparationLeft");
+            ActionTelemetryHandler.Instance.RecordRepetition("BaitPreparationLeft");
+            ActionTelemetryHandler.Instance.RecordAngle("BaitPreparationLeft", Mathf.Abs(rotationHelper.CurrentY));
+
             if (!IsBaitPreparationComplete())
                 ActionTelemetryHandler.Instance.StartActionTimer("BaitPreparationRight");
         }

@@ -69,7 +69,8 @@ public class LevelManager : Singleton<LevelManager>
 
     protected override void OnRegister()
     {
-        InputDeviceManager.Instance.ButtonInput.Button1Pressed.AddListener(() => SetGamePaused(!IsGamePaused));
+         Debug.Log("Registering Button0Pressed listener");
+        InputDeviceManager.Instance.ButtonInput.Button0Pressed.AddListener(() => SetGamePaused(!IsGamePaused));
     }
 
     // Get everything registered first before setting up

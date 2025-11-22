@@ -6,7 +6,7 @@ BLEService imuService("19B10000-E8F2-537E-4F6C-D104768A1214");
 BLECharacteristic imuCharacteristic("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify, 12);
 
 BLEService joystickService("19B20000-E8F2-537E-4F6C-D104768A1214");
-BLECharacteristic joystickCharacteristic("19B20001-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify, 3);
+BLECharacteristic joystickCharacteristic("19B20001-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify, 5);
 
 BLEService brailleService("19B30000-E8F2-537E-4F6C-D104768A1214");
 BLECharacteristic brailleCharacteristic("19B30001-E8F2-537E-4F6C-D104768A1214", BLEWriteWithoutResponse, 20);
@@ -41,6 +41,9 @@ void setup() {
   pinMode(CLOCK, OUTPUT);
   pinMode(DATA_1, OUTPUT);
   pinMode(DATA_2, OUTPUT);
+  pinMode(9, INPUT_PULLUP);
+  pinMode(10, INPUT_PULLUP);
+
   digitalWrite(ON, LOW); // Booster ON
 
   if (!BLE.begin()) {
@@ -130,10 +133,15 @@ void loop() {
         int vry = analogRead(VRY_PIN);
         int sw = digitalRead(SW_PIN);
 
-        uint8_t joyData[3] = {
+        int button1 = digitalRead(9) == LOW ? 1 : 0;
+        int button2 = digitalRead(10) == LOW ? 1 : 0;
+
+        uint8_t joyData[5] = {
           (uint8_t)map(vrx, 0, 1023, 0, 255),
           (uint8_t)map(vry, 0, 1023, 0, 255),
-          (uint8_t)(sw == LOW ? 1 : 0)
+          (uint8_t)(sw == LOW ? 1 : 0),
+          (uint8_t)button1,
+          (uint8_t)button2
         };
 
         bool xChanged = abs(vrx - last_vrx) > joyDeadzone;
@@ -146,6 +154,10 @@ void loop() {
           last_vry = vry;
           last_sw = sw;
         }
+
+        Serial.print("🔘 Button States: ");
+        Serial.print("BTN1: "); Serial.print(button1);
+        Serial.print(" | BTN2: "); Serial.println(button2);
       }
 
       if (brailleCharacteristic.written()) {

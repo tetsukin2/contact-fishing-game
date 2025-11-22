@@ -23,7 +23,7 @@ public class ButtonInput : MonoBehaviour
     /// <summary>
     /// Invoked on the frame Button 1 (button) is pressed.
     /// </summary>
-    public UnityEvent Button1Pressed => _button0Pressed;
+    public UnityEvent Button1Pressed => _button1Pressed;
 
     /// <summary>
     /// Begins the process of reading Button data.
@@ -56,4 +56,24 @@ public class ButtonInput : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.01f);
         }
     }
+
+    public void HandleButtonData(byte button0, byte button1)
+    {
+        bool wasButton0PreviouslyPressed = Button0Held;
+        Button0Held = (button0 == 1);
+        if (!wasButton0PreviouslyPressed && Button0Held)
+        {
+            _button0Pressed.Invoke();
+            if (showButtonData) Debug.Log("Button 0 Pressed!");
+        }
+
+        bool wasButton1PreviouslyPressed = Button1Held;
+        Button1Held = (button1 == 1);
+        if (!wasButton1PreviouslyPressed && Button1Held)
+        {
+            _button1Pressed.Invoke();
+            if (showButtonData) Debug.Log("Button 1 Pressed!");
+        }
+    }
+
 }

@@ -5490,7 +5490,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _loadingScreen
       value: 
-      objectReference: {fileID: 1889589699}
+      objectReference: {fileID: 0}
     - target: {fileID: 926997940530255674, guid: 64d3c6c2864bf0c46ade874c96a83cc9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5728,18 +5728,6 @@ MonoBehaviour:
   _ready: {fileID: 199493736}
   _set: {fileID: 112257049}
   _fish: {fileID: 858156886}
---- !u!114 &1889589699 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2675418484381639897, guid: 38837bc17835b0d4e801fa9c06a01102,
-    type: 3}
-  m_PrefabInstance: {fileID: 1485276527}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf69d5da16fefbb4a9b9c4bd099c55b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1899768744
 GameObject:
   m_ObjectHideFlags: 0
@@ -6633,7 +6621,7 @@ PrefabInstance:
     - target: {fileID: 5976103249143603691, guid: ae6192366780bf145af9bac527d1dc40,
         type: 3}
       propertyPath: m_text
-      value: 'Rotate controller all the way to the leftkjjkjjjlklklk
+      value: 'Rotate controller all the way to the left
 
 '
       objectReference: {fileID: 0}

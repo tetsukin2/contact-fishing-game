@@ -40,11 +40,16 @@ public class JoystickInput : MonoBehaviour
 
             if (hasData && data.characteristicUuid.ToLower().Contains(characteristicUuid.ToLower()))
             {
-                if (data.size >= 3)
+                if (data.size >= 5)
                 {
                     byte rawX = data.buf[0];
                     byte rawY = data.buf[1];
                     byte sw = data.buf[2];
+                    byte button1 = data.buf[3]; // D9
+                    byte button2 = data.buf[4]; // D10
+
+                    InputDeviceManager.Instance.ButtonInput.HandleButtonData(button1, button2);
+
                     //Debug.Log(sw);
 
                     // some transposition happend cuz joystick component is rotated

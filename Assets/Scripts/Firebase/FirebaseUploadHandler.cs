@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
 using Firebase.Auth;
 using Firebase.Extensions;
@@ -26,7 +27,10 @@ public class FirebaseUploadHandler : Singleton<FirebaseUploadHandler>
     [SerializeField] private bool _enableTelemetry = true;
 
     private List<UploadQueueItem> uploadQueue = new();
-    private bool isUploading = false;
+    public bool IsUploading { get; private set; } = false;
+
+    public UnityEvent OnUploadQueueStartedEvent { get; private set; } = new();
+    public UnityEvent OnUploadQueueCompletedEvent { get; private set; } = new();
 
     protected override void OnAwake()
     {
@@ -38,7 +42,7 @@ public class FirebaseUploadHandler : Singleton<FirebaseUploadHandler>
     /// </summary>
     public void StartUploadQueue()
     {
-        if (!isUploading) StartCoroutine(ProcessQueue());
+        if (!IsUploading) StartCoroutine(ProcessQueue());
     }
 
     /// <summary>
@@ -78,27 +82,6 @@ public class FirebaseUploadHandler : Singleton<FirebaseUploadHandler>
             EnqueueUpload(url, jsonBody, "POST", idToken, onComplete);
         });
     }
-
-    // public void PostData(string collection, object data, string documentId = null)
-    // {
-    //     if (!_enableTelemetry) return;
-    //     var idToken = FirebaseConnectionHandler.Instance.CurrentAuthToken;
-    //     if (string.IsNullOrEmpty(idToken))
-    //     {
-    //         Debug.LogWarning("Cannot upload data: Auth token is not available.");
-    //         return;
-    //     }
-
-    //     string url = $"https://firestore.googleapis.com/v1/projects/contactreelease/databases/(default)/documents/{collection}";
-    //     if (!string.IsNullOrEmpty(documentId))
-    //         url += $"?documentId={documentId}&access_token={idToken}";
-    //     else
-    //         url += $"?access_token={idToken}";
-
-    //     Debug.Log("Uploading data to: " + url);
-    //     string jsonBody = FirestoreFormatUtility.WrapClass(data);
-    //     EnqueueUpload(url, jsonBody, "POST");
-    // }
 
     /// <summary>
     /// Patches data to an existing Firestore document.
@@ -303,7 +286,9 @@ public class FirebaseUploadHandler : Singleton<FirebaseUploadHandler>
     // Handle the upload queue processing from memory
     private IEnumerator ProcessQueue()
     {
-        isUploading = true;
+        IsUploading = true;
+        OnUploadQueueStartedEvent.Invoke();
+        Debug.Log("[UPLOAD QUEUE] Starting upload queue processing.");
 
         while (uploadQueue.Count > 0)
         {
@@ -349,6 +334,8 @@ public class FirebaseUploadHandler : Singleton<FirebaseUploadHandler>
             }
         }
 
-        isUploading = false;
+        IsUploading = false;
+        OnUploadQueueCompletedEvent.Invoke();
+        Debug.Log("[UPLOAD QUEUE] Upload queue processing completed.");
     }
 }

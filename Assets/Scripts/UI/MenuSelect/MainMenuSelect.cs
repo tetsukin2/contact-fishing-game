@@ -41,7 +41,7 @@ public class MainMenuSelect : MenuSelect
                 MainMenuUIController.Instance.ChangeView(MainMenuUIController.MainMenuView.Encyclopedia);
                 break;
             case EXIT_ACTION:
-                LevelManager.QuitGame();
+                LevelManager.Instance.QuitGame();
                 break;
             default:
                 Debug.LogWarning($"Unknown action: {_menuSelectOptions[_currentSelectionIndex].Action}");

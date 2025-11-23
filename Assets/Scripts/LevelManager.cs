@@ -204,10 +204,13 @@ public class LevelManager : Singleton<LevelManager>
         Time.timeScale = IsGamePaused ? 0f : 1f;
     }
 
-    public static void QuitGame()
+    /// <summary>
+    /// TODO: Better one-time registration to successful upload for quitting
+    /// </summary>
+    public void QuitGame()
     {
+        FirebaseUploadHandler.Instance.OnUploadQueueCompletedEvent.AddListener(() => Application.Quit());
         GameManager.Instance.OnSessionEnd();  // Properly finalize session
-        Application.Quit();
     }
 
 }

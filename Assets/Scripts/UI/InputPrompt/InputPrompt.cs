@@ -7,7 +7,22 @@ using UnityEngine.Video;
 [CreateAssetMenu(menuName = "Scriptable Object/Input Prompt")]
 public class InputPrompt : ScriptableObject
 {
-    public string PromptName; // Name of the input prompt
-    public string Message; // Message to display for the input prompt
-    public VideoClip Video; // Video clip associated with the input prompt
+    public enum PromptPulseType
+    {
+        None,
+        FastOutward,
+        SlowInward
+    }
+
+    [Header("Content")]
+    public string PromptName;
+    [TextArea(2, 4)]
+    public string Message;
+    public VideoClip Video;
+
+    [Header("Progress")]
+    public bool UseProgress = false;
+
+    [Header("Visual Feedback")]
+    public PromptPulseType PulseType = PromptPulseType.None;
 }

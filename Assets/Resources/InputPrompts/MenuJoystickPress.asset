@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: MenuJoystickPress
   m_EditorClassIdentifier: 
   PromptName: MenuJoystickPress
-  Message: Press the joystick to confirm
+  Message: Presss to confirm
   Video: {fileID: 32900000, guid: ae66d5739735287439c54d5d20205877, type: 3}
+  UseProgress: 0
+  PulseType: 0

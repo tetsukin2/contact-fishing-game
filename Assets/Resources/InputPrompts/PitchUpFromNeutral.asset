@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: PitchUpFromNeutral
   m_EditorClassIdentifier: 
   PromptName: PitchUpFromNeutral
-  Message: Tilt controller upwards
+  Message: Tilt up
   Video: {fileID: 32900000, guid: ff6ecc506ae3b8243a2370c25157b96d, type: 3}
+  UseProgress: 1
+  PulseType: 2

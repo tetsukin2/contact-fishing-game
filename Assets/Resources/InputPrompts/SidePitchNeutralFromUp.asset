@@ -15,3 +15,4 @@ MonoBehaviour:
   PromptName: SidePitchNeutralFromUp
   Message: While on its side, tilt controller to the middle
   Video: {fileID: 32900000, guid: 6ecc6e1bfa81d19439162bc31d301764, type: 3}
+  UseProgress: 1

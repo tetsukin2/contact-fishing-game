@@ -15,3 +15,4 @@ MonoBehaviour:
   PromptName: PitcchNeutralFromDown
   Message: Tilt controller to the middle
   Video: {fileID: 32900000, guid: fba00535fcba504458ad9e3e2658cda2, type: 3}
+  UseProgress: 1

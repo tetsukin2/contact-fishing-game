@@ -15,3 +15,5 @@ MonoBehaviour:
   PromptName: JoystickClockwise
   Message: Rotate joystick clockwise
   Video: {fileID: 32900000, guid: ef4f40b2e8db7054f8beaef8284b126a, type: 3}
+  UseProgress: 1
+  PulseType: 0

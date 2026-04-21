@@ -112,6 +112,12 @@ public class FishTargeting : MonoBehaviour
         SelectNewFish(fishes[Random.Range(0, fishes.Count)]);
     }
 
+    // Resets selection input so the fish-select camera does not jump on state enter
+    public void ResetSelectionInput()
+    {
+        _lastJoystickInput = InputDeviceManager.Instance.JoystickInput.Value;
+    }
+
     private void SelectNewFish(FishEntity fish)
     {
         selectedFish?.SetSelected(false);
@@ -127,6 +133,17 @@ public class FishTargeting : MonoBehaviour
             selectedFish.SetSelected(false);
             //selectedFish = null;
         }
+    }
+
+    // Resets the currently lured fish after an escape so it can be selected and lured again later
+    public void EscapeSelected()
+    {
+        if (selectedFish == null)
+            return;
+
+        selectedFish.SetSelected(false);
+        selectedFish.ReleaseFish();
+        selectedFish = null;
     }
 
     public void CatchSelected()

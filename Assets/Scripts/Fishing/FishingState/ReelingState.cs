@@ -52,6 +52,8 @@ public class ReelingState : IFishingState
         _progressBar.StartReel();
         BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", true);
 
+        AudioManager.Instance?.StartRodReelLoop();
+
         // Set up reel progress and sequence
         _reelActionCount = 0;
         _currentReelActionIndex = 0;
@@ -68,11 +70,14 @@ public class ReelingState : IFishingState
     {
         ActionsPerReelList.Add(_reelActionCount); // Add the count of actions performed to the list
         Debug.Log("Exiting Reeling State");
+        AudioManager.Instance?.StopRodReelLoop();
     }
 
     private void OnReelCompleted()
     {
         var fishingManager = FishingManager.Instance;
+
+        AudioManager.Instance?.PlayFishSplash();
 
         fishingManager.ReelIn(); // Call the reel in function
         fishingManager.Targeting.CatchSelected(); // Catch the fish and do resets

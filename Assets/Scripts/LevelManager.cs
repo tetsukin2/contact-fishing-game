@@ -103,6 +103,14 @@ public class LevelManager : Singleton<LevelManager>
             {
                 hasUploadedGameTelemetry = false;
             }
+
+            if (state == GameEndState)
+            {
+                AudioManager.Instance?.StopRodReelLoop();
+                // optional:
+                AudioManager.Instance?.PlayStageComplete();
+                AudioManager.Instance?.StopGameplayBgm();
+            }
             if (state == GameEndState && !hasUploadedGameTelemetry)
             {
                  hasUploadedGameTelemetry = true;
@@ -155,8 +163,15 @@ public class LevelManager : Singleton<LevelManager>
         // Reset for safety
         InputDeviceManager.Instance.BrailleOutput.SendBrailleASCII(0, 0, 0, 0);
 
+        AudioManager.Instance?.PlayGameplayBgm();
+
         // Start
         TransitionToState(GameStartState);
+    }
+
+    public void StartGameFromUI()
+    {
+        SetupGame();
     }
 
     /// <summary>

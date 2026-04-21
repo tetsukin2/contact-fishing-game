@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class RotateVerticalReelAction : IReelAction
 {
-    private bool _hasRotatedForward = false; // Need the initial rotation for proper input
+    private bool _hasRotatedForward = false;
 
     public void Enter()
     {
-        _hasRotatedForward = false; // Reset for new action
+        _hasRotatedForward = false;
         UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.ReelForwardPromptName);
 
         ActionTelemetryHandler.Instance.StartActionTimer("ReelForward");
@@ -19,11 +19,14 @@ public class RotateVerticalReelAction : IReelAction
         if (!_hasRotatedForward &&
             InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateDownAngle))
         {
+            InputPromptPanel.MainInstance?.PlayStepFeedback();
+            AudioManager.Instance?.PlaySuccess();
+
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.ReelBackPromptName);
             _hasRotatedForward = true;
 
             ActionTelemetryHandler.Instance.EndAndRecordActionTimer("ReelForward");
-            ActionTelemetryHandler.Instance.RecordRepetition("ReelForward"); 
+            ActionTelemetryHandler.Instance.RecordRepetition("ReelForward");
             ActionTelemetryHandler.Instance.RecordAngle("ReelForward", Mathf.Abs(rotationHelper.CurrentX));
 
             ActionTelemetryHandler.Instance.StartActionTimer("ReelBack");
@@ -31,11 +34,14 @@ public class RotateVerticalReelAction : IReelAction
         else if (_hasRotatedForward &&
             InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateUpAngle))
         {
+            InputPromptPanel.MainInstance?.PlayCompletionFeedback();
+            AudioManager.Instance?.PlaySuccess();
+            
             FishingManager.Instance.ReelProgressBar.ProgressReel();
 
             ActionTelemetryHandler.Instance.EndAndRecordActionTimer("ReelBack");
-            ActionTelemetryHandler.Instance.RecordRepetition("ReelBack"); 
-            ActionTelemetryHandler.Instance.RecordAngle("ReelBack", Mathf.Abs(rotationHelper.CurrentX)); 
+            ActionTelemetryHandler.Instance.RecordRepetition("ReelBack");
+            ActionTelemetryHandler.Instance.RecordAngle("ReelBack", Mathf.Abs(rotationHelper.CurrentX));
         }
     }
 

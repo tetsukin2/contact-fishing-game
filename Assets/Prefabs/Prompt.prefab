@@ -556,7 +556,7 @@ MonoBehaviour:
   _shineOverlay: {fileID: 2311123826764261194}
   _shineFlashAlpha: 0.9
   _shineFlashDuration: 0.1
-  _normalProgressColor: {r: 0.50377357, g: 0.86115646, b: 1, a: 1}
+  _normalProgressColor: {r: 1, g: 0.96298325, b: 0.39811313, a: 1}
   _completeFlashColor: {r: 1, g: 0.7970931, b: 0.26981127, a: 1}
 --- !u!1 &2486917586579638228
 GameObject:

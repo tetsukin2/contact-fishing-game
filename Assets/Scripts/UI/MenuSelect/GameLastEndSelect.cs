@@ -18,6 +18,8 @@ public class GameLastEndSelect : MenuSelect
     {
         if (LevelManager.Instance.CurrentState != LevelManager.Instance.EndScoreState) return;
 
+        AudioManager.Instance?.PlaySelect();
+
         switch (_menuSelectOptions[_currentSelectionIndex].Action)
         {
             case RESTART_ACTION:

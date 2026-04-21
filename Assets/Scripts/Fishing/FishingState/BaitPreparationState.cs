@@ -6,39 +6,31 @@ public class BaitPreparationState : IFishingState
 {
     private int _currentStep = 0;
 
-    // Events for each bobber action
-    // Nomenclature could be improved?
-    /// <summary>
-    /// Representation of even and starting rotations (such as the initial lure hooking)
-    /// </summary>
     public UnityEvent CompletedEvenRotation { get; private set; } = new();
-    /// <summary>
-    /// Representation of odd rotations (bobber turning away)
-    /// </summary>
     public UnityEvent CompletedOddRotation { get; private set; } = new();
 
     public void Setup() { }
 
     public void Enter()
     {
-        // Do not adjust cam if we already ending
-        //if (LevelManager.Instance.FishCaught < LevelManager.Instance.FishTotalToCatch)
         if (LevelManager.Instance.CurrentState != LevelManager.Instance.PlayingState) return;
-        CameraController.Instance.SetCameraView(CameraController.CameraView.BaitPrep);
 
+        CameraController.Instance.SetCameraView(CameraController.CameraView.BaitPrep);
         FishingRodGameplay.Instance.SetMovementMode(FishingRodGameplay.MovementMode.BaitLock);
 
-        // UI
         FishingManager.Instance.StateLabelPanel.SetLabel(FishingManager.FishingStateName.BaitPreparation);
         UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.BaitPrepPromptRightName);
 
-        _currentStep = 0; // Reset step counter
+        _currentStep = 0;
 
-        // Fishing bobber setup
         FishingManager.Instance.FishingBobber.SetControllable(true);
         FishingManager.Instance.FishingBobber.SetupLureAttach();
 
-        ActionTelemetryHandler.Instance.StartActionTimer("BaitPreparationRight"); // Start telemetry timer
+        // Clean UI/input state so the first prompt behaves consistently
+        InputDeviceManager.Instance.RotationHelper.ClearRotationHistory();
+        InputPromptPanel.MainInstance?.ResetProgress();
+
+        ActionTelemetryHandler.Instance.StartActionTimer("BaitPreparationRight");
 
         Debug.Log("Entering Bait Preparation State");
     }
@@ -46,14 +38,17 @@ public class BaitPreparationState : IFishingState
     public void Update()
     {
         var rotationHelper = InputDeviceManager.Instance.RotationHelper;
-        // Alternate directions, even (and start) directions go upward
-        // TODO: Investigate why these prompts are messed up
-        if (_currentStep % 2 == 0 
-            && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(-ResourceSystem.Instance.GameplayConfig.RollRightAngle))
+
+        if (_currentStep % 2 == 0 &&
+            InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(-ResourceSystem.Instance.GameplayConfig.RollRightAngle))
         {
-            Debug.Log("has reached rotation");
+            InputPromptPanel.MainInstance?.PlayStepFeedback();
+            AudioManager.Instance?.PlaySuccess();
+
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.BaitPrepPromptLeftName);
             _currentStep++;
+
+            CompletedEvenRotation.Invoke();
 
             ActionTelemetryHandler.Instance.EndAndRecordActionTimer("BaitPreparationRight");
             ActionTelemetryHandler.Instance.RecordRepetition("BaitPreparationRight");
@@ -62,10 +57,16 @@ public class BaitPreparationState : IFishingState
             if (!IsBaitPreparationComplete())
                 ActionTelemetryHandler.Instance.StartActionTimer("BaitPreparationLeft");
         }
-        else if (_currentStep % 2 != 0 && InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(-ResourceSystem.Instance.GameplayConfig.RollLeftAngle))
+        else if (_currentStep % 2 != 0 &&
+                 InputDeviceManager.Instance.RotationHelper.HasReachedRotationY(-ResourceSystem.Instance.GameplayConfig.RollLeftAngle))
         {
+            InputPromptPanel.MainInstance?.PlayStepFeedback();
+            AudioManager.Instance?.PlaySuccess();
+
             UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.BaitPrepPromptRightName);
             _currentStep++;
+
+            CompletedOddRotation.Invoke();
 
             ActionTelemetryHandler.Instance.EndAndRecordActionTimer("BaitPreparationLeft");
             ActionTelemetryHandler.Instance.RecordRepetition("BaitPreparationLeft");
@@ -77,12 +78,13 @@ public class BaitPreparationState : IFishingState
 
         if (_currentStep == 1)
             FishingManager.Instance.FishingBobber.OnAttachLure();
-        //Debug.Log("current step modulo: " + _currentStep % 2);
-        //Debug.Log(fishingManager.InputHelper.IsNearRotation(
-        //    -90f, InputDeviceManager.RotationAxis.x));
 
         if (IsBaitPreparationComplete())
+        {
+            InputPromptPanel.MainInstance?.PlayCompletionFeedback();
+            AudioManager.Instance?.PlaySuccess();
             FishingManager.Instance.TransitionToState(FishingManager.Instance.CastingState);
+        }
     }
 
     public void Exit()
@@ -92,7 +94,6 @@ public class BaitPreparationState : IFishingState
         Debug.Log("Exiting Bait Preparation State");
     }
 
-    // Have we reached the steps needed to complete bait preparation?
     private bool IsBaitPreparationComplete()
     {
         return _currentStep >= ResourceSystem.Instance.GameplayConfig.BaitPreparationSteps;

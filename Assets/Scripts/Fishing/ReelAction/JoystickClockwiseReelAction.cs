@@ -21,8 +21,8 @@ public class JoystickClockwiseReelAction : IReelAction
     {
         var rotationHelper = InputDeviceManager.Instance.RotationHelper;
 
-        // Assumes this returns a value that can be used as progress toward one clockwise rotation.
-        float clockwiseProgress = rotationHelper.GetJoystickRotationCount(true);
+        // Get smooth progress toward one full clockwise rotation (0 to 1)
+        float clockwiseProgress = rotationHelper.GetJoystickRotationProgress01(true);
 
         // Update the visual feedback ring while rotating.
         if (InputPromptPanel.MainInstance != null)
@@ -31,8 +31,16 @@ public class JoystickClockwiseReelAction : IReelAction
             InputPromptPanel.MainInstance.SetProgress(normalizedProgress);
         }
 
-        if (clockwiseProgress >= 1f)
+        // Check if a full clockwise rotation has been completed
+        if (rotationHelper.GetJoystickRotationCount(true) > 0)
         {
+            // Force progress to full to trigger completion feedback (shine)
+            if (InputPromptPanel.MainInstance != null)
+                InputPromptPanel.MainInstance.SetProgress(1f);
+
+            // Play success SFX when a full rotation is completed
+            AudioManager.Instance?.PlaySuccess();
+
             rotationHelper.ResetJoystickRotationCount();
             FishingManager.Instance.ReelProgressBar.ProgressReel();
 

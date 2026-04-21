@@ -11,6 +11,8 @@ public class FishingManager : StaticInstance<FishingManager>
         BaitPreparation,
         Casting,
         WaitingForBite,
+        HookIt,
+        FishEscaped,
         Reeling,
         FishInspection
     }
@@ -41,6 +43,12 @@ public class FishingManager : StaticInstance<FishingManager>
     public string CastForwardPromptName;
     public string CastBackPromptName;
     public string CastSelectPromptName;
+
+    [Space]
+    [Header("Waiting For Bite")]
+    public string BiteNowPromptName;
+    public float BiteReactionWindow = 0.9f;
+    public float EscapeMessageDuration = 0.9f;
 
     [Space]
     [Header("Reeling")]

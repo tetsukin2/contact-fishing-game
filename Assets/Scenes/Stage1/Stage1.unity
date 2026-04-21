@@ -1847,7 +1847,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -2253,6 +2253,8 @@ MonoBehaviour:
   _baitPrepLabel: {fileID: 21300000, guid: 6db1f16f179925f4d91495beaa956463, type: 3}
   _castingLabel: {fileID: 21300000, guid: 3e2e5adc8b0852142b0ff86e96b73f76, type: 3}
   _waitingLabel: {fileID: 21300000, guid: 8f0ff91baf86ae5479979de20708b3fd, type: 3}
+  _hookItLabel: {fileID: 21300000, guid: 90c9151877fdf7847ad19731c4cca7fc, type: 3}
+  _fishEscapedLabel: {fileID: 21300000, guid: baf13c2dd630b5744a28124fd89cacfb, type: 3}
   _reelingLabel: {fileID: 21300000, guid: e66a06ccbf315134e9f9a288a269d618, type: 3}
   _inspectionLabel: {fileID: 21300000, guid: 9a6fe44341476ea4189f35efc55effd7, type: 3}
 --- !u!1 &902536569
@@ -2836,7 +2838,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -2974,7 +2976,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -4453,7 +4455,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -5775,12 +5777,12 @@ PrefabInstance:
     - target: {fileID: 8275666532592374377, guid: 5db1ddcab5f193e4899d5e7c65bb9eb2,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.005136843
+      value: 0.0051371157
       objectReference: {fileID: 0}
     - target: {fileID: 8275666532592374377, guid: 5db1ddcab5f193e4899d5e7c65bb9eb2,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.004390505
+      value: -0.004390778
       objectReference: {fileID: 0}
     - target: {fileID: 8668251303773230924, guid: 5db1ddcab5f193e4899d5e7c65bb9eb2,
         type: 3}
@@ -6044,6 +6046,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6011809727478330716, guid: fa4ddde45e728ad469fbd6cbb2a8a689,
+        type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
+    - target: {fileID: 6037713342792138955, guid: fa4ddde45e728ad469fbd6cbb2a8a689,
+        type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     - target: {fileID: 6423664485963134156, guid: fa4ddde45e728ad469fbd6cbb2a8a689,
         type: 3}
       propertyPath: m_Name
@@ -6145,8 +6157,40 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2917514166324744732, guid: e6751b63ea9a339429bcba3aae9d705a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1569926233004312028}
   m_SourcePrefab: {fileID: 100100000, guid: e6751b63ea9a339429bcba3aae9d705a, type: 3}
+--- !u!1 &1569926233004312027 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2917514166324744732, guid: e6751b63ea9a339429bcba3aae9d705a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1569926233004312026}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1569926233004312028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569926233004312027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c11265b855408d42af33d62691f5194, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Cinemachine::Cinemachine.CinemachineIndependentImpulseListener
+  m_ChannelMask: 1
+  m_Gain: 0.35
+  m_Use2DDistance: 0
+  m_UseLocalSpace: 1
+  m_ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1001 &2144066287181881803
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6319,7 +6363,7 @@ PrefabInstance:
     - target: {fileID: 1410563955817365801, guid: ae6192366780bf145af9bac527d1dc40,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 159.35
+      value: 96
       objectReference: {fileID: 0}
     - target: {fileID: 2451745518763156258, guid: ae6192366780bf145af9bac527d1dc40,
         type: 3}
@@ -6334,7 +6378,7 @@ PrefabInstance:
     - target: {fileID: 3974036314425831049, guid: ae6192366780bf145af9bac527d1dc40,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 159.35
+      value: 96
       objectReference: {fileID: 0}
     - target: {fileID: 5976103249143603691, guid: ae6192366780bf145af9bac527d1dc40,
         type: 3}
@@ -6361,7 +6405,7 @@ PrefabInstance:
     - target: {fileID: 6304270115195917621, guid: ae6192366780bf145af9bac527d1dc40,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 159.35
+      value: 83.73
       objectReference: {fileID: 0}
     - target: {fileID: 6304270115195917621, guid: ae6192366780bf145af9bac527d1dc40,
         type: 3}
@@ -6371,7 +6415,7 @@ PrefabInstance:
     - target: {fileID: 6304270115195917621, guid: ae6192366780bf145af9bac527d1dc40,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -79.675
+      value: -41.865
       objectReference: {fileID: 0}
     - target: {fileID: 7379239252479466396, guid: ae6192366780bf145af9bac527d1dc40,
         type: 3}
@@ -6810,8 +6854,18 @@ PrefabInstance:
       objectReference: {fileID: 873962102}
     - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
         type: 3}
+      propertyPath: BiteNowPromptName
+      value: JoystickPressBite
+      objectReference: {fileID: 0}
+    - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
+        type: 3}
       propertyPath: SideRotateUpAngle
       value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
+        type: 3}
+      propertyPath: BiteReactionWindow
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
         type: 3}
@@ -6828,6 +6882,11 @@ PrefabInstance:
       propertyPath: _bobberLandTransform
       value: 
       objectReference: {fileID: 1114487055}
+    - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
+        type: 3}
+      propertyPath: WaitingForBitePromptName
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6859464295147575362, guid: b9c097d67d01ce241b473ee0a81089bd,
         type: 3}
       propertyPath: 'ReelActionSequence.Array.data[1]'
@@ -6891,8 +6950,88 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7349347328210164043, guid: b9c097d67d01ce241b473ee0a81089bd,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6304660423223134491}
+    - targetCorrespondingSourceObject: {fileID: 7349347328210164043, guid: b9c097d67d01ce241b473ee0a81089bd,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6304660423223134490}
   m_SourcePrefab: {fileID: 100100000, guid: b9c097d67d01ce241b473ee0a81089bd, type: 3}
+--- !u!1 &6304660423223134489 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7349347328210164043, guid: b9c097d67d01ce241b473ee0a81089bd,
+    type: 3}
+  m_PrefabInstance: {fileID: 6304660423223134488}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6304660423223134490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6304660423223134489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbafef28915075a49b50ebf048924721, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraImpulseManager
+  _impulseSource: {fileID: 6304660423223134491}
+--- !u!114 &6304660423223134491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6304660423223134489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Cinemachine::Cinemachine.CinemachineImpulseSource
+  m_ImpulseDefinition:
+    m_ImpulseChannel: 1
+    m_ImpulseShape: 2
+    m_CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ImpulseDuration: 0.4
+    m_ImpulseType: 0
+    m_DissipationRate: 0.25
+    m_RawSignal: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_RepeatMode: 0
+    m_Randomize: 1
+    m_TimeEnvelope:
+      m_AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_AttackTime: 0
+      m_SustainTime: 0.2
+      m_DecayTime: 0.7
+      m_ScaleWithImpact: 1
+      m_HoldForever: 0
+    m_ImpactRadius: 100
+    m_DirectionMode: 0
+    m_DissipationMode: 2
+    m_DissipationDistance: 100
+    m_PropagationSpeed: 343
+  m_DefaultVelocity: {x: 0.08, y: 0.25, z: 0}
 --- !u!1001 &6895118748987341666
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6909,7 +7048,7 @@ PrefabInstance:
     - target: {fileID: 1375215364124421196, guid: 7fd25c4e55cae2541863da45944ae810,
         type: 3}
       propertyPath: _fishTotalToCatch
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7064495817142819596, guid: 7fd25c4e55cae2541863da45944ae810,
         type: 3}

@@ -1,65 +1,85 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BoatSpawner : MonoBehaviour
 {
-    [SerializeField] private Vector3 _boatSpawn; // Starting position of the boat
-    [SerializeField] private Vector3 _boatDespawn; // Ending position of the boat
-    [SerializeField] private float _spawnCooldown = 2f; // Time to wait before respawning the boat
-    [SerializeField] private float _speed = 5f; // Speed of the boat
-    [SerializeField] private GameObject _boat; // Boat prefab or object
+    [SerializeField] private Vector3 _boatSpawn;
+    [SerializeField] private Vector3 _boatDespawn;
+    [SerializeField] private float _spawnCooldown = 2f;
+    [SerializeField] private float _speed = 5f;
+    [SerializeField] private GameObject _boat;
 
-    //private GameObject _boat; // Reference to the currently spawned boat
+    private bool _hasPlayedHorn = false;
+    private Camera _mainCamera;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
+        _mainCamera = Camera.main;
+
+        if (_boat != null)
+        {
+            _boat.transform.position = _boatSpawn;
+        }
+
         StartCoroutine(BoatCycle());
     }
 
-    private void OnDrawGizmosSelected()
+    private void Update()
     {
-        // Draw a line from the boat spawn position to the despawn position
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(_boatSpawn, _boatDespawn);
-        // Draw a sphere at the boat spawn position
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(_boatSpawn, 0.5f);
-        // Draw a sphere at the despawn position
-        Gizmos.color = Color.blue;
-        Gizmos.DrawSphere(_boatDespawn, 0.5f);
+        if (_boat == null || _mainCamera == null || _hasPlayedHorn)
+            return;
+
+        if (IsBoatVisibleOnMainCamera())
+        {
+            AudioManager.Instance?.PlayShipHorn();
+            _hasPlayedHorn = true;
+        }
     }
 
     private IEnumerator BoatCycle()
     {
         while (true)
         {
-            // Spawn the boat at the starting position
-            //if (_boat == null)
-            //{
-            //    _boat = Instantiate(_boat, _boatSpawn, Quaternion.identity);
-            //}
-            //else
-            //{
-            //    _boat.transform.position = _boatSpawn;
-            //}
+            _hasPlayedHorn = false;
 
-            // Move the boat to the despawn position
-            while (Vector3.Distance(_boat.transform.position, _boatDespawn) > 0.1f)
+            while (_boat != null && Vector3.Distance(_boat.transform.position, _boatDespawn) > 0.1f)
             {
                 _boat.transform.position = Vector3.MoveTowards(
                     _boat.transform.position,
                     _boatDespawn,
                     _speed * Time.deltaTime
                 );
+
                 yield return null;
             }
 
-            // Wait for the cooldown before restarting the cycle
             yield return new WaitForSeconds(_spawnCooldown);
 
-            _boat.transform.position = _boatSpawn; // Reset the boat position
+            if (_boat != null)
+            {
+                _boat.transform.position = _boatSpawn;
+            }
         }
+    }
+
+    private bool IsBoatVisibleOnMainCamera()
+    {
+        Vector3 viewportPos = _mainCamera.WorldToViewportPoint(_boat.transform.position);
+
+        return viewportPos.z > 0f &&
+               viewportPos.x >= 0f && viewportPos.x <= 1f &&
+               viewportPos.y >= 0f && viewportPos.y <= 1f;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(_boatSpawn, _boatDespawn);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(_boatSpawn, 0.5f);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(_boatDespawn, 0.5f);
     }
 }

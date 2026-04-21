@@ -284,4 +284,19 @@ public class InputDeviceRotationHelper : MonoBehaviour
         _cumulativeJoystickAngle = 0f;
         _previousJoystickAngle = 0f;
     }
-}
+
+    /// <summary>
+    /// Gets progress toward one full joystick rotation as a value from 0 to 1.
+    /// Only measures progress in the requested direction.
+    /// </summary>
+    public float GetJoystickRotationProgress01(bool isClockwise)
+    {
+        float directedAngle = isClockwise ? -_cumulativeJoystickAngle : _cumulativeJoystickAngle;
+
+        // Ignore progress in the wrong direction
+        if (directedAngle < 0f)
+            directedAngle = 0f;
+
+        return Mathf.Clamp01(directedAngle / 360f);
+    }
+    }

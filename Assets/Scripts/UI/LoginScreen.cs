@@ -24,6 +24,8 @@ public class LoginScreen : GUIContainer
 
     public void LoginWithEmailPassword()
     {
+        AudioManager.Instance?.PlaySelect();
+
         string email = LoginEmailField.text.Trim();
         string password = LoginPasswordField.text;
 
@@ -49,6 +51,8 @@ public class LoginScreen : GUIContainer
 
     public void RegisterNewAccount()
     {
+        AudioManager.Instance?.PlaySelect();
+
         string username = RegisterUsernameField.text.Trim();
         string email = RegisterEmailField.text.Trim();
         string password = RegisterPasswordField.text;
@@ -89,18 +93,24 @@ public class LoginScreen : GUIContainer
 
     public void ShowRegisterUI()
     {
+        AudioManager.Instance?.PlaySelect();
+
         LoginPanel.SetActive(false);
         RegisterPanel.SetActive(true);
     }
 
     public void ShowLoginUI()
     {
+        AudioManager.Instance?.PlaySelect();
+
         RegisterPanel.SetActive(false);
         LoginPanel.SetActive(true);
     }
 
     public void LoginAsGuest()
     {
+        AudioManager.Instance?.PlaySelect();
+
         FirebaseConnectionHandler.Instance.SignInAnonymously();
         FirebaseConnectionHandler.Instance.SignInSuccess.AddListener(OnLogin);
     }
@@ -111,4 +121,3 @@ public class LoginScreen : GUIContainer
         MainMenuUIController.Instance.OnLoginComplete();
     }
 }
-

@@ -16,6 +16,8 @@ public class PauseSelect : MenuSelect
     {
         if (!LevelManager.Instance.IsGamePaused) return;
 
+        AudioManager.Instance?.PlaySelect();
+
         LevelManager.Instance.SetGamePaused(false); // All options unpause anyway
 
         switch (_menuSelectOptions[_currentSelectionIndex].Action)

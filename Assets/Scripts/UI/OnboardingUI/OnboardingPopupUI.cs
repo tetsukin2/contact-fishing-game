@@ -143,8 +143,15 @@ public class OnboardingPopupUI : MonoBehaviour
 
     public void FinishOnboarding()
     {
+        AudioManager.Instance?.PlaySelect();
+
         PlayerPrefs.SetInt(ONBOARDING_COMPLETED_KEY, 1);
         PlayerPrefs.Save();
+
+        if (MainMenuUIController.Instance != null)
+        {
+            MainMenuUIController.Instance.ChangeView(MainMenuUIController.MainMenuView.None);
+        }
 
         ClosePopup();
 
@@ -154,6 +161,7 @@ public class OnboardingPopupUI : MonoBehaviour
 
     public void NextPage()
     {
+        AudioManager.Instance?.PlaySelect();
         if (_currentPage >= _pages.Count - 1)
             return;
 
@@ -163,6 +171,7 @@ public class OnboardingPopupUI : MonoBehaviour
 
     public void PreviousPage()
     {
+        AudioManager.Instance?.PlaySelect();
         if (_currentPage <= 0)
             return;
 

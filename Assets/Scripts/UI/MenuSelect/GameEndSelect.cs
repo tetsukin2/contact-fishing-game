@@ -16,6 +16,8 @@ public class GameEndSelect : MenuSelect
     {
         if (LevelManager.Instance.CurrentState != LevelManager.Instance.EndScoreState) return;
 
+        AudioManager.Instance?.PlaySelect();
+
         switch (_menuSelectOptions[_currentSelectionIndex].Action)
         {
             case NEXT_LEVEL_ACTION:

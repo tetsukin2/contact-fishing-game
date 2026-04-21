@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,28 +8,30 @@ public abstract class MenuSelect : GUIContainer
     protected List<float> _selectionPoints = new();
     protected int _currentSelectionIndex = 0;
 
-    // Start is called before the first frame update
+    private int _lastSelectionIndex = -1;
+
     protected virtual void Start()
     {
         float menuRange = FishingRodMenu.Instance.MenuRotationMax - FishingRodMenu.Instance.MenuRotationMin;
         float selectionRange = menuRange / _menuSelectOptions.Length;
+
         for (int i = 0; i < _menuSelectOptions.Length; i++)
         {
             float selectionPoint = FishingRodMenu.Instance.MenuRotationMin + selectionRange * (i + 0.5f);
             _selectionPoints.Add(selectionPoint);
         }
 
-        // Define these in subclasses, lest the event be listened to between scenes
-        //  (as in go handle active subbing and unsubbing from the events)
-        //  ONLY listen during the correct state
-        //InputDeviceManager.Instance.JoystickPressed.AddListener(OnOptionSelected);
+        _lastSelectionIndex = -1;
     }
 
-    // Update is called once per frame
     protected virtual void Update()
     {
-        //Debug.Log($"{_fishingRodMovement.MenuRotationMin}/{InputDeviceManager.Rotation.y}/{_fishingRodMovement.MenuRotationMax}");
-        // Get the current IMU rotation on the Y-axis
+        if (!enabled || !gameObject.activeInHierarchy)
+            return;
+
+        if (!IsSelectionActive())
+            return;
+
         float currentRotation = -InputDeviceManager.Instance.IMUInput.Rotation.x;
 
         int closestPointIndex = 0;
@@ -45,17 +46,34 @@ public abstract class MenuSelect : GUIContainer
                 closestDistance = distance;
             }
         }
-        // Update the selection state for menu options
+
         for (int i = 0; i < _menuSelectOptions.Length; i++)
         {
             _menuSelectOptions[i].SetSelected(i == closestPointIndex);
         }
-        // Update index for rest of class to see
+
+        if (_lastSelectionIndex != -1 &&
+            closestPointIndex != _lastSelectionIndex &&
+            ShouldPlayMoveSfx())
+        {
+            AudioManager.Instance?.PlayMenuMove();
+        }
+
         _currentSelectionIndex = closestPointIndex;
+        _lastSelectionIndex = closestPointIndex;
+    }
+
+    protected virtual bool IsSelectionActive()
+    {
+        return true;
+    }
+
+    protected virtual bool ShouldPlayMoveSfx()
+    {
+        return true;
     }
 
     protected virtual void OnOptionSelected()
     {
-        
     }
 }

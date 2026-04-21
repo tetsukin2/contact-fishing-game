@@ -3,15 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Dynamic Video Panel for Input prompts.
-/// Can be main or secondary input prompt, and depends on UIManager prompt events.
-/// Supports:
-/// - video + text prompt display
-/// - optional radial progress ring
-/// - repeating pulse feedback (fast outward / slow inward)
-/// - quick full-frame shine on successful completion
-/// </summary>
 public class InputPromptPanel : DynamicVideoPanel
 {
     public enum InputPromptType
@@ -30,6 +21,9 @@ public class InputPromptPanel : DynamicVideoPanel
     [Header("Progress Ring")]
     [SerializeField] private GameObject _progressRoot;
     [SerializeField] private Image _progressFill;
+    [SerializeField] private CanvasGroup _progressCanvasGroup;
+    [SerializeField] private float _progressFadeDuration = 0.15f;
+    [SerializeField] private float _progressSmoothSpeed = 6f;
 
     [Header("Pulse Rings")]
     [SerializeField] private Image[] _pulseRings;
@@ -52,10 +46,19 @@ public class InputPromptPanel : DynamicVideoPanel
     [SerializeField] private float _fastPulseLoopPause = 0.35f;
     [SerializeField] private float _slowPulseLoopPause = 0.50f;
 
-    [Header("Completion Shine")]
+    [Header("Step Feedback")]
     [SerializeField] private Image _shineOverlay;
-    [SerializeField] private float _shineFlashAlpha = 0.9f;
-    [SerializeField] private float _shineFlashDuration = 0.10f;
+    [SerializeField] private RectTransform _shineRect;
+    [SerializeField] private float _stepFlashPeakAlpha = 0.35f;
+    [SerializeField] private float _stepFlashFadeInDuration = 0.05f;
+    [SerializeField] private float _stepFlashFadeOutDuration = 0.12f;
+    [SerializeField] private float _stepFlashScaleMultiplier = 1.04f;
+
+    [Header("Completion Feedback")]
+    [SerializeField] private float _completionFlashPeakAlpha = 0.85f;
+    [SerializeField] private float _completionFlashFadeInDuration = 0.06f;
+    [SerializeField] private float _completionFlashFadeOutDuration = 0.20f;
+    [SerializeField] private float _completionFlashScaleMultiplier = 1.10f;
 
     [Header("Progress Colors")]
     [SerializeField] private Color _normalProgressColor = Color.white;
@@ -63,9 +66,16 @@ public class InputPromptPanel : DynamicVideoPanel
 
     private Coroutine _pulseRoutine;
     private Coroutine _shineRoutine;
+    private Coroutine _progressFadeRoutine;
     private InputPrompt.PromptPulseType _currentPulseType = InputPrompt.PromptPulseType.None;
 
     private int _pulseSequenceId = 0;
+
+    private float _targetProgress = 0f;
+    private float _currentProgress = 0f;
+
+    private bool _completionFeedbackPlayed = false;
+    private Vector3 _shineBaseScale = Vector3.one;
 
     private void Awake()
     {
@@ -77,10 +87,32 @@ public class InputPromptPanel : DynamicVideoPanel
         UIManager.Instance.MainInputPromptShown.AddListener(OnMainInputPromptShown);
         UIManager.Instance.SecondInputPromptShown.AddListener(OnSecondInputPromptShown);
 
-        ShowProgress(false);
-        ResetProgress();
-        SetShineAlpha(0f);
-        ResetPulseRings();
+        if (_progressCanvasGroup != null)
+            _progressCanvasGroup.alpha = 0f;
+
+        if (_shineRect != null)
+            _shineBaseScale = _shineRect.localScale;
+
+        ShowProgress(false, true);
+        ResetAllVisualState();
+    }
+
+    private void OnEnable()
+    {
+        ResetAllVisualState();
+    }
+
+    private void Update()
+    {
+        if (_progressFill != null)
+        {
+            _currentProgress = Mathf.Lerp(_currentProgress, _targetProgress, Time.unscaledDeltaTime * _progressSmoothSpeed);
+
+            if (Mathf.Abs(_currentProgress - _targetProgress) < 0.001f)
+                _currentProgress = _targetProgress;
+
+            _progressFill.fillAmount = _currentProgress;
+        }
     }
 
     private void OnDestroy()
@@ -112,25 +144,20 @@ public class InputPromptPanel : DynamicVideoPanel
             SetInputPrompt(inputPrompt);
     }
 
-    /// <summary>
-    /// Sets the video and message for the input prompt. Hides the panel if inputPrompt is null.
-    /// </summary>
     public void SetInputPrompt(InputPrompt inputPrompt)
     {
+        StopPulseLoop();
+        ResetPulseRings();
+        ResetCompletionFeedbackState();
+
         if (inputPrompt == null)
         {
             Show(false);
             ShowProgress(false);
             ResetProgress();
-
             _currentPulseType = InputPrompt.PromptPulseType.None;
-            StopPulseLoop();
-            ResetPulseRings();
             return;
         }
-
-        StopPulseLoop();
-        ResetPulseRings();
 
         Show(true);
         SetVideo(inputPrompt.Video);
@@ -146,47 +173,96 @@ public class InputPromptPanel : DynamicVideoPanel
         PlayPromptPulse();
     }
 
-    public void ShowProgress(bool show)
+    public void ShowProgress(bool show, bool immediate = false)
     {
-        if (_progressRoot != null)
+        if (_progressRoot == null)
+            return;
+
+        if (_progressFadeRoutine != null)
+            StopCoroutine(_progressFadeRoutine);
+
+        if (immediate || _progressCanvasGroup == null)
+        {
             _progressRoot.SetActive(show);
 
-        if (!show)
-            ResetPulseRings();
+            if (_progressCanvasGroup != null)
+                _progressCanvasGroup.alpha = show ? 1f : 0f;
+
+            return;
+        }
+
+        _progressFadeRoutine = StartCoroutine(FadeProgressRoutine(show));
+    }
+
+    public void SetProgress(float value)
+    {
+        float clamped = Mathf.Clamp01(value);
+        _targetProgress = clamped;
+
+        if (_progressFill != null)
+        {
+            if (clamped >= 1f)
+            {
+                _progressFill.color = _completeFlashColor;
+                PlayCompletionFeedback();
+            }
+            else
+            {
+                _progressFill.color = _normalProgressColor;
+
+                if (clamped <= 0.001f)
+                    ResetCompletionFeedbackState();
+            }
+        }
     }
 
     /// <summary>
-    /// Sets radial progress from 0 to 1.
-    /// Stops repeating pulses and flashes the frame when progress completes.
+    /// Small smooth confirmation for a correct sub-step.
+    /// Example: tilt down succeeded, tilt up succeeded, cast back succeeded.
     /// </summary>
-    public void SetProgress(float value)
+    public void PlayStepFeedback()
     {
-        if (_progressFill == null)
+        PlayShineFeedback(
+            _stepFlashPeakAlpha,
+            _stepFlashFadeInDuration,
+            _stepFlashFadeOutDuration,
+            _stepFlashScaleMultiplier
+        );
+    }
+
+    /// <summary>
+    /// Bigger completion feedback for finishing the full action.
+    /// Example: full reel action complete, full cast complete, inspection complete.
+    /// </summary>
+    public void PlayCompletionFeedback()
+    {
+        if (_completionFeedbackPlayed)
             return;
 
-        float clamped = Mathf.Clamp01(value);
-        _progressFill.fillAmount = clamped;
+        _completionFeedbackPlayed = true;
 
-        if (clamped >= 1f)
-        {
-            _progressFill.color = _completeFlashColor;
-            StopPulseLoop();
-            ResetPulseRings();
-            PlayShineFlash();
-        }
-        else
-        {
-            _progressFill.color = _normalProgressColor;
-        }
+        StopPulseLoop();
+        ResetPulseRings();
+
+        PlayShineFeedback(
+            _completionFlashPeakAlpha,
+            _completionFlashFadeInDuration,
+            _completionFlashFadeOutDuration,
+            _completionFlashScaleMultiplier
+        );
     }
 
     public void ResetProgress()
     {
-        if (_progressFill == null)
-            return;
+        _targetProgress = 0f;
+        _currentProgress = 0f;
+        ResetCompletionFeedbackState();
 
-        _progressFill.fillAmount = 0f;
-        _progressFill.color = _normalProgressColor;
+        if (_progressFill != null)
+        {
+            _progressFill.fillAmount = 0f;
+            _progressFill.color = _normalProgressColor;
+        }
     }
 
     public void PlayPromptPulse()
@@ -222,10 +298,8 @@ public class InputPromptPanel : DynamicVideoPanel
         {
             case InputPrompt.PromptPulseType.FastOutward:
                 return _fastPulseLoopPause;
-
             case InputPrompt.PromptPulseType.SlowInward:
                 return _slowPulseLoopPause;
-
             default:
                 return 0.25f;
         }
@@ -330,6 +404,72 @@ public class InputPromptPanel : DynamicVideoPanel
         ring.gameObject.SetActive(false);
     }
 
+    private void PlayShineFeedback(float peakAlpha, float fadeInDuration, float fadeOutDuration, float scaleMultiplier)
+    {
+        if (_shineOverlay == null)
+            return;
+
+        StopShineRoutine();
+        _shineRoutine = StartCoroutine(PlayShineFeedbackRoutine(peakAlpha, fadeInDuration, fadeOutDuration, scaleMultiplier));
+    }
+
+    private IEnumerator PlayShineFeedbackRoutine(float peakAlpha, float fadeInDuration, float fadeOutDuration, float scaleMultiplier)
+    {
+        float elapsed = 0f;
+
+        while (elapsed < fadeInDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / fadeInDuration);
+
+            SetShineAlpha(Mathf.Lerp(0f, peakAlpha, t));
+            SetShineScale(Vector3.Lerp(_shineBaseScale, _shineBaseScale * scaleMultiplier, t));
+
+            yield return null;
+        }
+
+        elapsed = 0f;
+
+        while (elapsed < fadeOutDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / fadeOutDuration);
+
+            SetShineAlpha(Mathf.Lerp(peakAlpha, 0f, t));
+            SetShineScale(Vector3.Lerp(_shineBaseScale * scaleMultiplier, _shineBaseScale, t));
+
+            yield return null;
+        }
+
+        ResetShineVisuals();
+        _shineRoutine = null;
+    }
+
+    private IEnumerator FadeProgressRoutine(bool show)
+    {
+        if (show)
+            _progressRoot.SetActive(true);
+
+        float startAlpha = _progressCanvasGroup.alpha;
+        float endAlpha = show ? 1f : 0f;
+
+        float elapsed = 0f;
+        while (elapsed < _progressFadeDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / _progressFadeDuration);
+            _progressCanvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, t);
+            yield return null;
+        }
+
+        _progressCanvasGroup.alpha = endAlpha;
+
+        if (!show)
+            _progressRoot.SetActive(false);
+
+        _progressFadeRoutine = null;
+    }
+
     private void ResetPulseRings()
     {
         if (_pulseRings == null)
@@ -361,24 +501,28 @@ public class InputPromptPanel : DynamicVideoPanel
         }
     }
 
-    private void PlayShineFlash()
+    private void StopShineRoutine()
     {
         if (_shineRoutine != null)
+        {
             StopCoroutine(_shineRoutine);
-
-        _shineRoutine = StartCoroutine(PlayShineFlashRoutine());
+            _shineRoutine = null;
+        }
     }
 
-    private IEnumerator PlayShineFlashRoutine()
+    private void ResetAllVisualState()
     {
-        if (_shineOverlay == null)
-            yield break;
+        StopPulseLoop();
+        StopShineRoutine();
+        ResetPulseRings();
+        ResetShineVisuals();
+        ResetProgress();
+    }
 
-        SetShineAlpha(_shineFlashAlpha);
-        yield return new WaitForSecondsRealtime(_shineFlashDuration);
+    private void ResetShineVisuals()
+    {
         SetShineAlpha(0f);
-
-        _shineRoutine = null;
+        SetShineScale(_shineBaseScale);
     }
 
     private void SetShineAlpha(float alpha)
@@ -389,5 +533,16 @@ public class InputPromptPanel : DynamicVideoPanel
         Color c = _shineOverlay.color;
         c.a = alpha;
         _shineOverlay.color = c;
+    }
+
+    private void SetShineScale(Vector3 scale)
+    {
+        if (_shineRect != null)
+            _shineRect.localScale = scale;
+    }
+
+    private void ResetCompletionFeedbackState()
+    {
+        _completionFeedbackPlayed = false;
     }
 }

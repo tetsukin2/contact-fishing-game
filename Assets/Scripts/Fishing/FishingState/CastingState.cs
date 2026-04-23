@@ -96,11 +96,12 @@ public class CastingState : IFishingState
             InputPromptPanel.MainInstance?.PlayCompletionFeedback();
             AudioManager.Instance?.PlaySuccess();
             AudioManager.Instance?.PlayRodCast();
-            
 
             LineCast.Invoke();
             UIManager.Instance.ShowMainInputPrompt(null as InputPrompt);
             UIManager.Instance.ShowSecondInputPrompt(null as InputPrompt);
+
+            // Casting motion tactile feedback
             BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", true);
 
             ActionTelemetryHandler.Instance.EndAndRecordActionTimer("FishSelection");
@@ -122,8 +123,11 @@ public class CastingState : IFishingState
         AudioManager.Instance?.PlayFishSplash();
 
         FishingManager.Instance.Targeting.LureFish();
-        FishingManager.Instance.TransitionToState(FishingManager.Instance.WaitingForBiteState);
+
+        // Play ripple sequence that already contains 3 repeats, then stop automatically.
         BraillePatternPlayer.Instance.PlayPatternSequence("Ripple", false);
+
+        FishingManager.Instance.TransitionToState(FishingManager.Instance.WaitingForBiteState);
         _hasCast = false;
     }
 

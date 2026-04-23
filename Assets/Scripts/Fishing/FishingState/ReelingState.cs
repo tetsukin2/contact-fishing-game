@@ -50,7 +50,6 @@ public class ReelingState : IFishingState
         //Debug.Log("Entering Reeling State");
         FishingManager.Instance.StateLabelPanel.SetLabel(FishingManager.FishingStateName.Reeling);
         _progressBar.StartReel();
-        BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", true);
 
         AudioManager.Instance?.StartRodReelLoop();
 
@@ -70,6 +69,8 @@ public class ReelingState : IFishingState
     {
         ActionsPerReelList.Add(_reelActionCount); // Add the count of actions performed to the list
         Debug.Log("Exiting Reeling State");
+
+        _currentReelActionState?.Exit();
         AudioManager.Instance?.StopRodReelLoop();
     }
 

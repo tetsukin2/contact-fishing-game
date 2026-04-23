@@ -1,7 +1,20 @@
 using System.Collections.Generic;
 
 /// <summary>
-/// Telemetry data for a single game session, from fishing ready to performance metrics
+/// Nested telemetry for tactile discrimination test
+/// </summary>
+[System.Serializable]
+public class DiscriminationTestTelemetryData
+{
+    public int Score;
+    public int Total;
+    public List<string> TrialPatterns;
+    public List<string> UserAnswers;
+    public List<bool> CorrectAnswers;
+}
+
+/// <summary>
+/// Telemetry data for a single game session
 /// </summary>
 [System.Serializable]
 public class GameTelemetryData
@@ -14,7 +27,15 @@ public class GameTelemetryData
     public int AverageActionsPerReel;
     public bool GameCompleted;
     public int FishCatchRequirement;
-    public Dictionary<string, float> AverageTimeTaken; // ActionName, AverageTimeTaken
-    public Dictionary<string, int> RepetitionCounts; // Number of times each action was done
-    public Dictionary<string, float> MaxAngles;       // Highest angle achieved per action
+    public Dictionary<string, float> AverageTimeTaken;
+    public Dictionary<string, int> RepetitionCounts;
+    public Dictionary<string, float> MaxAngles;
+
+    public int DiscriminationScore;
+    public int DiscriminationTotal;
+    public List<string> DiscriminationTrialPatterns;
+    public List<string> DiscriminationUserAnswers;
+    public List<bool> DiscriminationCorrectAnswers;
+
+    public DiscriminationTestTelemetryData DiscriminationTest;
 }

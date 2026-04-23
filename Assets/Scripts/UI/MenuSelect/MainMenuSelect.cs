@@ -3,6 +3,7 @@ using UnityEngine;
 public class MainMenuSelect : MenuSelect
 {
     private const string PLAY_ACTION = "Play";
+    private const string USER_TEST_ACTION = "UserTest";
     private const string ENCYCLOPEDIA_ACTION = "OpenEncyclopedia";
     private const string EXIT_ACTION = "Exit";
 
@@ -81,6 +82,11 @@ public class MainMenuSelect : MenuSelect
                 HandlePlay();
                 break;
 
+            case USER_TEST_ACTION:
+                Debug.Log("USER TEST selected");
+                HandleUserTest();
+                break;
+
             case ENCYCLOPEDIA_ACTION:
                 Debug.Log("ENCYCLOPEDIA selected");
                 MainMenuUIController.Instance.ChangeView(MainMenuUIController.MainMenuView.Encyclopedia);
@@ -100,6 +106,33 @@ public class MainMenuSelect : MenuSelect
     private void HandlePlay()
     {
         Debug.Log("HandlePlay called");
+
+        // Ensure normal play always clears any user test settings
+        UserTestConfig.ResetToNormalMode();
+
+        if (_onboardingPopup == null)
+        {
+            Debug.LogWarning("OnboardingPopup not assigned!");
+            return;
+        }
+
+        _onboardingPopup.OpenPopup();
+    }
+
+    private void HandleUserTest()
+    {
+        Debug.Log("HandleUserTest called");
+
+        // User test flow:
+        // Phase 1 = no haptics
+        // Phase 2 = with haptics
+        // Phase 3 = tactile discrimination test
+        UserTestConfig.IsUserTestMode = true;
+        UserTestConfig.CurrentPhase = 1;
+        UserTestConfig.HapticsEnabled = false;
+
+        // Use 2 fish by default for a shorter, less fatiguing test
+        UserTestConfig.OverrideFishTotalToCatch = 2;
 
         if (_onboardingPopup == null)
         {

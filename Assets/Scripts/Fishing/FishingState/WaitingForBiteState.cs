@@ -76,12 +76,22 @@ public class WaitingForBiteState : IFishingState
             FishingManager.Instance.Targeting.Selection.ReachedLureLocation.RemoveListener(OnFishReachLure);
         }
 
-        BraillePatternPlayer.Instance.PlayPatternSequence("RipplePulse", false);
-        BraillePatternPlayer.Instance.PatternEnded.AddListener(OnBiteFinished);
-
         InputPromptPanel.MainInstance?.PlayStepFeedback();
-        //AudioManager.Instance?.PlaySuccess();
         CameraImpulseManager.Instance?.TriggerImpulse();
+
+        // Phase 1 user test: no haptics.
+        // Since BraillePatternPlayer returns early and PatternEnded never fires,
+        // start the hook reaction window immediately.
+        if (UserTestConfig.IsUserTestMode && !UserTestConfig.HapticsEnabled)
+        {
+            _biteCueFinished = true;
+            StartHookReactionWindow();
+            return;
+        }
+
+        // Normal flow / haptics-on flow:
+        BraillePatternPlayer.Instance.PlayPatternSequence("BiteCenterPulse", false);
+        BraillePatternPlayer.Instance.PatternEnded.AddListener(OnBiteFinished);
     }
 
     private void OnBiteFinished(BraillePatternPlayer.Finger finger)
@@ -89,13 +99,10 @@ public class WaitingForBiteState : IFishingState
         if (_resolved || _biteCueFinished)
             return;
 
-        if (finger == BraillePatternPlayer.Finger.INDEX)
-        {
-            _biteCueFinished = true;
-            BraillePatternPlayer.Instance.PatternEnded.RemoveListener(OnBiteFinished);
+        _biteCueFinished = true;
+        BraillePatternPlayer.Instance.PatternEnded.RemoveListener(OnBiteFinished);
 
-            StartHookReactionWindow();
-        }
+        StartHookReactionWindow();
     }
 
     private void StartHookReactionWindow()
@@ -165,7 +172,6 @@ public class WaitingForBiteState : IFishingState
 
         BraillePatternPlayer.Instance.PlayPatternSequence("BasicPulse", false);
         InputPromptPanel.MainInstance?.PlayStepFeedback();
-        //AudioManager.Instance?.PlaySuccess();
 
         CameraImpulseManager.Instance?.TriggerImpulse(new Vector3(0f, -0.5f, 0f));
 

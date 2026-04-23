@@ -10,39 +10,39 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c8f00867fde896045b938d3ac9bdcd5e, type: 3}
-  m_Name: Ripple
+  m_Name: RotateCircle
   m_EditorClassIdentifier: 
-  SequenceName: Ripple
+  SequenceName: RotateCircle
   Sequence:
-  - Row1: 0000
-    Row2: 0110
-    Row3: 0110
-    Row4: 0000
   - Row1: 0110
-    Row2: 1001
-    Row3: 1001
-    Row4: 0110
-  - Row1: 1001
-    Row2: 0000
-    Row3: 0000
-    Row4: 1001
-  - Row1: 0000
     Row2: 0000
     Row3: 0000
     Row4: 0000
-  - Row1: 0000
-    Row2: 0110
-    Row3: 0110
+  - Row1: 0010
+    Row2: 0001
+    Row3: 0000
     Row4: 0000
-  - Row1: 0110
-    Row2: 1001
-    Row3: 1001
-    Row4: 0110
-  - Row1: 1001
+  - Row1: 0000
+    Row2: 0001
+    Row3: 0001
+    Row4: 0000
+  - Row1: 0000
+    Row2: 0000
+    Row3: 0001
+    Row4: 0010
+  - Row1: 0000
     Row2: 0000
     Row3: 0000
-    Row4: 1001
+    Row4: 0110
   - Row1: 0000
     Row2: 0000
+    Row3: 1000
+    Row4: 0100
+  - Row1: 0000
+    Row2: 1000
+    Row3: 1000
+    Row4: 0000
+  - Row1: 0100
+    Row2: 1000
     Row3: 0000
     Row4: 0000

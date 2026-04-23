@@ -9,6 +9,9 @@ public class RotateVerticalReelAction : IReelAction
         _hasRotatedForward = false;
         UIManager.Instance.ShowMainInputPrompt(FishingManager.Instance.ReelForwardPromptName);
 
+        // Tilt down / forward = WaveOut
+        BraillePatternPlayer.Instance.PlayPatternSequence("WaveOut", true);
+
         ActionTelemetryHandler.Instance.StartActionTimer("ReelForward");
     }
 
@@ -29,6 +32,9 @@ public class RotateVerticalReelAction : IReelAction
             ActionTelemetryHandler.Instance.RecordRepetition("ReelForward");
             ActionTelemetryHandler.Instance.RecordAngle("ReelForward", Mathf.Abs(rotationHelper.CurrentX));
 
+            // Tilt up / back = WaveIn
+            BraillePatternPlayer.Instance.PlayPatternSequence("WaveIn", true);
+
             ActionTelemetryHandler.Instance.StartActionTimer("ReelBack");
         }
         else if (_hasRotatedForward &&
@@ -45,5 +51,8 @@ public class RotateVerticalReelAction : IReelAction
         }
     }
 
-    public void Exit() { }
+    public void Exit()
+    {
+        BraillePatternPlayer.Instance.StopPatternSequence(BraillePatternPlayer.Finger.BOTH);
+    }
 }

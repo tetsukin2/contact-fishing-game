@@ -14,6 +14,9 @@ public class JoystickClockwiseReelAction : IReelAction
         if (InputPromptPanel.MainInstance != null)
             InputPromptPanel.MainInstance.ResetProgress();
 
+        // Rotate joystick = rotating circle tactile pattern
+        BraillePatternPlayer.Instance.PlayPatternSequence("RotateCircle", true);
+
         ActionTelemetryHandler.Instance.StartActionTimer("ReelClockwise");
     }
 
@@ -55,6 +58,8 @@ public class JoystickClockwiseReelAction : IReelAction
 
         if (InputPromptPanel.MainInstance != null)
             InputPromptPanel.MainInstance.ResetProgress();
+
+        BraillePatternPlayer.Instance.StopPatternSequence(BraillePatternPlayer.Finger.BOTH);
 
         ActionTelemetryHandler.Instance.EndAndRecordActionTimer("ReelClockwise");
     }

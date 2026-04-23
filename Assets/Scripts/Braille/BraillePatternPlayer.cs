@@ -85,7 +85,15 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
     /// <param name="loop"></param>
     public void PlayPatternSequence(string name, Finger side, bool loop)
     {
+        // User Test Phase 1: no haptics
+        if (UserTestConfig.IsUserTestMode && !UserTestConfig.HapticsEnabled)
+        {
+            ClearBrailleOutput();
+            return;
+        }
+
         bool found = false;
+
         if (side == Finger.THUMB || side == Finger.BOTH)
         {
             // Search via loop
@@ -101,7 +109,7 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
                 }
             }
         }
-        
+
         // Not a second check cuz I think both should be identical
         if (side == Finger.INDEX || side == Finger.BOTH)
         {
@@ -147,7 +155,9 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
         {
             ResetIndexSequence();
         }
+
         SequenceStopCheck();
+        ClearBrailleOutput();
     }
 
     /// <summary>
@@ -204,7 +214,7 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
         }
 
         // Create arrays to hold the values
-        int[,] v = new int[4,4];
+        int[,] v = new int[4, 4];
 
         // Ensure rows can only be of length 4
         if (pattern.Row1.Length != 4 || pattern.Row2.Length != 4 || pattern.Row3.Length != 4 || pattern.Row4.Length != 4)
@@ -216,31 +226,31 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
         // Encode either 0 or 1
         for (int i = 0; i < 4; i++)
         {
-            v[0,i] = (pattern.Row1[i] == '0') ? 0 : 1;
-            v[1,i] = (pattern.Row2[i] == '0') ? 0 : 1;
-            v[2,i] = (pattern.Row3[i] == '0') ? 0 : 1;
-            v[3,i] = (pattern.Row4[i] == '0') ? 0 : 1;
+            v[0, i] = (pattern.Row1[i] == '0') ? 0 : 1;
+            v[1, i] = (pattern.Row2[i] == '0') ? 0 : 1;
+            v[2, i] = (pattern.Row3[i] == '0') ? 0 : 1;
+            v[3, i] = (pattern.Row4[i] == '0') ? 0 : 1;
         }
 
         // Mappings
         if (finger == Finger.THUMB)
             return new EncodedBraillePattern
             {
-                Value1 = 1 * v[0,0] + 8 * v[0,1] 
-                    + 2 * v[1,0] + 16 * v[1,1] 
-                    + 4 * v[2,0] + 32 * v[2,1] 
-                    + 64 * v[3,0] + 128 * v[3,1],
-                Value2 = 1 * v[0,2] + 8 * v[0,3] 
-                    + 2 * v[1,2] + 16 * v[1,3] 
-                    + 4 * v[2,2] + 32 * v[2,3] 
-                    + 64 * v[3,2] + 128 * v[3,3]
+                Value1 = 1 * v[0, 0] + 8 * v[0, 1]
+                    + 2 * v[1, 0] + 16 * v[1, 1]
+                    + 4 * v[2, 0] + 32 * v[2, 1]
+                    + 64 * v[3, 0] + 128 * v[3, 1],
+                Value2 = 1 * v[0, 2] + 8 * v[0, 3]
+                    + 2 * v[1, 2] + 16 * v[1, 3]
+                    + 4 * v[2, 2] + 32 * v[2, 3]
+                    + 64 * v[3, 2] + 128 * v[3, 3]
             };
-        else 
+        else
             return new EncodedBraillePattern
             {
-                Value1 = 64 * v[0, 0] + 4 * v[0, 1] + 2 * v[0, 2] + v[0,3] 
+                Value1 = 64 * v[0, 0] + 4 * v[0, 1] + 2 * v[0, 2] + v[0, 3]
                     + 128 * v[1, 0] + 32 * v[1, 1] + 16 * v[1, 2] + 8 * v[1, 3],
-                Value2 = 64 * v[2, 0] + 4 * v[2, 1] + 2 * v[2, 2] + v[2, 3] 
+                Value2 = 64 * v[2, 0] + 4 * v[2, 1] + 2 * v[2, 2] + v[2, 3]
                     + 128 * v[3, 0] + 32 * v[3, 1] + 16 * v[3, 2] + 8 * v[3, 3]
             };
     }
@@ -251,6 +261,14 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
 
         while (true)
         {
+            // If user test is in "no haptics" phase, clear and stop.
+            if (UserTestConfig.IsUserTestMode && !UserTestConfig.HapticsEnabled)
+            {
+                ClearBrailleOutput();
+                StopPatternSequence(Finger.BOTH);
+                yield break;
+            }
+
             int t1 = 0;
             int t2 = 0;
             int i1 = 0;
@@ -264,10 +282,10 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
                 if (!_isThumbPatternLoop && _currentThumbPatternIndex >= _currentThumbSequence.Values.Count)
                     ResetThumbSequence();
                 else
-                    _currentThumbPatternIndex %= _currentThumbSequence.Values.Count; // Wrap around if looping              
+                    _currentThumbPatternIndex %= _currentThumbSequence.Values.Count; // Wrap around if looping
             }
 
-            if (_currentIndexSequence != null) // Send pattern to indes
+            if (_currentIndexSequence != null) // Send pattern to index
             {
                 i1 = _currentIndexSequence.Values[_currentIndexPatternIndex].Value1;
                 i2 = _currentIndexSequence.Values[_currentIndexPatternIndex].Value2;
@@ -275,12 +293,21 @@ public class BraillePatternPlayer : SingletonPersistent<BraillePatternPlayer>
                 if (!_isIndexPatternLoop && _currentIndexPatternIndex >= _currentIndexSequence.Values.Count)
                     ResetIndexSequence();
                 else
-                    _currentIndexPatternIndex %= _currentIndexSequence.Values.Count; // Wrap around if looping              
+                    _currentIndexPatternIndex %= _currentIndexSequence.Values.Count; // Wrap around if looping
             }
+
             InputDeviceManager.Instance.BrailleOutput.SendBrailleASCII(t1, t2, i1, i2);
             yield return interval; // buffer interval
             SequenceStopCheck();
         }
+    }
+
+    private void ClearBrailleOutput()
+    {
+        if (InputDeviceManager.Instance == null || InputDeviceManager.Instance.BrailleOutput == null)
+            return;
+
+        InputDeviceManager.Instance.BrailleOutput.SendBrailleASCII(0, 0, 0, 0);
     }
 
     private void ResetThumbSequence()

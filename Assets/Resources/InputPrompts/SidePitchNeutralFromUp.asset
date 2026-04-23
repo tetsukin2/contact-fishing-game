@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PromptName: SidePitchNeutralFromUp
   Message: While on its side, tilt controller to the middle
-  Video: {fileID: 32900000, guid: 6ecc6e1bfa81d19439162bc31d301764, type: 3}
+  Video: {fileID: 32900000, guid: 122707e7ee59f50439476dc3c9572939, type: 3}
   UseProgress: 1
+  PulseType: 0

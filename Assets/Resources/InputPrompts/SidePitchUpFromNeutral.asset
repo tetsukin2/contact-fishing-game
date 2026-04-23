@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PromptName: SidePitchUpFromNeutral
   Message: While on its side, tilt controller upwards
-  Video: {fileID: 32900000, guid: e247dd3567133ec47a2d6928a454d9bc, type: 3}
+  Video: {fileID: 32900000, guid: 540bfa86d9c9ac34ab14f60ab7714c7a, type: 3}
   UseProgress: 1
+  PulseType: 0

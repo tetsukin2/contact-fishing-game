@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PromptName: PitchDownFromUp
   Message: Tilt down
-  Video: {fileID: 32900000, guid: eab46a17b93cdeb4cada8becd1fe7e9d, type: 3}
+  Video: {fileID: 32900000, guid: aceff0157d4c7404c875709cb1b65857, type: 3}
   UseProgress: 1
   PulseType: 1

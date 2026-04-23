@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PromptName: MenuJoystickPress
   Message: Presss to confirm
-  Video: {fileID: 32900000, guid: ae66d5739735287439c54d5d20205877, type: 3}
+  Video: {fileID: 32900000, guid: 8705086843e6a1e4cb56cac96a2589c8, type: 3}
   UseProgress: 0
   PulseType: 0

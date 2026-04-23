@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PromptName: MenuPitchFull
   Message: Tilt the controller up or down to select
-  Video: {fileID: 32900000, guid: 113dd72c89888884aa9b53946a2cdab5, type: 3}
+  Video: {fileID: 32900000, guid: 740b21cf151b8b2478e6e75ad2de058f, type: 3}
   UseProgress: 0
+  PulseType: 0

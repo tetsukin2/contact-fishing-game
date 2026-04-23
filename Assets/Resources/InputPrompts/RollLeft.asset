@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PromptName: RollLeft
   Message: Tilt left
-  Video: {fileID: 32900000, guid: 373ef54773c7beb4f8c80213a7f715f1, type: 3}
+  Video: {fileID: 32900000, guid: b3ed9a2e2fd1fed429bd46dc23a73674, type: 3}
   UseProgress: 1
   PulseType: 1

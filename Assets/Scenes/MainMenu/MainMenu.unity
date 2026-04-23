@@ -6198,7 +6198,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 116}
+  m_AnchoredPosition: {x: 0, y: 119.8}
   m_SizeDelta: {x: 500, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &855214330
@@ -9890,7 +9890,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -106}
+  m_AnchoredPosition: {x: 0, y: -103.4}
   m_SizeDelta: {x: 280, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1335485804
@@ -9913,8 +9913,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Inspect the fish and place it into your bucket. Catch 10 fish to complete
-    the game.
+  m_text: Prepare, cast, and reel with precision. React quickly to keep the fish
+    hooked.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7fa504abdee94384e8717c9951d25670, type: 2}
   m_sharedMaterial: {fileID: 4930229045768956662, guid: 7fa504abdee94384e8717c9951d25670,
@@ -9950,7 +9950,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -10956,7 +10956,7 @@ MonoBehaviour:
   _menuMoveClip: {fileID: 8300000, guid: f736fe1ef94d7924db2a64878dc65026, type: 3}
   _selectClip: {fileID: 8300000, guid: f0866113b4abb854ca6ab95f1150da78, type: 3}
   _ambientVolume: 0.2
-  _musicVolume: 0.05
+  _musicVolume: 0.1
   _sfxVolume: 1
   _loopSfxVolume: 0.2
   _shipHornVolumeMultiplier: 0.05
@@ -11153,7 +11153,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -71.1}
+  m_AnchoredPosition: {x: 0, y: -64}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1401946610
@@ -11457,8 +11457,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 24}
-  m_SizeDelta: {x: 350, y: 160}
+  m_AnchoredPosition: {x: 0, y: 27.8}
+  m_SizeDelta: {x: 350, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1434121169
 MonoBehaviour:
@@ -13262,29 +13262,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OnboardingPopupUI
   _pages:
   - title: Welcome to Reel-Ease
-    body: Learn the full fishing cycle before you start playing. Complete all steps
-      to catch fish and progress.
-    videoClip: {fileID: 32900000, guid: ef4f40b2e8db7054f8beaef8284b126a, type: 3}
-  - title: Prepare the Bait
-    body: Prepare and attach bait to your fishing line. This step is required before
-      you can cast.
-    videoClip: {fileID: 32900000, guid: ae66d5739735287439c54d5d20205877, type: 3}
-  - title: Cast the Line
-    body: Aim at a fish and cast your line into the water. Positioning affects which
-      fish you catch.
-    videoClip: {fileID: 32900000, guid: 52f06b21842c2814e939f22dc1a7c7df, type: 3}
-  - title: Waiting for a Bite
-    body: Wait for a fish to take the bait after casting. Be ready to react once
-      a bite occurs
-    videoClip: {fileID: 32900000, guid: ac115b72964df2147838d1cb81ad9ab8, type: 3}
-  - title: Reel the Fish In
-    body: Perform reel actions to fill the progress meter. Keep reeling or progress
-      will slowly drop.
-    videoClip: {fileID: 32900000, guid: eab46a17b93cdeb4cada8becd1fe7e9d, type: 3}
-  - title: Inspect the Catch
-    body: Inspect the fish and place it into your bucket. Catch 10 fish to complete
-      the game.
-    videoClip: {fileID: 32900000, guid: 113dd72c89888884aa9b53946a2cdab5, type: 3}
+    body: Dive into an immersive fishing experience. Use motion and timing to catch
+      fish.
+    videoClip: {fileID: 32900000, guid: 8b8cf24a66722cd45ac47d7fca46cb89, type: 3}
+  - title: Follow the Prompts!
+    body: Watch the on-screen prompts as you play. They guide every action you need
+      to perform.
+    videoClip: {fileID: 32900000, guid: 59d391691c58f05488d980632ee16886, type: 3}
+  - title: Feel Every Movement
+    body: Catch fish with motion and responsive feedback. Feel every pull and struggle.
+    videoClip: {fileID: 32900000, guid: 3a8a23f17aef531478f365ad67e88950, type: 3}
+  - title: The Fishing Cycle
+    body: Prepare, cast, reel, inspect, and collect. Each step flows into the next
+      seamlessly.
+    videoClip: {fileID: 32900000, guid: db008ab5aa59f8b40b52739be7c413bc, type: 3}
+  - title: Prepare, Cast, and Reel
+    body: Prepare, cast, and reel with precision. React quickly to keep the fish
+      hooked.
+    videoClip: {fileID: 32900000, guid: 98f7ee01f5743bc4b8364dfaba1307dc, type: 3}
+  - title: Inspect and Collect
+    body: Examine your catch up close. Store it safely in your bucket.
+    videoClip: {fileID: 32900000, guid: 76d5ce884b50bac4baafc568fc4e8175, type: 3}
+  - title: Ready to Begin?
+    body: Finish your session and track your progress. Jump in and start catching
+      fish now.
+    videoClip: {fileID: 32900000, guid: 54cce2ebc78014540a04e25d857ec82a, type: 3}
   _rootObject: {fileID: 99845027}
   _canvasGroup: {fileID: 99845029}
   _headerText: {fileID: 855214330}

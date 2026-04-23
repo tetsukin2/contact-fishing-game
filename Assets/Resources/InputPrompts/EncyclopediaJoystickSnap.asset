@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PromptName: EncyclopediaJoystickSnap
   Message: Use joystick to move tactile cursor
-  Video: {fileID: 32900000, guid: 52f06b21842c2814e939f22dc1a7c7df, type: 3}
+  Video: {fileID: 32900000, guid: 554ec6ca6b0f3404d89b920d57a39156, type: 3}
   UseProgress: 0
+  PulseType: 0

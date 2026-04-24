@@ -8,8 +8,15 @@ public class WaitingForBiteState : IFishingState
     private bool _resolved = false;
     private bool _showingEscapeMessage = false;
 
+    // Added: prevents both normal fish reach and forced bite
+    // from starting the bite flow twice.
+    private bool _biteStarted = false;
+
     private float _reactionTimer = 0f;
     private float _escapeMessageTimer = 0f;
+
+    // Added: guarantees a bite if nothing happens for too long.
+    private float _forceBiteTimer = 0f;
 
     public void Setup() { }
 
@@ -22,8 +29,12 @@ public class WaitingForBiteState : IFishingState
         _waitingForHookInput = false;
         _resolved = false;
         _showingEscapeMessage = false;
+        _biteStarted = false;
         _reactionTimer = 0f;
         _escapeMessageTimer = 0f;
+
+        // Added: shorter timeout for user test, longer for normal gameplay.
+        _forceBiteTimer = UserTestConfig.IsUserTestMode ? 4f : 6f;
 
         UIManager.Instance.ShowMainInputPrompt(null as InputPrompt);
         UIManager.Instance.ShowSecondInputPrompt(null as InputPrompt);
@@ -42,6 +53,18 @@ public class WaitingForBiteState : IFishingState
     {
         if (_resolved)
             return;
+
+        // Added: if no fish reaches the lure after a few seconds,
+        // force the bite so the player cannot get stuck forever.
+        if (!_biteStarted && !_waitingForHookInput && !_showingEscapeMessage)
+        {
+            _forceBiteTimer -= Time.deltaTime;
+
+            if (_forceBiteTimer <= 0f)
+            {
+                ForceFishBite();
+            }
+        }
 
         if (_waitingForHookInput)
         {
@@ -66,9 +89,22 @@ public class WaitingForBiteState : IFishingState
 
     private void OnFishReachLure()
     {
-        if (_fishReachedLure || _resolved)
+        BeginBiteSequence();
+    }
+
+    // Added: fallback bite trigger.
+    private void ForceFishBite()
+    {
+        BeginBiteSequence();
+    }
+
+    // Added: shared bite-start logic so it can only happen once.
+    private void BeginBiteSequence()
+    {
+        if (_biteStarted || _resolved)
             return;
 
+        _biteStarted = true;
         _fishReachedLure = true;
 
         if (FishingManager.Instance.Targeting.Selection != null)

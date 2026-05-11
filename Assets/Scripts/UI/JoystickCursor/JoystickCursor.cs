@@ -48,6 +48,19 @@ public class JoystickCursor : MonoBehaviour
     [SerializeField] private CursorBraillePin _i32;
     [SerializeField] private CursorBraillePin _i33;
 
+    [SerializeField] private float _brailleSendInterval = 0.05f;
+    private float _lastBrailleSendTime = -999f;
+
+    private int _pendingT0;
+    private int _pendingT1;
+    private int _pendingI0;
+    private int _pendingI1;
+
+    private int _sentT0 = -1;
+    private int _sentT1 = -1;
+    private int _sentI0 = -1;
+    private int _sentI1 = -1;
+
     public int T0 { get; private set; } = 0;
     public int T1 { get; private set; } = 0;
     public int I0 { get; private set; } = 0;
@@ -68,10 +81,22 @@ public class JoystickCursor : MonoBehaviour
         MainMenuUIController.Instance.ViewChanged.AddListener(OnMainMenuViewChanged);
     }
 
+    // void Update()
+    // {
+    //     if (MainMenuUIController.Instance.CurrentView != MainMenuUIController.MainMenuView.Encyclopedia) return;
+    //     UpdateCursorPosition();
+    //     UpdateBrailleValues();
+    // }
+
     void Update()
     {
         if (MainMenuUIController.Instance.CurrentView != MainMenuUIController.MainMenuView.Encyclopedia) return;
         UpdateCursorPosition();
+    }
+
+    void LateUpdate()
+    {
+        if (MainMenuUIController.Instance.CurrentView != MainMenuUIController.MainMenuView.Encyclopedia) return;
         UpdateBrailleValues();
     }
 
@@ -83,6 +108,20 @@ public class JoystickCursor : MonoBehaviour
             
             CurrentCursorPos = ResetPosition;
             CursorRect.anchoredPosition = CurrentCursorPos;
+
+            _sentT0 = -1;
+            _sentT1 = -1;
+            _sentI0 = -1;
+            _sentI1 = -1;
+            _lastBrailleSendTime = -999f;
+        }
+        else
+        {
+            T0 = T1 = I0 = I1 = 0;
+            _pendingT0 = _pendingT1 = _pendingI0 = _pendingI1 = 0;
+            _sentT0 = _sentT1 = _sentI0 = _sentI1 = -1;
+
+            InputDeviceManager.Instance.BrailleOutput.ResetBraille();
         }
     }
 
@@ -131,14 +170,58 @@ public class JoystickCursor : MonoBehaviour
             + 32 * _i02.Value + 4 * _i12.Value
             + 128 * _i03.Value + 64 * _i13.Value;
 
-        if (temp_t0 != T0 || temp_t1 != T1 || temp_i0 != I0 || temp_i1 != I1)
-        {
+            // Current visual/computed state
             T0 = temp_t0;
             T1 = temp_t1;
             I0 = temp_i0;
             I1 = temp_i1;
-            InputDeviceManager.Instance.BrailleOutput.SendBrailleASCII(T0, T1, I0, I1);
-        }
+
+            // Always keep latest pending state
+            _pendingT0 = temp_t0;
+            _pendingT1 = temp_t1;
+            _pendingI0 = temp_i0;
+            _pendingI1 = temp_i1;
+
+            bool pendingIsDifferentFromSent =
+            _pendingT0 != _sentT0 ||
+            _pendingT1 != _sentT1 ||
+            _pendingI0 != _sentI0 ||
+            _pendingI1 != _sentI1;
+
+    if (!pendingIsDifferentFromSent)
+        return;
+
+    if (Time.time - _lastBrailleSendTime < _brailleSendInterval)
+        return;
+
+    _lastBrailleSendTime = Time.time;
+
+    InputDeviceManager.Instance.BrailleOutput.SendBrailleASCII(
+        _pendingT0,
+        _pendingT1,
+        _pendingI0,
+        _pendingI1
+    );
+
+    _sentT0 = _pendingT0;
+    _sentT1 = _pendingT1;
+    _sentI0 = _pendingI0;
+    _sentI1 = _pendingI1;
+
+        // if (temp_t0 != T0 || temp_t1 != T1 || temp_i0 != I0 || temp_i1 != I1)
+        // {
+        //     T0 = temp_t0;
+        //     T1 = temp_t1;
+        //     I0 = temp_i0;
+        //     I1 = temp_i1;
+
+        //      if (Time.time - _lastBrailleSendTime >= _brailleSendInterval)
+        //     {
+        //         _lastBrailleSendTime = Time.time;
+        //         InputDeviceManager.Instance.BrailleOutput.SendBrailleASCII(T0, T1, I0, I1);
+        //     }
+        //     // InputDeviceManager.Instance.BrailleOutput.SendBrailleASCII(T0, T1, I0, I1);
+        // }
     }
 
     // Get the list of Braille pins for external access

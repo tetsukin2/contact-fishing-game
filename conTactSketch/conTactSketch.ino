@@ -96,6 +96,7 @@ void loop() {
     static int last_vrx = 0, last_vry = 0, last_sw = 1;
 
     while (central.connected()) {
+      BLE.poll();
       if (millis() - lastSendTime >= minSendInterval) {
         lastSendTime = millis();
 
@@ -155,9 +156,9 @@ void loop() {
           last_sw = sw;
         }
 
-        Serial.print("🔘 Button States: ");
-        Serial.print("BTN1: "); Serial.print(button1);
-        Serial.print(" | BTN2: "); Serial.println(button2);
+        // Serial.print("🔘 Button States: ");
+        // Serial.print("BTN1: "); Serial.print(button1);
+        // Serial.print(" | BTN2: "); Serial.println(button2);
       }
 
       if (brailleCharacteristic.written()) {
@@ -199,12 +200,29 @@ void recvWithStartEndMarkers(char rc) {
       receivedChars[ndx] = '\0';
       recvInProgress = false;
 
+
+      if (ndx != 12) {
+        Serial.print("Bad Braille packet length: ");
+        Serial.println(ndx);
+        return;
+      }
+
+      for (int i = 0; i < 12; i++) {
+        if (receivedChars[i] < '0' || receivedChars[i] > '9') {
+          Serial.println("Bad Braille packet: non-digit found");
+          return;
+        }
+      }
       // Parse 4 chunks of 3 digits each: AAA BBB CCC DDD
       char buf0[4], buf1[4], buf2[4], buf3[4];
-      strncpy(buf0, &receivedChars[0], 3); buf0[3] = '\0';
-      strncpy(buf1, &receivedChars[3], 3); buf1[3] = '\0';
-      strncpy(buf2, &receivedChars[6], 3); buf2[3] = '\0';
-      strncpy(buf3, &receivedChars[9], 3); buf3[3] = '\0';
+      // strncpy(buf0, &receivedChars[0], 3); buf0[3] = '\0';
+      // strncpy(buf1, &receivedChars[3], 3); buf1[3] = '\0';
+      // strncpy(buf2, &receivedChars[6], 3); buf2[3] = '\0';
+      // strncpy(buf3, &receivedChars[9], 3); buf3[3] = '\0';
+      memcpy(buf0, &receivedChars[0], 3);  buf0[3] = '\0';
+      memcpy(buf1, &receivedChars[3], 3);  buf1[3] = '\0';
+      memcpy(buf2, &receivedChars[6], 3);  buf2[3] = '\0';
+      memcpy(buf3, &receivedChars[9], 3);  buf3[3] = '\0';
 
       int c0 = atoi(buf0);
       int c1 = atoi(buf1);
@@ -218,27 +236,55 @@ void recvWithStartEndMarkers(char rc) {
 
       FlushDualP20();
 
-      Serial.print("📨 Raw receivedChars: <"); Serial.print(receivedChars); Serial.println(">");
-      Serial.print("📩 Parsed Dual P20: ");
-      Serial.print(c0); Serial.print(", ");
-      Serial.print(c1); Serial.print(", ");
-      Serial.print(c2); Serial.print(", ");
-      Serial.print(c3); Serial.println();
+      // Serial.print("📨 Raw receivedChars: <"); Serial.print(receivedChars); Serial.println(">");
+      // Serial.print("📩 Parsed Dual P20: ");
+      // Serial.print(c0); Serial.print(", ");
+      // Serial.print(c1); Serial.print(", ");
+      // Serial.print(c2); Serial.print(", ");
+      // Serial.print(c3); Serial.println();
     }
   }
 }
 
+// void FlushDualP20() {
+//   digitalWrite(STROBE, LOW);
+//   for (int byteIndex = 0; byteIndex < 2; byteIndex++) {
+//     for (int bitIndex = 0; bitIndex < 8; bitIndex++) {
+//       int bit = bitOrder[bitIndex];
+
+//       digitalWrite(CLOCK, LOW);
+//       digitalWrite(DATA_1, bitRead(cells1[byteIndex], bit) ? LOW : HIGH);
+//       digitalWrite(DATA_2, bitRead(cells2[byteIndex], bit) ? LOW : HIGH);
+//       digitalWrite(CLOCK, HIGH);
+//     }
+//   }
+//   digitalWrite(STROBE, HIGH);
+// }
+
 void FlushDualP20() {
   digitalWrite(STROBE, LOW);
+  delayMicroseconds(5);
+
   for (int byteIndex = 0; byteIndex < 2; byteIndex++) {
     for (int bitIndex = 0; bitIndex < 8; bitIndex++) {
       int bit = bitOrder[bitIndex];
 
       digitalWrite(CLOCK, LOW);
-      digitalWrite(DATA_1, bitRead(cells1[byteIndex], bit) ? LOW : HIGH);
-      digitalWrite(DATA_2, bitRead(cells2[byteIndex], bit) ? LOW : HIGH);
+
+      bool bit1 = bitRead(cells1[byteIndex], bit);
+      bool bit2 = bitRead(cells2[byteIndex], bit);
+
+      digitalWrite(DATA_1, bit1 ? LOW : HIGH);
+      digitalWrite(DATA_2, bit2 ? LOW : HIGH);
+
+      delayMicroseconds(5);
+
       digitalWrite(CLOCK, HIGH);
+
+      delayMicroseconds(5);
     }
   }
+
   digitalWrite(STROBE, HIGH);
+  delayMicroseconds(5);
 }

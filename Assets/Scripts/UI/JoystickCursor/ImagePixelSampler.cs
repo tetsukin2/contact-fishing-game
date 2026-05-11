@@ -250,8 +250,6 @@ public class ImagePixelSampler : MonoBehaviour
 
         // Convert sprite-relative UV to pixel coordinates in the texture
         Rect spriteRect = sprite.rect;
-        int texX = Mathf.FloorToInt(uv.x * spriteRect.width + spriteRect.x);
-        int texY = Mathf.FloorToInt(uv.y * spriteRect.height + spriteRect.y);
 
         //// Guard against bad index
         //if (index < 0 || index >= img.pixelData.Length)
@@ -263,8 +261,23 @@ public class ImagePixelSampler : MonoBehaviour
         //pixel = img.pixelData[index];
         //return true;
 
-        if (texX < 0 || texX >= tex.width || texY < 0 || texY >= tex.height)
-            return false;
+        // int texX = Mathf.FloorToInt(uv.x * spriteRect.width + spriteRect.x);
+        // int texY = Mathf.FloorToInt(uv.y * spriteRect.height + spriteRect.y);
+
+        // if (texX < 0 || texX >= tex.width || texY < 0 || texY >= tex.height)
+        //     return false;
+
+        int texX = Mathf.Clamp(
+            Mathf.FloorToInt(uv.x * spriteRect.width + spriteRect.x),
+            0,
+            tex.width - 1
+        );
+
+        int texY = Mathf.Clamp(
+            Mathf.FloorToInt(uv.y * spriteRect.height + spriteRect.y),
+            0,
+            tex.height - 1
+        );
 
         pixel = tex.GetPixel(texX, texY);
         return true;

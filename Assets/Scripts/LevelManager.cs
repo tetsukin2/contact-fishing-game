@@ -19,6 +19,9 @@ public class LevelManager : Singleton<LevelManager>
     [Min(1)]
     [SerializeField] private int _fishTotalToCatch = 10;
 
+    [SerializeField] private int _gameCyclesPerSession = 1;
+    [SerializeField] private int _completedGameCycles = 0;
+
     [Space]
     [Header("Timings")]
     public float GameStartDuration = 3f;
@@ -55,6 +58,8 @@ public class LevelManager : Singleton<LevelManager>
     public string LevelName => _levelName;
     public int FishCaught => _fishCaught;
     public int FishTotalToCatch => _fishTotalToCatch;
+    public int GameCyclesPerSession => _gameCyclesPerSession;
+    public int CompletedGameCycles => _completedGameCycles;
 
     private bool hasUploadedGameTelemetry = false;
 
@@ -86,6 +91,9 @@ public class LevelManager : Singleton<LevelManager>
             ? UserTestConfig.OverrideFishTotalToCatch
             : ResourceSystem.Instance.GameplayConfig.FishTotalToCatch;
 
+        _gameCyclesPerSession = Mathf.Max(1, ResourceSystem.Instance.GameplayConfig.GameCyclesPerSession);
+        _completedGameCycles = 0;
+
         // SetGamePaused(false); // Ensure game is not paused at start
         _gamePaused.Invoke(false); // Manual invoke cuz of pause safeguards
 
@@ -97,6 +105,9 @@ public class LevelManager : Singleton<LevelManager>
             StageID = _levelName,
             GameCompleted = false,
             FishCatchRequirement = _fishTotalToCatch,
+            GameCyclesPerSession = _gameCyclesPerSession,
+            CompletedGameCycles = _completedGameCycles,
+            GameSessionsPerWeek = ResourceSystem.Instance.GameplayConfig.GameSessionsPerWeek,
         };
 
         GameStateExited.AddListener((state) =>
@@ -178,6 +189,9 @@ public class LevelManager : Singleton<LevelManager>
             ? UserTestConfig.OverrideFishTotalToCatch
             : ResourceSystem.Instance.GameplayConfig.FishTotalToCatch;
 
+        _gameCyclesPerSession = Mathf.Max(1, ResourceSystem.Instance.GameplayConfig.GameCyclesPerSession);
+        _completedGameCycles = 0;
+
         // Reset run state for safety
         ResetFish();
 
@@ -227,8 +241,27 @@ public class LevelManager : Singleton<LevelManager>
         FishCaughtUpdated.Invoke(FishCaught);
         if (_fishCaught >= _fishTotalToCatch)
         {
-            TransitionToState(GameEndState);
+            CompleteGameCycle();
+            //TransitionToState(GameEndState);
         }
+    }
+
+    private void CompleteGameCycle()
+    {
+        _completedGameCycles++;
+
+        Debug.Log($"Game cycle completed: {_completedGameCycles}/{_gameCyclesPerSession}");
+
+        if (_completedGameCycles >= _gameCyclesPerSession)
+        {
+            TransitionToState(GameEndState);
+            return;
+        }
+
+        ResetFish();
+
+        // Start the next core gameplay cycle.
+        FishingManager.Instance.TransitionToState(FishingManager.Instance.BaitPreparationState);
     }
 
     /// <summary>
@@ -304,6 +337,9 @@ public class LevelManager : Singleton<LevelManager>
         _telemetryData.MaxAngles = ActionTelemetryHandler.Instance.GetMaxAngles();
         _telemetryData.GameCompleted = true;
         _telemetryData.FishCatchRequirement = _fishTotalToCatch;
+        _telemetryData.GameCyclesPerSession = _gameCyclesPerSession;
+        _telemetryData.CompletedGameCycles = _completedGameCycles;
+        _telemetryData.GameSessionsPerWeek = ResourceSystem.Instance.GameplayConfig.GameSessionsPerWeek;
 
         Debug.Log("=== FINAL TELEMETRY BEFORE UPLOAD ===");
         Debug.Log("Score: " + _telemetryData.DiscriminationScore);

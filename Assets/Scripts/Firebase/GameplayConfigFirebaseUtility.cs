@@ -20,6 +20,8 @@ public static class GameplayConfigExtensions
             { "ReelProgressAmount", config.ReelProgressAmount },
             { "ReelDecayRate", config.ReelDecayRate },
             { "BraillePatternInterval", config.BraillePatternInterval },
+            { "gameSessionsPerWeek", config.GameSessionsPerWeek },
+            { "gameCyclesPerSession", config.GameCyclesPerSession },
             { "FishTotalToCatch", config.FishTotalToCatch },
             { "DiscoveredFish", config.DiscoveredFish },
             // Optionally add ReelActionSequence here if needed
@@ -43,6 +45,10 @@ public static class GameplayConfigLoader
         if (firestoreData.TryGetValue("reelProgressAmount", out var rpa)) config.ReelProgressAmount = int.Parse(rpa.ToString());
         if (firestoreData.TryGetValue("reelDecayRate", out var rdd)) config.ReelDecayRate = float.Parse(rdd.ToString());
         if (firestoreData.TryGetValue("braillePatternInterval", out var bpi)) config.BraillePatternInterval = float.Parse(bpi.ToString());
+        if (firestoreData.TryGetValue("gameSessionsPerWeek", out var gspw))
+            config.GameSessionsPerWeek = Mathf.Max(1, int.Parse(gspw.ToString()));
+        if (firestoreData.TryGetValue("gameCyclesPerSession", out var gcps))
+            config.GameCyclesPerSession = Mathf.Max(1, int.Parse(gcps.ToString()));
          if (firestoreData.TryGetValue("fishTotalToCatch", out var ftc)) 
             config.FishTotalToCatch = int.Parse(ftc.ToString());
         if (firestoreData.TryGetValue("discoveredFish", out var dfList) && dfList is List<object> dfObjects)

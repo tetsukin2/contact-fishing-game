@@ -27,6 +27,9 @@ public class GameTelemetryData
     public int AverageActionsPerReel;
     public bool GameCompleted;
     public int FishCatchRequirement;
+    public int GameCyclesPerSession;
+    public int CompletedGameCycles;
+    public int GameSessionsPerWeek;
     public Dictionary<string, float> AverageTimeTaken;
     public Dictionary<string, int> RepetitionCounts;
     public Dictionary<string, float> MaxAngles;

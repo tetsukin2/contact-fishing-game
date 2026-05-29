@@ -30,6 +30,14 @@ public class GameplayConfig : ScriptableObject
     [Header("Braille")]
     public float BraillePatternInterval;
 
+    [Space]
+    [Header("Session Requirements")]
+    [Tooltip("Target number of full game sessions the user should complete per week. Mainly used by the admin portal for progress tracking.")]
+    public int GameSessionsPerWeek = 1;
+
+    [Tooltip("Number of full fishing gameplay cycles required to complete one game session.")]
+    public int GameCyclesPerSession = 3;
+
      [Space]
     [Header("Global Gameplay Data")]
     public int FishTotalToCatch = 3; // Default value

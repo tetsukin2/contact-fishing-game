@@ -33,6 +33,148 @@ public class InputDeviceRotationHelper : MonoBehaviour
     public float CurrentY => InputDeviceManager.Instance.IMUInput.Rotation.y;
     public float CurrentZ => InputDeviceManager.Instance.IMUInput.Rotation.z;
 
+    // =====================================================
+    // Motion-specific IMU classification rules
+    // Based on prompted IMU motion fidelity test results.
+    //
+    // They are stricter helpers for gameplay states that need
+    // anatomical motion separation.
+    // =====================================================
+
+    private const float NEUTRAL_MAX_ABS_X = 0.20f;
+    private const float NEUTRAL_MAX_ABS_Y = 0.20f;
+    private const float NEUTRAL_MIN_Z = 0.85f;
+
+    private const float RADIAL_MAX_X = -0.20f;
+    private const float RADIAL_MIN_Z = 0.40f;
+
+    private const float ULNAR_MIN_X = 0.45f;
+    private const float ULNAR_MIN_Z = 0.50f;
+
+    private const float FLEXION_MIN_X = 0.75f;
+    private const float FLEXION_MAX_Z = 0.40f;
+
+    private const float EXTENSION_MAX_X = -0.70f;
+    private const float EXTENSION_MAX_Z = 0.00f;
+
+    private const float PRONATION_MAX_Y = -0.80f;
+    private const float SUPINATION_MIN_Y = 0.80f;
+
+    public enum MotionClassification
+    {
+        Neutral,
+        RadialDeviation,
+        UlnarDeviation,
+        Flexion,
+        Extension,
+        Pronation,
+        Supination,
+        Unclear
+    }
+
+    public MotionClassification GetCurrentMotionClassification()
+    {
+        float x = CurrentX;
+        float y = CurrentY;
+        float z = CurrentZ;
+
+        // Neutral
+        if (Mathf.Abs(x) < NEUTRAL_MAX_ABS_X &&
+            Mathf.Abs(y) < NEUTRAL_MAX_ABS_Y &&
+            z > NEUTRAL_MIN_Z)
+        {
+            return MotionClassification.Neutral;
+        }
+
+        // Pronation / supination are dominated by Y.
+        if (y < PRONATION_MAX_Y)
+        {
+            return MotionClassification.Pronation;
+        }
+
+        if (y > SUPINATION_MIN_Y)
+        {
+            return MotionClassification.Supination;
+        }
+
+        // Flexion / extension overlap with radial / ulnar on X,
+        // so Z is used to separate them.
+        if (x > FLEXION_MIN_X && z < FLEXION_MAX_Z)
+        {
+            return MotionClassification.Flexion;
+        }
+
+        if (x < EXTENSION_MAX_X && z < EXTENSION_MAX_Z)
+        {
+            return MotionClassification.Extension;
+        }
+
+        // Radial / ulnar also use X, but Z remains positive.
+        if (x < RADIAL_MAX_X && z > RADIAL_MIN_Z)
+        {
+            return MotionClassification.RadialDeviation;
+        }
+
+        if (x > ULNAR_MIN_X && z > ULNAR_MIN_Z)
+        {
+            return MotionClassification.UlnarDeviation;
+        }
+
+        return MotionClassification.Unclear;
+    }
+
+    public bool HasReachedNeutralPosture()
+    {
+        return GetCurrentMotionClassification() == MotionClassification.Neutral;
+    }
+
+    public bool HasReachedRadialDeviation()
+    {
+        return GetCurrentMotionClassification() == MotionClassification.RadialDeviation;
+    }
+
+    public bool HasReachedRadialDeviationForReeling()
+    {
+        return CurrentX < -0.20f && CurrentZ > -0.10f;
+    }
+
+    public bool HasReachedRadialDeviationForGameplay()
+    {
+        return CurrentX < ResourceSystem.Instance.GameplayConfig.RotateUpAngle
+            && CurrentZ > -0.10f;
+    }
+
+    public bool HasReachedUlnarDeviationForGameplay()
+    {
+        return CurrentX > ResourceSystem.Instance.GameplayConfig.RotateDownAngle
+            && CurrentZ > 0.40f;
+    }
+
+    public bool HasReachedUlnarDeviation()
+    {
+        return GetCurrentMotionClassification() == MotionClassification.UlnarDeviation;
+    }
+
+    public bool HasReachedFlexion()
+    {
+        return GetCurrentMotionClassification() == MotionClassification.Flexion;
+    }
+
+    public bool HasReachedExtension()
+    {
+        return GetCurrentMotionClassification() == MotionClassification.Extension;
+    }
+
+    public bool HasReachedPronation()
+    {
+        return GetCurrentMotionClassification() == MotionClassification.Pronation;
+    }
+
+    public bool HasReachedSupination()
+    {
+        return GetCurrentMotionClassification() == MotionClassification.Supination;
+    }
+
 
     // So we don't undo a bunch of progress by going the other way
     public bool TrackJoystickClockwise

@@ -18,6 +18,9 @@ public class BLEDevice : MonoBehaviour
     public const string BRAILLE_SERVICE_UUID = "19b30000-e8f2-537e-4f6c-d104768a1214";
     public const string BRAILLE_CHARACTERISTIC_UUID = "19b30001-e8f2-537e-4f6c-d104768a1214";
 
+    public const string LATENCY_SERVICE_UUID = "19b40000-e8f2-537e-4f6c-d104768a1214";
+    public const string LATENCY_CHARACTERISTIC_UUID = "19b40001-e8f2-537e-4f6c-d104768a1214";
+
     /// <summary>
     /// The ID of the currently connected device.
     /// </summary>
@@ -32,6 +35,9 @@ public class BLEDevice : MonoBehaviour
     private bool imuCharacteristicLoaded = false;
     private bool joystickCharacteristicLoaded = false;
     private bool brailleCharacteristicLoaded = false;
+
+    [SerializeField] private bool requireLatencyCharacteristicForTest = false;
+    private bool latencyCharacteristicLoaded = false;
 
     public bool IsConnected { get; private set; } = false;
 
@@ -136,7 +142,22 @@ public class BLEDevice : MonoBehaviour
                     brailleCharacteristicLoaded = true;
                     InputDeviceManager.Instance.QueueStatusLog("Braille Characteristic Found!");
                 }
-                if (imuCharacteristicLoaded && joystickCharacteristicLoaded && brailleCharacteristicLoaded)
+                else if (!latencyCharacteristicLoaded &&
+                        characteristic.uuid.ToLower().Contains(LATENCY_CHARACTERISTIC_UUID.ToLower()))
+                {
+                    latencyCharacteristicLoaded = true;
+                    InputDeviceManager.Instance.QueueStatusLog("Latency ACK Characteristic Found!");
+                    SubscribeToLatencyAck(deviceId, service.uuid, characteristic.uuid);
+                }
+
+                bool requiredCharacteristicsLoaded =
+                    imuCharacteristicLoaded &&
+                    joystickCharacteristicLoaded &&
+                    brailleCharacteristicLoaded &&
+                    (!requireLatencyCharacteristicForTest || latencyCharacteristicLoaded);
+
+                //if (imuCharacteristicLoaded && joystickCharacteristicLoaded && brailleCharacteristicLoaded)
+                if (requiredCharacteristicsLoaded)
                 {
                     InputDeviceManager.Instance.QueueStatusLog("All Characteristics Loaded!");
                     UnityMainThreadDispatcher.Instance.Enqueue(() => CharacteristicsLoaded.Invoke());
@@ -182,6 +203,40 @@ public class BLEDevice : MonoBehaviour
             }
         }
         Debug.LogError("Failed to subscribe to JoystickCursor after retries.");
+    }
+
+    void SubscribeToLatencyAck(string deviceId, string serviceUuid, string characteristicUuid)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            BleApi.SubscribeCharacteristic(deviceId, serviceUuid, characteristicUuid, false);
+            System.Threading.Thread.Sleep(500);
+
+            bool subscribed = BleApi.SubscribeCharacteristic(deviceId, serviceUuid, characteristicUuid, true);
+
+            if (subscribed)
+            {
+                InputDeviceManager.Instance.QueueStatusLog("Subscribed to Latency ACK!");
+
+                UnityMainThreadDispatcher.Instance.Enqueue(() =>
+                {
+                    LatencyAckReceiver receiver = GetComponent<LatencyAckReceiver>();
+
+                    if (receiver != null)
+                    {
+                        receiver.StartReadingLatencyAckData(characteristicUuid);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("LatencyAckReceiver component is missing.");
+                    }
+                });
+
+                return;
+            }
+        }
+
+        Debug.LogError("Failed to subscribe to Latency ACK after retries.");
     }
 
     /// <summary>

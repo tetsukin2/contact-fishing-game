@@ -19,8 +19,15 @@ public class RotateVerticalReelAction : IReelAction
     {
         var rotationHelper = InputDeviceManager.Instance.RotationHelper;
 
-        if (!_hasRotatedForward &&
-            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateDownAngle))
+        /*
+         * Reeling should accept radial/ulnar deviation,
+         * not generic X-axis movement.
+         *
+         * This prevents flexion/extension from being accepted here,
+         * because flexion/extension may also affect X but have different Z values.
+         */
+
+        if (!_hasRotatedForward && rotationHelper.HasReachedUlnarDeviation())
         {
             InputPromptPanel.MainInstance?.PlayStepFeedback();
             AudioManager.Instance?.PlaySuccess();
@@ -37,17 +44,29 @@ public class RotateVerticalReelAction : IReelAction
 
             ActionTelemetryHandler.Instance.StartActionTimer("ReelBack");
         }
-        else if (_hasRotatedForward &&
-            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateUpAngle))
+        else if (_hasRotatedForward)
         {
+            Debug.Log(
+                $"WAITING RADIAL | " +
+                $"X:{rotationHelper.CurrentX:F2} " +
+                $"Y:{rotationHelper.CurrentY:F2} " +
+                $"Z:{rotationHelper.CurrentZ:F2} " +
+                $"Class:{rotationHelper.GetCurrentMotionClassification()} " +
+                $"Radial:{rotationHelper.HasReachedRadialDeviation()}"
+            );
+
+             if (rotationHelper.HasReachedRadialDeviationForReeling())
+            {
+
             InputPromptPanel.MainInstance?.PlayCompletionFeedback();
             AudioManager.Instance?.PlaySuccess();
-            
+
             FishingManager.Instance.ReelProgressBar.ProgressReel();
 
             ActionTelemetryHandler.Instance.EndAndRecordActionTimer("ReelBack");
             ActionTelemetryHandler.Instance.RecordRepetition("ReelBack");
             ActionTelemetryHandler.Instance.RecordAngle("ReelBack", Mathf.Abs(rotationHelper.CurrentX));
+            }
         }
     }
 

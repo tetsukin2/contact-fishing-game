@@ -51,12 +51,14 @@ public class CastingState : IFishingState
         var rotationHelper = InputDeviceManager.Instance.RotationHelper;
 
         if (!_hasCastBack &&
-            InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateUpAngle))
+            rotationHelper.HasReachedRadialDeviationForGameplay())
+            //InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateUpAngle))
         {
             OnCastBack(rotationHelper);
         }
         else if (_hasCastBack &&
-                 InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateDownAngle))
+                rotationHelper.HasReachedUlnarDeviationForGameplay())
+                // InputDeviceManager.Instance.RotationHelper.HasReachedRotationX(ResourceSystem.Instance.GameplayConfig.RotateDownAngle))
         {
             OnCastForward(rotationHelper);
         }

@@ -177,7 +177,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: START
+  m_text: RIPPLE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7fa504abdee94384e8717c9951d25670, type: 2}
   m_sharedMaterial: {fileID: 4930229045768956662, guid: 7fa504abdee94384e8717c9951d25670,
@@ -452,8 +452,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Prepare, cast, and reel with precision. React quickly to keep the fish
-    hooked.
+  m_text: Explore the tactile patterns freely. Press a pattern button to play or
+    stop it.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7fa504abdee94384e8717c9951d25670, type: 2}
   m_sharedMaterial: {fileID: 4930229045768956662, guid: 7fa504abdee94384e8717c9951d25670,
@@ -1265,7 +1265,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: START
+  m_text: BASIC PULSE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7fa504abdee94384e8717c9951d25670, type: 2}
   m_sharedMaterial: {fileID: 4930229045768956662, guid: 7fa504abdee94384e8717c9951d25670,
@@ -5528,7 +5528,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: START
+  m_text: WAVE IN
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7fa504abdee94384e8717c9951d25670, type: 2}
   m_sharedMaterial: {fileID: 4930229045768956662, guid: 7fa504abdee94384e8717c9951d25670,
@@ -7070,7 +7070,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: START
+  m_text: WAVE OUT
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7fa504abdee94384e8717c9951d25670, type: 2}
   m_sharedMaterial: {fileID: 4930229045768956662, guid: 7fa504abdee94384e8717c9951d25670,
@@ -8425,7 +8425,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: START
+  m_text: CIRCULAR PATTERN
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7fa504abdee94384e8717c9951d25670, type: 2}
   m_sharedMaterial: {fileID: 4930229045768956662, guid: 7fa504abdee94384e8717c9951d25670,
@@ -8568,6 +8568,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: MenuFishingRod
+      objectReference: {fileID: 0}
+    - target: {fileID: 7254347388500578353, guid: ab3e58b0d55a53546b758e0742f0f806,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8924,6 +8929,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: UIManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342339186948108007, guid: 64d3c6c2864bf0c46ade874c96a83cc9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10501,6 +10511,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EndScoreGUI
       objectReference: {fileID: 0}
+    - target: {fileID: 6423664485963134156, guid: fa4ddde45e728ad469fbd6cbb2a8a689,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10523,6 +10538,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Main Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 3024915314712181602, guid: e6751b63ea9a339429bcba3aae9d705a,
+        type: 3}
+      propertyPath: field of view
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7538786711518190222, guid: e6751b63ea9a339429bcba3aae9d705a,
         type: 3}
@@ -10547,7 +10567,7 @@ PrefabInstance:
     - target: {fileID: 7538786711518190222, guid: e6751b63ea9a339429bcba3aae9d705a,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7538786711518190222, guid: e6751b63ea9a339429bcba3aae9d705a,
         type: 3}
@@ -10557,7 +10577,7 @@ PrefabInstance:
     - target: {fileID: 7538786711518190222, guid: e6751b63ea9a339429bcba3aae9d705a,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7538786711518190222, guid: e6751b63ea9a339429bcba3aae9d705a,
         type: 3}
@@ -10772,6 +10792,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PauseSelect
       objectReference: {fileID: 0}
+    - target: {fileID: 6198360560862780194, guid: cc4bdb48f7a2c9a4b9651baf260dcfb7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10974,6 +10999,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: MenuSelectVCam
+      objectReference: {fileID: 0}
+    - target: {fileID: 1068344212505311185, guid: cae6dc3410ee60147849375b8f8cea4a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8432020239722032264, guid: cae6dc3410ee60147849375b8f8cea4a,
         type: 3}
@@ -11233,6 +11263,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GameEndSelect
+      objectReference: {fileID: 0}
+    - target: {fileID: 5661578820910380682, guid: 15317004493c4db4e9def58095c92561,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11931,6 +11966,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PauseUIController
       objectReference: {fileID: 0}
+    - target: {fileID: 7047603047279277107, guid: e78153da8e5d66b4cad54c37caa0b58f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11948,6 +11988,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GameplayUIController
+      objectReference: {fileID: 0}
+    - target: {fileID: 4255804084084891556, guid: 06e81ff54d089fc419464566939f8342,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5288963831567036002, guid: 06e81ff54d089fc419464566939f8342,
         type: 3}
